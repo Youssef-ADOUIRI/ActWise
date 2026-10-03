@@ -12,6 +12,6 @@ make install
 make test
 ```
 
-Plan: [docs/ROADMAP.md](docs/ROADMAP.md) · Tasks: [TODO.md](TODO.md)
+Plan: [docs/ROADMAP.md](docs/ROADMAP.md) · Tasks: [TODO.md](TODO.md) · Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md)
 
 Legal text source: [EUR-Lex](https://eur-lex.europa.eu).
