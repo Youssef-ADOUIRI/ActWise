@@ -25,23 +25,25 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 0: Repo, tooling, CI
 
-- [ ] `[fix]` Rename the branch `master` → `main` (R9)
-- [ ] `uv init --package --name actwise .` (src layout)
-- [ ] Add the dependencies: core, `local` extra, `cloud` extra, dev
-- [ ] `Makefile` stubs: `ingest`, `index`, `test`, `eval`, `serve`, `deploy`
-- [ ] `.env.example`, plus `.gitignore` covering `.env`, `.cache/`, `models/`
-- [ ] ruff, mypy and pytest config in `pyproject.toml`; pre-commit hooks
-- [ ] `[fix]` Coverage `omit` for I/O glue modules (R8)
-- [ ] `.github/workflows/ci.yml` (check the action versions)
-- [ ] Placeholder test, green CI badge, one-line pitch in the README
-- [ ] Create the `docs/decisions/` folder
+- [x] `[fix]` Rename the branch `master` → `main` (R9)
+- [x] `pyproject.toml` (src layout)
+- [x] Add the dependencies: core, `local` extra, `cloud` extra, dev
+- [x] `Makefile` stubs: `ingest`, `index`, `test`, `eval`, `serve`, `deploy`
+- [x] `.env.example`, plus `.gitignore` covering `.env`, `.cache/`, `models/`
+- [x] ruff, mypy and pytest config in `pyproject.toml`; pre-commit config
+- [ ] Install uv + make locally, then `make install` (sets up pre-commit hooks)
+- [x] `[fix]` Coverage `omit` for I/O glue modules (R8)
+- [x] `.github/workflows/ci.yml` (check the action versions)
+- [x] Placeholder test, one-line pitch in the README
+- [ ] Push and confirm the CI badge is green
+- [x] Create the `docs/decisions/` folder
 
 ### Step 1: Legal text
 
-- [ ] Save `data/raw/ai_act.en.html`, `ai_act.fr.html`, `gdpr.en.html`, `gdpr.fr.html`
-- [ ] `html_to_text(path)` with BeautifulSoup + lxml
-- [ ] Check that the output contains "Article 6" and "ANNEX III" / "ANNEXE III"
-- [ ] `data/raw/SOURCES.md` with URLs and access date
+- [x] Save `data/raw/ai_act.en.html`, `ai_act.fr.html`, `gdpr.en.html`, `gdpr.fr.html` (curl worked, no bot challenge)
+- [x] `html_to_text(path)` with BeautifulSoup + lxml
+- [x] Check that the output contains "Article 6" and "ANNEX III" / "ANNEXE III"
+- [x] `data/raw/SOURCES.md` with URLs and access date
 
 ### Step 2: Parse and chunk with stable IDs
 
