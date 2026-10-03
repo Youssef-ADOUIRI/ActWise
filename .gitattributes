@@ -1,0 +1,3 @@
+# Keep LF in the repo so Makefile and shell steps work on Linux CI.
+* text=auto eol=lf
+*.html -text
