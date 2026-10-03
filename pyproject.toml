@@ -1,0 +1,68 @@
+[project]
+name = "actwise"
+version = "0.1.0"
+description = "Citation-grounded assistant for the EU AI Act and GDPR"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic",
+    "beautifulsoup4",
+    "fastapi",
+    "httpx",
+    "lxml",
+    "numpy",
+    "openai",
+    "pydantic",
+    "pypdf",
+    "python-docx",
+    "python-multipart",
+    "uvicorn[standard]",
+]
+
+[project.optional-dependencies]
+local = ["sentence-transformers", "qdrant-client"]
+cloud = ["onnxruntime", "tokenizers", "qdrant-client"]
+
+[dependency-groups]
+dev = [
+    "hypothesis",
+    "locust",
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "ruff",
+    "scikit-learn",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "slow: needs a downloaded model",
+    "integration: needs a running service (Qdrant, API)",
+]
+
+[tool.coverage.run]
+source = ["src"]
+# Thin I/O glue, checked by hand and smoke tests rather than unit tests.
+omit = [
+    "src/actwise/api/app.py",
+    "src/actwise/integrations/slack_bot.py",
+    "src/actwise/integrations/mcp_server.py",
+    "src/actwise/integrations/sheets.py",
+]
