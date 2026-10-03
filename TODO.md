@@ -7,6 +7,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ---
 
 ## Before you start: accounts (all free)
+
 - [ ] GitHub public repo `actwise`
 - [ ] Google AI Studio: Gemini key in a project with **no billing account**
 - [ ] Groq console key
@@ -23,6 +24,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M0 Foundation and corpus (week 1)
 
 ### Step 0: Repo, tooling, CI
+
 - [ ] `[fix]` Rename the branch `master` → `main` (R9)
 - [ ] `uv init --package --name actwise .` (src layout)
 - [ ] Add the dependencies: core, `local` extra, `cloud` extra, dev
@@ -35,12 +37,14 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Create the `docs/decisions/` folder
 
 ### Step 1: Legal text
+
 - [ ] Save `data/raw/ai_act.en.html`, `ai_act.fr.html`, `gdpr.en.html`, `gdpr.fr.html`
 - [ ] `html_to_text(path)` with BeautifulSoup + lxml
 - [ ] Check that the output contains "Article 6" and "ANNEX III" / "ANNEXE III"
 - [ ] `data/raw/SOURCES.md` with URLs and access date
 
 ### Step 2: Parse and chunk with stable IDs
+
 - [ ] `[test]` `tests/unit/sample_text.py` (the guide's sample) plus a French mirror
 - [ ] `[test]` `test_ids`
 - [ ] `[test]` `test_parse_structure`
@@ -63,6 +67,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M1 Measured baseline (week 2)
 
 ### Step 3: Baseline RAG + eval harness
+
 - [ ] `data/eval/splits.json`: 70/15/15 **by article**, seed 42
 - [ ] 50 hand-written golden questions (≥ 15 FR; types lookup / definition / obligation / cross-law / not-covered)
 - [ ] Naive baseline: 150-word windows, BGE-M3, cosine only
@@ -78,6 +83,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M2 Retrieval quality (weeks 3–4)
 
 ### Step 4: Hybrid retrieval, reranking, ablations
+
 - [ ] `docker-compose.yml` with Qdrant
 - [ ] `[fix]` Index by storage key `id@lang`; point ID = `uuid5(key)`; payload holds `id`, `law`, `lang` (R1)
 - [ ] `[test]` `test_rrf`
@@ -101,6 +107,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M3 Grounded generation (weeks 3–4)
 
 ### Step 5: Provider layer
+
 - [ ] Gemini and Groq keys in `.env`; Ollama `qwen3:4b` (optional)
 - [ ] `[test]` `test_openai_adapter_round_trip`
 - [ ] `[test]` `test_anthropic_adapter`
@@ -116,6 +123,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Script: the same prompt through Gemini, Groq (and Anthropic if you have credits), printing answer, tokens and latency
 
 ### Step 6: Cited answers, guardrails, prompts, judge
+
 - [ ] `configs/prompts/answer.v1.md`
 - [ ] `[test]` `test_extract_citations`
 - [ ] `[test]` `test_verify_flags_invented`
@@ -139,6 +147,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M4 Classifier agent and API (week 5)
 
 ### Step 7: Risk classifier agent
+
 - [ ] `[test]` `test_happy_path`
 - [ ] `[test]` `test_rejects_invented_citation`
 - [ ] `[test]` `test_schema_errors_fed_back`
@@ -150,6 +159,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Note the AI Omnibus date (Reg. 2026/1744) for the model card
 
 ### Step 8: API and UI
+
 - [ ] `[test]` `test_daily_cap_resets_next_day`
 - [ ] `[test]` `test_extract_text`
 - [ ] `[test]` `test_api_contract` (422 / 401 / 429 / 415)
@@ -166,6 +176,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M5 Own model and framework comparison (week 6)
 
 ### Step 9: Fine-tune and shrink the embedder
+
 - [ ] ~800 train chunks → EN + FR questions (cached) → read 50, drop bad pairs → 1,000–1,600 pairs
 - [ ] `[test]` `test_no_split_leakage`
 - [ ] `[test]` `test_pooling_ignores_padding`
@@ -178,6 +189,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8`
 
 ### Step 10: Frameworks (first to cut)
+
 - [ ] `frameworks/llamaindex_pipeline.py` + smoke test
 - [ ] `frameworks/langgraph_classifier.py` + smoke test
 - [ ] `frameworks/COMPARISON.md` filled from measured numbers
@@ -187,6 +199,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M6 Integrations and observability (week 7)
 
 ### Step 11: Integrations
+
 - [ ] `[test]` `test_parse_command`
 - [ ] `[test]` `test_format_classification`
 - [ ] `[test]` `test_slack_handler`
@@ -201,6 +214,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Screen captures: Slack, MCP, Sheets, upload
 
 ### Step 12: Observability
+
 - [ ] `[test]` `test_observe_is_noop_without_langfuse`
 - [ ] `[test]` `test_log_event_is_valid_json`
 - [ ] `observability/tracing.py` (optional Langfuse); `@observe` on `ask` and `classify`
@@ -214,6 +228,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M7 Production on Cloud Run (week 8)
 
 ### Step 13: Deploy
+
 - [ ] Free-tier arithmetic re-checked on deploy day
 - [ ] GCP project, enabled APIs, Artifact Registry `actwise` (europe-west1)
 - [ ] Secrets: gemini, groq, qdrant, gsheets; grant `secretAccessor`
@@ -232,6 +247,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M8 Hardening (week 9)
 
 ### Step 14: Safety, load, cost guardrails
+
 - [ ] `data/eval/adversarial.jsonl`: 10 direct injection, 5 indirect, 8 out-of-scope, 7 legal-advice bait, 5 PII, 5 garbage
 - [ ] Indirect-injection test with a poisoned chunk
 - [ ] `docs/security.md` mapped to the OWASP LLM Top 10, plus the unmitigated risks
@@ -247,6 +263,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 ## M9 Showcase (week 10)
 
 ### Step 15
+
 - [ ] README: pitch + GIF, live link + 3 questions, results table, architecture diagram, 3-command quickstart, eval method, decisions, limitations
 - [ ] 2-minute demo video
 - [ ] Blog post: "What broke when I built RAG on the EU AI Act"
