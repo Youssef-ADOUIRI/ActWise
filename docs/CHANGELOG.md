@@ -41,7 +41,7 @@ Add a section for every step you commit.
 | `Makefile` | `install`, `lint`, `test`, plus stubs for `ingest`, `index`, `eval`, `serve`, `deploy` | The same commands locally and in CI. The stubs mark the steps to come. |
 | `.env.example` | Every setting, with comments | A template for `.env`. Secrets are never committed. |
 | `.gitignore` | Secrets, caches, models, build output | Keeps the repo clean. It extends the original `.env`-only file. |
-| `.pre-commit-config.yaml` | ruff lint + format hooks | Catches style issues before each commit. |
+| `.pre-commit-config.yaml` | `ruff-check` + `ruff-format` hooks | Catches style issues before each commit. |
 | `.github/workflows/ci.yml` | uv install → `make lint` → `make test` | Every push is checked. It runs on Python 3.12. |
 | `README.md` | Pitch, CI badge, quickstart | The first thing a visitor reads. |
 | `docs/decisions/TEMPLATE.md` | Five-line decision template | Each design choice is written down as options → measured → chosen. |
