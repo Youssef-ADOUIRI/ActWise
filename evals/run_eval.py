@@ -27,7 +27,9 @@ from actwise.retrieval.naive import naive_passages
 
 REPORTS = Path("evals/reports")
 CACHE = Path(".cache/embeddings")
-BGE_M3 = ("BAAI/bge-m3", "5617a9f61b028005a4858fdac845db406aefb181")  # Hub name, pinned commit
+# Hub name and pinned commit. 9a0624b is the bot-made safetensors variant of main (5617a9f):
+# same weights, but it loads without pickle and without transformers' silent PR redirect.
+BGE_M3 = ("BAAI/bge-m3", "9a0624b896d81da7492a910ffa53731274b6cf3d")
 
 
 @dataclass(frozen=True)
