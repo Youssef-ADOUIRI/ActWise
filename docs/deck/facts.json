@@ -1,0 +1,152 @@
+{
+ "generated_at": "2026-10-04T00:15:51+00:00",
+ "git": {
+  "commit": "1020f4f",
+  "date": "2026-10-04",
+  "subject": "Step 2: parse and chunk the AI Act and GDPR with stable IDs",
+  "count": 13
+ },
+ "progress": [
+  {
+   "id": "Setup",
+   "name": "Before you start",
+   "weeks": "",
+   "done": 0,
+   "total": 10
+  },
+  {
+   "id": "M0",
+   "name": "Foundation and corpus",
+   "weeks": "week 1",
+   "done": 30,
+   "total": 33
+  },
+  {
+   "id": "M1",
+   "name": "Measured baseline",
+   "weeks": "week 2",
+   "done": 0,
+   "total": 9
+  },
+  {
+   "id": "M2",
+   "name": "Retrieval quality",
+   "weeks": "weeks 3–4",
+   "done": 0,
+   "total": 17
+  },
+  {
+   "id": "M3",
+   "name": "Grounded generation",
+   "weeks": "weeks 3–4",
+   "done": 0,
+   "total": 30
+  },
+  {
+   "id": "M4",
+   "name": "Classifier agent and API",
+   "weeks": "week 5",
+   "done": 0,
+   "total": 19
+  },
+  {
+   "id": "M5",
+   "name": "Own model and framework comparison",
+   "weeks": "week 6",
+   "done": 0,
+   "total": 13
+  },
+  {
+   "id": "M6",
+   "name": "Integrations and observability",
+   "weeks": "week 7",
+   "done": 0,
+   "total": 19
+  },
+  {
+   "id": "M7",
+   "name": "Production on Cloud Run",
+   "weeks": "week 8",
+   "done": 0,
+   "total": 12
+  },
+  {
+   "id": "M8",
+   "name": "Hardening",
+   "weeks": "week 9",
+   "done": 0,
+   "total": 9
+  },
+  {
+   "id": "M9",
+   "name": "Showcase",
+   "weeks": "week 10",
+   "done": 0,
+   "total": 5
+  }
+ ],
+ "corpus": {
+  "total_chunks": 3799,
+  "by_group": {
+   "ai_act|en|annex": 132,
+   "ai_act|en|article": 668,
+   "ai_act|en|recital": 328,
+   "ai_act|fr|annex": 134,
+   "ai_act|fr|article": 689,
+   "ai_act|fr|recital": 373,
+   "gdpr|en|article": 465,
+   "gdpr|en|recital": 251,
+   "gdpr|fr|article": 481,
+   "gdpr|fr|recital": 278
+  },
+  "units": {
+   "ai_act|en|annex": 13,
+   "ai_act|en|article": 113,
+   "ai_act|en|recital": 180,
+   "ai_act|fr|annex": 13,
+   "ai_act|fr|article": 113,
+   "ai_act|fr|recital": 180,
+   "gdpr|en|article": 99,
+   "gdpr|en|recital": 173,
+   "gdpr|fr|article": 99,
+   "gdpr|fr|recital": 173
+  },
+  "words": {
+   "median": 71,
+   "mean": 82.9,
+   "min": 6,
+   "max": 150
+  },
+  "length_histogram": {
+   "1-25": 351,
+   "26-50": 948,
+   "51-75": 687,
+   "76-100": 433,
+   "101-125": 299,
+   "126-150": 1081
+  },
+  "windowed_chunks": 1384,
+  "split_paragraphs": 535,
+  "per_lang": {
+   "en": {
+    "chunks": 1844,
+    "median_words": 67.0,
+    "mean_words": 79.8
+   },
+   "fr": {
+    "chunks": 1955,
+    "median_words": 75,
+    "mean_words": 85.7
+   }
+  }
+ },
+ "decisions": [
+  {
+   "file": "001-chunking.md",
+   "title": "001: Structure-aware chunking with language-free IDs",
+   "chosen": "one chunk per paragraph, split into 150-word windows with 25 words of overlap when longer. IDs look like `AIA-Art6-2` and never contain the language. Storage uses `Chunk.key` (`id@lang`)."
+  }
+ ],
+ "eval_reports": [],
+ "tests": {}
+}
