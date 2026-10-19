@@ -42,8 +42,8 @@
 
 | Milestone                                                                       | Weeks | Guide steps | Status         |
 | ------------------------------------------------------------------------------- | ----- | ----------- | -------------- |
-| [M0 Foundation and corpus](#m0-foundation-and-corpus)                           | 1     | 0, 1, 2     | ⬜ Not started |
-| [M1 Measured baseline](#m1-measured-baseline)                                   | 2     | 3           | ⬜             |
+| [M0 Foundation and corpus](#m0-foundation-and-corpus)                           | 1     | 0, 1, 2     | ✅ Done        |
+| [M1 Measured baseline](#m1-measured-baseline)                                   | 2     | 3           | ✅ Done        |
 | [M2 Retrieval quality](#m2-retrieval-quality)                                   | 3–4   | 4           | ⬜             |
 | [M3 Grounded generation](#m3-grounded-generation)                               | 3–4   | 5, 6        | ⬜             |
 | [M4 Classifier agent and API](#m4-classifier-agent-and-api)                     | 5     | 7, 8        | ⬜             |

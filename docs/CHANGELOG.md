@@ -5,6 +5,39 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-20: Step 3, baseline and evaluation harness
+
+**Goal:** a naive retrieval system, measured on a hand-written golden set, so every later change can be compared against it.
+**Branch:** `step-3-baseline-eval`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/evaluation/splits.py` | Article-level 70/15/15 split, seed 42; `make splits` | Splitting by article keeps one article's paragraphs out of two splits, so step 9 training pairs cannot leak into dev or test |
+| `data/eval/splits.json` | 404 train, 87 dev, 87 test units | Fixed before any question was written |
+| `data/eval/golden.jsonl` | 50 hand-written questions: 20 dev, 20 test, 6 train, 4 out of scope; 18 in French | Labels checked against the article text; the allocation gives dev and test 20 questions each (decision 002) |
+| `src/actwise/evaluation/golden.py` | `Question`, `load_golden`, `question_split` | A question takes the split of its gold articles; out-of-scope questions carry their own |
+| `src/actwise/evaluation/metrics.py` | Recall@k, MRR, nDCG at article level, bootstrap intervals | Gold labels are articles; with 20 questions every number needs an interval |
+| `src/actwise/evaluation/runner.py` | `evaluate()` and the Markdown summary | Per-question rows, breakdowns by language and type, and the list of misses for error analysis; out-of-scope questions are skipped for retrieval (review item R7) |
+| `src/actwise/retrieval/naive.py` | Fixed 150-word windows over the whole text, each labelled with the article where it starts | The baseline the guide asks for: structure is ignored on purpose |
+| `src/actwise/retrieval/embedders.py` | `Embedder` protocol, `SentenceTransformerEmbedder` with a pinned revision | One interface for local and (later) ONNX models; the Hub commit is part of the config |
+| `src/actwise/retrieval/stores.py` | `NumpyStore`: exact cosine search | Enough for 2,385 passages (~1 ms); Qdrant comes in step 4 |
+| `src/actwise/retrieval/dense.py` | `Passage`, `Hit`, `EmbeddingCache`, `build_store`, `DenseRetriever` | Vectors are cached in atomic on-disk shards keyed by model, revision and texts: a 45-minute CPU run can stop and resume, and stale vectors are never reused |
+| `evals/run_eval.py` | `--system --split --name`; writes `evals/reports/<name>.json` and `.md` | Each report records the commit, the embedder revision and fingerprints of the golden set and splits |
+| `evals/reports/baseline-dev.json`, `.md` | Dev results of the baseline | The reference row of `docs/ablations.md` |
+| `docs/ablations.md` | Ablation table with the baseline row and its failure patterns | The table step 4 fills in |
+| `docs/decisions/002-evaluation-protocol.md` | Splits, allocation, labels, intervals | Design record |
+| `src/actwise/ingest/parse.py`, `chunk.py`, `data/processed/chunks.jsonl` | Also drop `*` footnote marks and glue the punctuation that follows a removed mark; `window_starts()` shared with the baseline | Found while reading articles for the golden set: 107 chunks change text only, ids unchanged |
+| `Makefile` | `splits`, `eval-retrieval` (`SYSTEM`, `SPLIT` variables), `eval`; mypy also checks `evals/` | One command per step |
+| `tests/` | Unit tests for metrics, splits, golden set, naive windows, store, cache, runner; `tests/test_golden_set.py` validates the real golden set | Labels and protocol are tested like code |
+
+**Results (dev, n = 20):** Recall@5 **0.650** [0.45, 0.85], MRR@10 0.504 [0.32, 0.69], nDCG@10 0.547, Recall@20 0.825, 170 ms/query on CPU. 93 tests pass (92 % coverage); ruff and mypy are clean.
+
+**Provenance fix:** the main BGE-M3 commit only ships `pytorch_model.bin`, so transformers silently loaded the safetensors conversion from a Hub pull request. The pin now names that commit (`9a0624b`), so reports record the weights that were really used (vectors verified identical).
+
+**Deferred:** generating baseline answers with a plain prompt needs the provider layer, so it moves to step 5.
+
+---
+
 ## 2026-10-04: Step 2, parse and chunk with stable IDs
 
 **Goal:** turn the four pages into `data/processed/chunks.jsonl`, one record per paragraph, recital or annex point, with IDs shared by EN and FR.
