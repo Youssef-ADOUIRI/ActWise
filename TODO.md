@@ -47,22 +47,23 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 2: Parse and chunk with stable IDs
 
-- [ ] `[test]` `tests/unit/sample_text.py` (the guide's sample) plus a French mirror
-- [ ] `[test]` `test_ids`
-- [ ] `[test]` `test_parse_structure`
-- [ ] `[test]` `test_chapter_titles_not_glued`
-- [ ] `[test]` `test_chunk_ids`
-- [ ] `[test]` `test_embed_text_header`
-- [ ] `[test]` `test_same_ids_in_french`
-- [ ] `[test]` `test_long_paragraph_split`
-- [ ] `src/actwise/ids.py`
-- [ ] `src/actwise/ingest/parse.py`
-- [ ] `src/actwise/ingest/chunk.py`
-- [ ] `[fix]` Add a `key` property (`f"{id}@{lang}"`) to `Chunk` for storage (R1)
-- [ ] `ingest/build_index.py` + `make ingest` → `data/processed/chunks.jsonl`
-- [ ] Count check: AIA 113 art. / 13 annexes / 180 recitals; GDPR 99 art. / 173 recitals
-- [ ] Read 20 random chunks per language
-- [ ] Decision note: chunking
+- [x] `[test]` `tests/unit/sample_text.py` (the guide's sample) plus a French mirror
+- [x] `[test]` `test_ids`
+- [x] `[test]` `test_parse_structure`
+- [x] `[test]` `test_chapter_titles_not_glued`
+- [x] `[test]` `test_chunk_ids`
+- [x] `[test]` `test_embed_text_header`
+- [x] `[test]` `test_same_ids_in_french`
+- [x] `[test]` `test_long_paragraph_split`
+- [x] `src/actwise/ids.py`
+- [x] `src/actwise/ingest/parse.py`
+- [x] `src/actwise/ingest/chunk.py`
+- [x] `[fix]` Add a `key` property (`f"{id}@{lang}"`) to `Chunk` for storage (R1)
+- [x] `ingest/build_chunks.py` + `make ingest` → `data/processed/chunks.jsonl`
+- [x] Count check: AIA 113 art. / 13 annexes / 180 recitals; GDPR 99 art. / 173 recitals
+- [ ] Read 20 random chunks per language (noise scan + 6 samples done; a full read is still to do)
+- [x] Decision note: chunking (`docs/decisions/001-chunking.md`)
+- [x] Real-text edge cases: FR `ONT ADOPTÉ`, `1)` definitions, footnote marks, end matter, annex sections
 
 ---
 

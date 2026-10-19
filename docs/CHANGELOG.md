@@ -5,6 +5,31 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-04: Step 2, parse and chunk with stable IDs
+
+**Goal:** turn the four pages into `data/processed/chunks.jsonl`, one record per paragraph, recital or annex point, with IDs shared by EN and FR.
+**Branch:** `step-2-parse-chunk`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/ids.py` | `parse_id`, `is_valid_id`, `article_id`, `human_label` | One ID format for ingestion, retrieval, evaluation and citations. Also supports annex sections (`AIA-AnnexVIII-b.1`). |
+| `src/actwise/ingest/parse.py` | `normalise_lines`, `parse_regulation` → recitals, articles, annexes | A line-based parser, so it survives markup changes. Fixes everything the guide's version missed on the real text (see decision 001). |
+| `src/actwise/ingest/chunk.py` | `Chunk` (`id`, `key`, `embed_text`), `split_words`, `chunk_units` | Splits paragraphs into 150-word windows with 25 words of overlap. `key = id@lang` stops FR from overwriting EN in stores (review item R1). The header uses French law names for FR. |
+| `src/actwise/ingest/build_chunks.py` | Builds and writes `chunks.jsonl`, prints counts | The entry point for `make ingest`. |
+| `data/processed/chunks.jsonl` | 3,799 chunks (AI Act 1,128 EN / 1,196 FR, GDPR 716 EN / 759 FR) | Committed: small, public, and the input to every later step. |
+| `Makefile` | `ingest` target | `make ingest` rebuilds the chunks. |
+| `tests/unit/sample_text.py` | EN sample (from the guide) plus a FR sample using the real layout | Offline fixtures for the parser tests. |
+| `tests/unit/test_ids.py` | Valid and invalid IDs, `article_id`, labels in EN/FR | The ID format is the contract between modules. |
+| `tests/unit/test_parse.py` | Structure, chapter titles, FR layout, footnotes, end matter, annex sections | Each real-text edge case is pinned by a test. |
+| `tests/unit/test_chunk.py` | Expected IDs, header, FR names, storage key, long-paragraph windows | Chunking rules from the guide, plus fix R1. |
+| `tests/test_corpus.py` | Runs on the real pages: official counts, valid and unique IDs, FR = EN ID sets | Fails if a parser change drops or duplicates anything. |
+| `tests/__init__.py`, `tests/unit/__init__.py` | Package markers | Let tests import the shared sample. |
+| `docs/decisions/001-chunking.md` | The chunking decision and its edge cases | Design record for the README and interviews. |
+
+**Results:** all official counts match, with no duplicate or invalid IDs. 56 tests pass with 93 % coverage, and ruff and mypy are clean.
+
+---
+
 ## 2026-10-04: Step 1, legal text
 
 **Goal:** have the four official texts in the repo and turn them into plain text.

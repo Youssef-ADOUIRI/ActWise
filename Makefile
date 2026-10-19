@@ -13,7 +13,7 @@ test:
 	uv run pytest --cov=src --cov-fail-under=80
 
 ingest:
-	@echo "TODO step 2: build data/processed/chunks.jsonl"
+	uv run python -m actwise.ingest.build_chunks
 
 index:
 	@echo "TODO step 4: embed chunks and upload to Qdrant"
