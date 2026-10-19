@@ -1,0 +1,13 @@
+{
+  "name": "actwise-decks",
+  "private": true,
+  "description": "Builds the ActWise review and pipeline decks from content.json and facts.json",
+  "scripts": {
+    "build": "node build_deck.js && node build_pipeline.js",
+    "review": "node build_deck.js",
+    "pipeline": "node build_pipeline.js"
+  },
+  "dependencies": {
+    "pptxgenjs": "^4.0.1"
+  }
+}

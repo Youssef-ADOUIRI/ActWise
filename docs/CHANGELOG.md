@@ -5,6 +5,39 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-04: Pipeline deck
+
+**Goal:** explain the whole pipeline end to end, stage by stage, with a diagram and an explanation for each.
+
+| File | What | Why |
+|---|---|---|
+| `docs/deck/ActWise_Pipeline.pptx` | 23 slides: overview, 11 stages, metrics, failure map, two walkthroughs, status, glossary | One place to explain the system to a recruiter, a reviewer or an interviewer. |
+| `docs/deck/build_pipeline.js` | Generator for the pipeline deck | Diagram boxes take their colour (built, in progress, planned) from `content.json`. |
+| `docs/deck/common.js` | Palette, fonts, layouts and drawing helpers shared by both decks | One place to restyle; `build_deck.js` now imports it (its slides are unchanged). |
+| `docs/deck/content.json` | New `pipeline.stages` section | Stage statuses for the pipeline deck. |
+| `docs/deck/package.json`, `README.md`, `Makefile` | `npm run build` builds both decks; `make deck` calls it | Same one-command routine for both. |
+
+---
+
+## 2026-10-04: Project review deck
+
+**Goal:** a slide deck about the project, rebuilt after every step or major finding, whose numbers come from the repo.
+
+| File | What | Why |
+|---|---|---|
+| `docs/deck/content.json` | Narrative: statuses, scorecards, findings, hypotheses, risks, next steps, iteration log | The only file edited by hand at each iteration. |
+| `docs/deck/collect.py` | Reads `chunks.jsonl`, `TODO.md`, `docs/decisions/`, `evals/reports/`, git and (optionally) pytest into `facts.json` | Slide numbers are measured, never typed. |
+| `docs/deck/build_deck.js`, `package.json` | pptxgenjs generator, 18 slides | Same layout every iteration; colours and fonts set in one place. |
+| `docs/deck/assets/icons/` | Lucide icons (ISC licence) rendered to PNG | No icon dependency at build time. |
+| `docs/deck/ActWise_Project_Review.pptx` | Iteration 1, after Step 2 | First review: targets, corpus findings, 6 hypotheses, risks, Step 3 plan. |
+| `docs/deck/README.md` | How to update the deck | Keeps the routine to three steps. |
+| `Makefile` | `deck` target | `make deck` collects, then builds. |
+| `.gitignore` | `node_modules/` | The deck builder's Node packages stay out of git. |
+
+**Findings recorded:** 36 % of chunks are overlapping windows of 535 long paragraphs; a proportional 70/15/15 split of 50 questions leaves about 8 dev questions.
+
+---
+
 ## 2026-10-04: Step 2, parse and chunk with stable IDs
 
 **Goal:** turn the four pages into `data/processed/chunks.jsonl`, one record per paragraph, recital or annex point, with IDs shared by EN and FR.

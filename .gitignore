@@ -22,3 +22,6 @@ htmlcov/
 .qdrant/
 models/
 out/
+
+# Deck builder (Node)
+node_modules/

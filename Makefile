@@ -1,4 +1,4 @@
-.PHONY: install lint test ingest index eval serve deploy
+.PHONY: install lint test ingest index eval serve deploy deck
 
 install:
 	uv sync --extra local
@@ -26,3 +26,8 @@ serve:
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"
+
+# Project decks: collect facts from the repo, then build the review and pipeline .pptx (needs Node 18+)
+deck:
+	uv run python docs/deck/collect.py --with-tests
+	cd docs/deck && npm install --silent --no-audit --no-fund && npm run build --silent

@@ -1,0 +1,818 @@
+{
+  "_readme": "Narrative for the ActWise review deck. Measured facts come from facts.json (python docs/deck/collect.py). Tokens in braces such as {chunks} or {coverage} are filled from facts at build time. Status values: done, in_progress, planned, met, not_met, not_measured, partial, fixed, open, untested, supported, rejected, mitigated, watch.",
+  "meta": {
+    "iteration": 1,
+    "date": "2026-10-04",
+    "trigger": "Step 2 committed: corpus parsed and chunked",
+    "stage": "M0 Foundation and corpus",
+    "author": "Youssef ADOUIRI ALAOUI",
+    "role": "Product Data Scientist & AI Engineer",
+    "repo": "github.com/Youssef-ADOUIRI/actwise"
+  },
+  "engineering_fallback": {
+    "tests_passed": 56,
+    "coverage_pct": 93,
+    "source": "CHANGELOG, Step 2 (re-run with collect.py --with-tests to refresh)"
+  },
+  "exec_summary": {
+    "title": "Where ActWise stands",
+    "takeaway": "The corpus foundation is built and verified. Next comes the baseline that every later claim is measured against.",
+    "stats": [
+      {
+        "value": "{chunks}",
+        "label": "chunks with stable, language-free IDs"
+      },
+      {
+        "value": "{units_pct}",
+        "label": "of official units parsed, EN and FR ({units_per_lang} per language)"
+      },
+      {
+        "value": "{tests}",
+        "label": "tests passing, {coverage} coverage on src/"
+      }
+    ],
+    "points": [
+      {
+        "tag": "Done",
+        "status": "done",
+        "text": "Steps 0 to 2: repo and CI config, four EUR-Lex texts, parser, chunker, stable IDs. M0 at {m0_done} checklist items."
+      },
+      {
+        "tag": "Found",
+        "status": "done",
+        "text": "The reference parser missed 6 real-text edge cases. All fixed and pinned by tests."
+      },
+      {
+        "tag": "Watch",
+        "status": "watch",
+        "text": "{windowed_pct} of chunks are overlapping windows, and a proportional split leaves about 8 dev questions."
+      },
+      {
+        "tag": "Next",
+        "status": "planned",
+        "text": "Step 3: split by article, 50 hand-written questions, naive dense baseline (week 2)."
+      }
+    ],
+    "notes": "Three numbers carry the status: the corpus size, the completeness check against the official numbering, and the test suite. The main watch item is statistical: with 50 questions split by article, the dev set is too small to compare configurations. Next week is the baseline."
+  },
+  "product": {
+    "title": "The problem and the product",
+    "takeaway": "Teams shipping AI in Europe need answers they can check, in their own language.",
+    "problem": [
+      {
+        "icon": "law",
+        "head": "Two long regulations",
+        "text": "AI Act: 113 articles, 13 annexes, 180 recitals. GDPR: 99 articles, 173 recitals."
+      },
+      {
+        "icon": "warn",
+        "head": "Unverifiable chatbots",
+        "text": "Generic chat-with-PDF answers cannot be checked, and they rarely refuse."
+      },
+      {
+        "icon": "lang",
+        "head": "Bilingual teams",
+        "text": "French and English readers need the same answer, citing the same article."
+      }
+    ],
+    "solution": [
+      {
+        "icon": "quote",
+        "head": "Cited Q&A",
+        "text": "Every rule ends with an article ID that was actually retrieved, shown as \"AI Act, Art. 6(2)\"."
+      },
+      {
+        "icon": "scale",
+        "head": "Risk-tier classifier",
+        "text": "Describe a system, get prohibited, high risk, transparency, minimal or needs more info."
+      },
+      {
+        "icon": "plug",
+        "head": "Where teams work",
+        "text": "REST API, Slack, MCP clients and a Google Sheets register."
+      }
+    ],
+    "users": "Users: compliance officers and DPOs, product managers, ML engineers. Information only, never legal advice.",
+    "notes": "For a non-technical audience: the product promise is checkable answers. Every rule cites an article that was actually retrieved, and the system refuses rather than guesses. It is information, never legal advice."
+  },
+  "features": {
+    "title": "Product scope: eight features",
+    "takeaway": "None is user-facing yet. The corpus work underneath all eight is done.",
+    "items": [
+      {
+        "id": "F1",
+        "icon": "quote",
+        "name": "Cited Q&A",
+        "text": "EN/FR answers with verified article citations",
+        "milestone": "M3",
+        "status": "planned"
+      },
+      {
+        "id": "F2",
+        "icon": "shield",
+        "name": "Honest refusal",
+        "text": "NOT_COVERED becomes a polite refusal in the user's language",
+        "milestone": "M3",
+        "status": "planned"
+      },
+      {
+        "id": "F3",
+        "icon": "scale",
+        "name": "Risk-tier classifier",
+        "text": "Five tiers, cited reasons, follow-up questions",
+        "milestone": "M4",
+        "status": "planned"
+      },
+      {
+        "id": "F4",
+        "icon": "file",
+        "name": "Document upload",
+        "text": "PDF, DOCX or TXT system description, classified",
+        "milestone": "M4",
+        "status": "planned"
+      },
+      {
+        "id": "F5",
+        "icon": "api",
+        "name": "REST API + UI",
+        "text": "/ask, /classify, /search, /upload and a Streamlit UI",
+        "milestone": "M4",
+        "status": "planned"
+      },
+      {
+        "id": "F6",
+        "icon": "chat",
+        "name": "Slack command",
+        "text": "/actwise ask and /actwise classify",
+        "milestone": "M6",
+        "status": "planned"
+      },
+      {
+        "id": "F7",
+        "icon": "plug",
+        "name": "MCP server",
+        "text": "ask_ai_act and classify_ai_system tools",
+        "milestone": "M6",
+        "status": "planned"
+      },
+      {
+        "id": "F8",
+        "icon": "table",
+        "name": "AI system register",
+        "text": "One Sheets row per classification, hash only",
+        "milestone": "M6",
+        "status": "planned"
+      }
+    ],
+    "notes": "Eight user-facing features across milestones M3 to M6. None is live yet; the corpus and ID work underneath all of them is done."
+  },
+  "architecture": {
+    "title": "Architecture: built vs planned",
+    "takeaway": "One API serves every client. Today the offline ingestion path exists; everything downstream is planned.",
+    "columns": [
+      {
+        "name": "Offline pipeline",
+        "sub": "runs once per corpus version",
+        "components": [
+          {
+            "name": "EUR-Lex HTML, EN + FR",
+            "status": "done"
+          },
+          {
+            "name": "Parser + chunker, stable IDs",
+            "status": "done"
+          },
+          {
+            "name": "chunks.jsonl ({chunks} chunks)",
+            "status": "done"
+          },
+          {
+            "name": "Embed + index (Qdrant, NumPy)",
+            "status": "planned"
+          }
+        ]
+      },
+      {
+        "name": "Serving (FastAPI on Cloud Run)",
+        "sub": "per request",
+        "components": [
+          {
+            "name": "Hybrid retrieval: dense + BM25 + RRF",
+            "status": "planned"
+          },
+          {
+            "name": "LLM gateway: cache, retry, fallback",
+            "status": "planned"
+          },
+          {
+            "name": "Cited Q&A + citation check",
+            "status": "planned"
+          },
+          {
+            "name": "Risk classifier agent",
+            "status": "planned"
+          }
+        ]
+      },
+      {
+        "name": "Clients",
+        "sub": "thin HTTP clients",
+        "components": [
+          {
+            "name": "Streamlit UI + file upload",
+            "status": "planned"
+          },
+          {
+            "name": "Slack slash command",
+            "status": "planned"
+          },
+          {
+            "name": "MCP server",
+            "status": "planned"
+          },
+          {
+            "name": "Google Sheets register",
+            "status": "planned"
+          }
+        ]
+      }
+    ],
+    "cross_cutting": [
+      {
+        "name": "Evaluation harness (splits, golden set, judge)",
+        "status": "planned"
+      },
+      {
+        "name": "Observability (Langfuse, JSON logs, cost)",
+        "status": "planned"
+      }
+    ],
+    "notes": "Three layers. The offline pipeline is built: EUR-Lex pages, the parser and chunker, and chunks.jsonl. Serving and clients are planned. Every client is a thin HTTP client of one FastAPI service, which keeps integrations testable."
+  },
+  "roadmap": {
+    "title": "Roadmap: M0 nearly closed",
+    "takeaway": "Progress is counted from the TODO.md checkboxes, so this slide updates itself.",
+    "open_in_current": "Open in M0: confirm the CI badge is green, run make install locally, read 20 random chunks per language.",
+    "notes": "Bars are computed from the checkboxes in TODO.md each time the deck is built, so they cannot drift from the real checklist."
+  },
+  "metric_tree": {
+    "title": "What success means",
+    "takeaway": "One proposed north star, four drivers we can move, four guardrails we must not break.",
+    "north_star": {
+      "name": "Trusted answer rate",
+      "definition": "Share of questions where ActWise either answers with only verified, faithful citations, or correctly refuses.",
+      "note": "Proposed. Definition to confirm once the judge is calibrated (Step 6)."
+    },
+    "drivers": [
+      {
+        "name": "Retrieval Recall@5",
+        "target": "≥ 0.85"
+      },
+      {
+        "name": "Faithfulness (judge)",
+        "target": "≥ 0.85"
+      },
+      {
+        "name": "Citation precision",
+        "target": "≥ 0.90"
+      },
+      {
+        "name": "Correct refusals",
+        "target": "≥ 95%"
+      }
+    ],
+    "guardrails": [
+      {
+        "name": "Invented citations shown",
+        "target": "0"
+      },
+      {
+        "name": "Adversarial prompts handled",
+        "target": "≥ 95%"
+      },
+      {
+        "name": "p95 latency, /ask warm",
+        "target": "≤ 6 s"
+      },
+      {
+        "name": "Monthly cloud bill",
+        "target": "EUR 0.00"
+      }
+    ],
+    "companion": "Companion metric for the classifier: tier accuracy ≥ 85%, and 0 prohibited systems labelled minimal risk.",
+    "notes": "As product data scientist I propose one north star: the trusted answer rate. It rewards answering with verified, faithful citations and rewards correct refusals. Drivers are what we tune; guardrails are hard limits."
+  },
+  "scorecard_quality": {
+    "title": "Scorecard: answer quality",
+    "takeaway": "Targets are set. Nothing is measured yet: the baseline column fills in at Step 3.",
+    "rows": [
+      {
+        "area": "Retrieval",
+        "metric": "Recall@5, test split",
+        "target": "≥ 0.85",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Retrieval",
+        "metric": "MRR@10",
+        "target": "≥ 0.70",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Retrieval",
+        "metric": "Recall@5, French questions",
+        "target": "≥ 0.80",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Generation",
+        "metric": "Faithfulness (LLM judge)",
+        "target": "≥ 0.85",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Generation",
+        "metric": "Citation precision",
+        "target": "≥ 0.90",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Generation",
+        "metric": "Invented citations shown",
+        "target": "0",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Generation",
+        "metric": "Out-of-scope refusals",
+        "target": "≥ 95%",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Classifier",
+        "metric": "Tier accuracy, 40 scenarios",
+        "target": "≥ 85%",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Classifier",
+        "metric": "Prohibited labelled minimal",
+        "target": "0",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Evaluation",
+        "metric": "Judge vs human, Cohen's kappa",
+        "target": "≥ 0.6",
+        "baseline": "",
+        "current": "",
+        "status": "not_measured"
+      }
+    ],
+    "notes": "All quality targets come from the project plan. The baseline column fills in at Step 3 and the current column after each improvement. Status changes only with a measured number."
+  },
+  "scorecard_ops": {
+    "title": "Scorecard: model, operations, cost",
+    "takeaway": "Only the engineering metrics can be measured today, and they pass.",
+    "rows": [
+      {
+        "area": "Data",
+        "metric": "Official units parsed, EN and FR",
+        "target": "100%",
+        "current": "{units_pct}",
+        "status": "met"
+      },
+      {
+        "area": "Engineering",
+        "metric": "Test coverage on src/",
+        "target": "≥ 80%",
+        "current": "{coverage}",
+        "status": "met"
+      },
+      {
+        "area": "Fine-tuning",
+        "metric": "Recall@5 lift, held-out articles",
+        "target": "≥ +5 pts",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Compression",
+        "metric": "Recall@5 drop, int8 vs fp32",
+        "target": "≤ 1 pt",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Safety",
+        "metric": "Adversarial prompts handled",
+        "target": "≥ 95%",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Operations",
+        "metric": "p95 latency, /ask warm",
+        "target": "≤ 6 s",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Operations",
+        "metric": "Cold start after scale to zero",
+        "target": "≤ 15 s",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Cost",
+        "metric": "Monthly cloud bill",
+        "target": "EUR 0.00",
+        "current": "",
+        "status": "not_measured"
+      },
+      {
+        "area": "Cost",
+        "metric": "Container image, compressed",
+        "target": "≤ 450 MB",
+        "current": "",
+        "status": "not_measured"
+      }
+    ],
+    "notes": "Only two rows are measurable today: corpus completeness and test coverage, and both pass. Model, operations and cost rows come online from Step 9 onward."
+  },
+  "eval_design": {
+    "title": "How we will measure",
+    "takeaway": "Split first, then build data, then score at article level. The order is what prevents leakage.",
+    "steps": [
+      {
+        "head": "Split by article",
+        "text": "70 / 15 / 15 with seed 42. Train articles feed fine-tuning only; test numbers are the ones reported.",
+        "artifact": "splits.json"
+      },
+      {
+        "head": "Golden set",
+        "text": "50 hand-written questions (15+ in French, 5 types), then 100 synthetic ones reviewed by hand.",
+        "artifact": "golden_qa.jsonl"
+      },
+      {
+        "head": "Retrieval metrics",
+        "text": "Recall@5, MRR@10, nDCG@10 at article level, so windows of one article count once.",
+        "artifact": "metrics.py"
+      },
+      {
+        "head": "Generation metrics",
+        "text": "Faithfulness judge checked against 60 human labels (kappa ≥ 0.6), citation precision, refusals.",
+        "artifact": "human_labels.csv"
+      },
+      {
+        "head": "Gates",
+        "text": "Retrieval eval on every PR, fail on a 2-point drop. LLM eval weekly, in slices, from a disk cache.",
+        "artifact": "eval + llm-eval.yml"
+      }
+    ],
+    "footnote": "Leakage guard: test_no_split_leakage fails if any dev or test article appears in the fine-tuning pairs.",
+    "notes": "The order matters: split by article first, so no text from a test article leaks into training pairs or prompt tuning. Metrics are at article level so overlapping windows of one article count once."
+  },
+  "hypotheses": {
+    "title": "Hypotheses backlog",
+    "takeaway": "Each design choice is a bet with a test attached. Status changes only with a number.",
+    "items": [
+      {
+        "id": "H1",
+        "text": "Structure-aware chunks beat fixed 150-word windows",
+        "test": "Ablation A vs baseline, Recall@5 on dev",
+        "step": "4",
+        "status": "untested",
+        "result": ""
+      },
+      {
+        "id": "H2",
+        "text": "Hybrid search beats dense-only, most on exact references (\"Annex III\")",
+        "test": "Ablation C vs A, sliced by question type",
+        "step": "4",
+        "status": "untested",
+        "result": ""
+      },
+      {
+        "id": "H3",
+        "text": "French questions retrieve worse than English ones",
+        "test": "Recall@5 sliced by language",
+        "step": "3-4",
+        "status": "untested",
+        "result": ""
+      },
+      {
+        "id": "H4",
+        "text": "Overlapping windows crowd the top 5 with one paragraph",
+        "test": "Share of top-5 slots taken by windows of one paragraph",
+        "step": "3-4",
+        "status": "untested",
+        "result": ""
+      },
+      {
+        "id": "H5",
+        "text": "A cross-encoder rerank is worth its latency",
+        "test": "Ablation D vs C: MRR gain vs ms/query",
+        "step": "4",
+        "status": "untested",
+        "result": ""
+      },
+      {
+        "id": "H6",
+        "text": "Fine-tuned MiniLM gains 5+ points, less on hand-written questions",
+        "test": "Base vs FT on test split, hand vs synthetic",
+        "step": "9",
+        "status": "untested",
+        "result": ""
+      }
+    ],
+    "notes": "Each design choice is written as a falsifiable bet with a test and a step. H4 is new: it comes from the chunk-length finding in this iteration."
+  },
+  "corpus": {
+    "title": "Corpus: complete in both languages",
+    "takeaway": "Every official recital, article and annex was found in English and French, with identical ID sets.",
+    "note": "Source: EUR-Lex, saved 2026-10-04. The AI Act text is the 2024 original, without the AI Omnibus (Reg. 2026/1744).",
+    "official": {
+      "ai_act": {
+        "recital": 180,
+        "article": 113,
+        "annex": 13
+      },
+      "gdpr": {
+        "recital": 173,
+        "article": 99
+      }
+    },
+    "notes": "Every official recital, article and annex was found in both languages. The French corpus has more chunks because French text is longer, but the paragraph-level ID sets are identical."
+  },
+  "chunk_finding": {
+    "title": "Finding: long paragraphs dominate",
+    "takeaway": "Over a third of all chunks are overlapping windows. Retrieval must not let one paragraph fill the top 5.",
+    "implications": [
+      "Deduplicate windows of the same paragraph before cutting to top-k (tests H4).",
+      "Metrics already count an article once, so the effect hides in recall but shows in context quality.",
+      "French text runs longer, so French questions see more fragments (part of H3)."
+    ],
+    "notes": "Over a third of chunks are windows of long paragraphs. Article-level metrics hide duplicates, but the model would see five fragments of one paragraph instead of five different sources. That is hypothesis H4."
+  },
+  "edge_cases": {
+    "title": "Finding: real text broke the reference parser",
+    "takeaway": "Six edge cases the guide's parser missed. Each one is now pinned by a test on the real pages.",
+    "items": [
+      {
+        "case": "FR preamble ends with \"ONT ADOPTÉ\", not \"ONT ARRÊTÉ\"",
+        "fix": "Both forms match"
+      },
+      {
+        "case": "FR definitions use 1), EN uses (1)",
+        "fix": "One regex accepts both"
+      },
+      {
+        "case": "Footnote marks broken across several lines inside the text",
+        "fix": "Removed, trailing punctuation kept"
+      },
+      {
+        "case": "Signatures, footnotes and footer after the body",
+        "fix": "Ignored after \"Done at\" / \"Fait à\" / \"ELI:\""
+      },
+      {
+        "case": "GDPR uses \"Section 1\", the AI Act \"SECTION 1\"",
+        "fix": "Both skipped as headings"
+      },
+      {
+        "case": "Annexes VIII and XI restart their numbering",
+        "fix": "Points become b.1, 2.1 with clear labels"
+      }
+    ],
+    "lesson": "Lesson: test on the real documents from day one. The sample text passed; the real pages did not.",
+    "notes": "The reference parser passed the sample text but missed six patterns on the real pages. Each fix is pinned by a test, and tests/test_corpus.py checks the official counts on every run."
+  },
+  "decisions": {
+    "title": "Decisions and code review",
+    "takeaway": "One decision recorded. Ten defects found in the reference code: two fixed, one partly fixed.",
+    "adr_notes": {
+      "001-chunking.md": "Why: paragraph-level citations are what a lawyer checks, and shared IDs let French questions be scored against the same gold labels. Revisit if fixed windows retrieve as well in Step 4."
+    },
+    "review": [
+      {
+        "id": "R1",
+        "text": "Shared EN/FR IDs overwrite chunks in stores",
+        "status": "partial",
+        "when": "Step 2 + 4"
+      },
+      {
+        "id": "R2",
+        "text": "Stripping an invented ID damages valid ones",
+        "status": "open",
+        "when": "Step 6"
+      },
+      {
+        "id": "R3",
+        "text": "NOT_COVERED variants are not detected",
+        "status": "open",
+        "when": "Step 6"
+      },
+      {
+        "id": "R4",
+        "text": "LLM cache key ignores model names",
+        "status": "open",
+        "when": "Step 5"
+      },
+      {
+        "id": "R5",
+        "text": "Retries delay failover past Cloud Run limits",
+        "status": "open",
+        "when": "Step 5"
+      },
+      {
+        "id": "R6",
+        "text": "Daily cap counts per instance (2x real cap)",
+        "status": "open",
+        "when": "Step 8"
+      },
+      {
+        "id": "R7",
+        "text": "Recall crashes on empty-gold questions",
+        "status": "open",
+        "when": "Step 3"
+      },
+      {
+        "id": "R8",
+        "text": "80% coverage gate vs untested glue code",
+        "status": "fixed",
+        "when": "Step 0"
+      },
+      {
+        "id": "R9",
+        "text": "master vs main breaks the deploy trigger",
+        "status": "fixed",
+        "when": "Step 0"
+      },
+      {
+        "id": "R10",
+        "text": "Retry test expects the wrong delays",
+        "status": "open",
+        "when": "Step 5"
+      }
+    ],
+    "notes": "One decision record so far: structure-aware chunking with language-free IDs. The review of the reference code found ten defects; R8 and R9 are fixed, R1 is half fixed and finishes when indexing lands in Step 4.",
+    "upcoming": [
+      {
+        "name": "002 Fusion: RRF or weighted scores",
+        "when": "Step 4"
+      },
+      {
+        "name": "003 Reranker: worth it in the cloud?",
+        "when": "Step 4"
+      },
+      {
+        "name": "004 Answer prompt: v1 or v2",
+        "when": "Step 6"
+      }
+    ]
+  },
+  "risks": {
+    "title": "Risks and mitigations",
+    "takeaway": "The biggest near-term risk is statistical: too few dev questions to see real differences.",
+    "items": [
+      {
+        "head": "Too few eval questions",
+        "level": "high",
+        "text": "50 questions spread 70/15/15 leave about 8 on dev: one question moves Recall@5 by 12 points.",
+        "mitigation": "Write 20+ questions each on dev and test articles; report n and bootstrap intervals."
+      },
+      {
+        "head": "Free tiers change",
+        "level": "medium",
+        "text": "Gemini and Groq quotas can shrink without notice and stall evals or the demo.",
+        "mitigation": "Disk cache, provider fallback, daily cap, eval in slices."
+      },
+      {
+        "head": "Synthetic questions flatter",
+        "level": "medium",
+        "text": "A model tuned on LLM-written questions may look better on LLM-written questions.",
+        "mitigation": "Report hand-written and synthetic results separately."
+      },
+      {
+        "head": "Law moved on",
+        "level": "medium",
+        "text": "The AI Omnibus (Reg. 2026/1744) shifts Annex III dates; the corpus is the 2024 text.",
+        "mitigation": "State it in the model card; corpus versioning as a stretch goal."
+      },
+      {
+        "head": "Users over-trust answers",
+        "level": "medium",
+        "text": "A cited answer can still be read as legal advice.",
+        "mitigation": "Refuse when unsure, no compliance verdicts, disclaimer on every result."
+      },
+      {
+        "head": "Silent data loss",
+        "level": "low",
+        "text": "Shared EN/FR IDs would let French chunks overwrite English ones in stores (R1).",
+        "mitigation": "Storage key id@lang added in Step 2; enforce it when indexing."
+      }
+    ],
+    "notes": "The highest risk is measurement, not engineering: too few questions per split to see real differences. The mitigation is cheap: write questions on purpose for dev and test articles and report intervals."
+  },
+  "next_steps": {
+    "title": "Next: Step 3, the measured baseline",
+    "takeaway": "Week 2. Without this baseline there is no before/after story.",
+    "items": [
+      {
+        "task": "Close M0",
+        "done_when": "CI badge green on main, 20 random chunks per language read",
+        "status": "in_progress"
+      },
+      {
+        "task": "splits.json by article, seed 42",
+        "done_when": "Committed; no article in two splits",
+        "status": "planned"
+      },
+      {
+        "task": "50 hand-written golden questions",
+        "done_when": "15+ French, 5 types, 20+ each on dev and test articles",
+        "status": "planned"
+      },
+      {
+        "task": "metrics.py + tests, fix R7",
+        "done_when": "Article dedup, MRR = 1/3, nDCG by hand all pass",
+        "status": "planned"
+      },
+      {
+        "task": "Naive baseline: fixed windows + BGE-M3",
+        "done_when": "evals/reports/baseline.json committed",
+        "status": "planned"
+      },
+      {
+        "task": "Update this deck",
+        "done_when": "Baseline column filled, H3 and H4 first readings",
+        "status": "planned"
+      }
+    ],
+    "decision": "Open question for review: score retrieval on all 50 questions until fine-tuning starts in Step 9, and keep the split rule for the test numbers only?",
+    "notes": "Step 3 creates the baseline. The open question is whether to score retrieval on all 50 questions until fine-tuning starts, since nothing is trained before Step 9."
+  },
+  "iteration_log": {
+    "title": "Iteration log",
+    "takeaway": "This deck is rebuilt after every step or major finding.",
+    "entries": [
+      {
+        "iteration": 1,
+        "date": "2026-10-04",
+        "trigger": "Step 2 committed",
+        "changes": "First version: targets, corpus findings, 6 hypotheses, risks, Step 3 plan"
+      }
+    ],
+    "how_to": [
+      "Edit docs/deck/content.json: statuses, scorecard values, findings, a new log entry.",
+      "Run make deck (collects facts from the repo, then builds the .pptx).",
+      "Commit content.json, facts.json and the .pptx together with the step."
+    ],
+    "notes": "How to update: edit content.json, run make deck, commit the three files with the step.",
+    "triggers": [
+      "A step is committed",
+      "A hypothesis changes status",
+      "A headline metric moves by 2 points or more",
+      "A new risk, decision or scope change"
+    ]
+  },
+  "title_notes": "ActWise is a citation-grounded assistant for the EU AI Act and GDPR, in English and French. This deck is a living project review, rebuilt after every step or major finding. This version follows Step 2: the corpus is parsed and chunked.",
+  "pipeline": {
+    "_readme": "Statuses for the pipeline deck (build_pipeline.js). Use built, in_progress or planned.",
+    "stages": {
+      "ingest": "built",
+      "ids": "built",
+      "index": "planned",
+      "retrieval": "planned",
+      "gateway": "planned",
+      "answer": "planned",
+      "classifier": "planned",
+      "api": "planned",
+      "integrations": "planned",
+      "eval": "planned",
+      "finetune": "planned",
+      "ci": "in_progress",
+      "deploy": "planned",
+      "observe": "planned"
+    }
+  }
+}
