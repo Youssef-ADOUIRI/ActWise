@@ -50,6 +50,13 @@ def test_footnote_marks_are_removed():
     assert lines == ["opinion of the Committee,", "and of the Council"]
 
 
+def test_star_footnote_marks_are_removed():
+    # Articles 102 to 110 amend other acts and mark their footnotes with '*'.
+    lines = normalise_lines("of the Council\n(\n*\n)\n, the requirements")
+
+    assert lines == ["of the Council, the requirements"]
+
+
 def test_signatures_and_footnotes_after_body_are_ignored():
     text = """\
 Article 113
