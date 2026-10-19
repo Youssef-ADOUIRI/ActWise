@@ -27,13 +27,14 @@ from actwise.retrieval.naive import naive_passages
 
 REPORTS = Path("evals/reports")
 CACHE = Path(".cache/embeddings")
+BGE_M3 = ("BAAI/bge-m3", "5617a9f61b028005a4858fdac845db406aefb181")  # Hub name, pinned commit
 
 
 @dataclass(frozen=True)
 class System:
     description: str
     passages: Callable[[], list[Passage]]
-    embedder: str
+    embedder: tuple[str, str]  # (model name, revision)
 
 
 SYSTEMS = {
@@ -41,7 +42,7 @@ SYSTEMS = {
         description="Baseline: fixed 150-word windows (25 shared) ignoring structure, "
         "dense BGE-M3, cosine similarity, no rerank",
         passages=naive_passages,
-        embedder="BAAI/bge-m3",
+        embedder=BGE_M3,
     ),
 }
 
@@ -76,7 +77,7 @@ def main() -> None:
     questions = [q for q in load_golden() if question_split(q, article_split) == args.split]
 
     passages = system.passages()
-    embedder = SentenceTransformerEmbedder(system.embedder)
+    embedder = SentenceTransformerEmbedder(*system.embedder)
     retriever = DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE))
     retriever.search("warm-up", 1)  # keep one-off start-up costs out of the timings
 
