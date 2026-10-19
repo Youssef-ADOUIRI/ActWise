@@ -28,6 +28,7 @@ class SentenceTransformerEmbedder:
     def __init__(
         self,
         name: str,
+        revision: str | None = None,
         max_len: int = 512,
         batch_size: int = 8,
         query_prefix: str = "",
@@ -35,11 +36,17 @@ class SentenceTransformerEmbedder:
     ):
         from sentence_transformers import SentenceTransformer  # heavy: imported only when used
 
-        self.model = SentenceTransformer(name)
+        # Pin `revision` (a Hub commit hash) so reported numbers stay reproducible.
+        self.model = SentenceTransformer(name, revision=revision)
         self.model.max_seq_length = max_len
         self.batch_size = batch_size
         self.prefix = {"query": query_prefix, "passage": passage_prefix}
-        self.config = {"model": name, "max_len": max_len, "prefix": self.prefix}
+        self.config = {
+            "model": name,
+            "revision": revision,
+            "max_len": max_len,
+            "prefix": self.prefix,
+        }
 
     def encode(self, texts: list[str], kind: str = "passage") -> np.ndarray:
         vectors = self.model.encode(
