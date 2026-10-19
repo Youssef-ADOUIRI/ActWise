@@ -72,7 +72,8 @@ def main() -> None:
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
     parser.add_argument("--name", help="report name (default: <system>-<split>)")
     args = parser.parse_args()
-    logging.basicConfig(level=logging.INFO, format="%(message)s")
+    logging.basicConfig(level=logging.WARNING, format="%(message)s")
+    logging.getLogger("actwise").setLevel(logging.INFO)  # our progress, not every HTTP call
 
     system = SYSTEMS[args.system]
     article_split = split_of(load_splits())
