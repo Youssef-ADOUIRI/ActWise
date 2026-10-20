@@ -5,6 +5,20 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-20: Docstrings on every function
+
+**Goal:** every function and method says in one line what it does.
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/**/*.py`, `evals/run_eval.py` | A docstring on the 45 functions and methods that had none; `parse_regulation` also says how it reads the text | What a function does, without reading its body |
+| `tests/**/*.py` | A docstring on the 75 tests, fixtures and helpers that had none | When a test fails, its docstring says which rule broke |
+| `pyproject.toml` | Ruff rules D102, D103, D105, D107 | A new public function without a docstring now fails `make lint`, pre-commit and CI |
+
+**Results:** every function has a docstring. Ruff does not check private or nested helpers (6 today), so those stay a review habit. No behaviour changed: ruff and mypy are clean, and the 93 tests pass.
+
+---
+
 ## 2026-10-20: Step 3, baseline and evaluation harness
 
 **Goal:** a naive retrieval system, measured on a hand-written golden set, so every later change can be compared against it.

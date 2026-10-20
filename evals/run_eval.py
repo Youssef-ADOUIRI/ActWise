@@ -50,6 +50,7 @@ SYSTEMS = {
 
 
 def fingerprint(path: Path) -> str:
+    """Short SHA-256 of a file, so a report records exactly which inputs it used."""
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
@@ -65,6 +66,7 @@ def git_commit() -> str:
 
 
 def main() -> None:
+    """Evaluate one system on one split, then write the JSON and Markdown reports."""
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )

@@ -25,11 +25,13 @@ LAW_NAMES = {
 
 
 def parse_id(chunk_id: str) -> dict[str, str | None] | None:
+    """Split an id into law, tag, num, para and part; None if it is not a valid id."""
     match = ID_RE.match(chunk_id.strip())
     return match.groupdict() if match else None
 
 
 def is_valid_id(chunk_id: str) -> bool:
+    """True if the id follows the format in the module docstring."""
     return parse_id(chunk_id) is not None
 
 

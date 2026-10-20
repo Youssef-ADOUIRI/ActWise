@@ -44,7 +44,8 @@ line-length = 100
 target-version = "py312"
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM"]
+# D102, D103, D105, D107: every public function and method needs a docstring.
+select = ["E", "F", "I", "B", "UP", "SIM", "D102", "D103", "D105", "D107"]
 
 [tool.mypy]
 python_version = "3.12"

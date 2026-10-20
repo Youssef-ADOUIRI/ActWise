@@ -24,6 +24,7 @@ POOL = 50  # passages fetched per query; the metrics deduplicate them to article
 
 
 def score_question(question: Question, retrieved: list[str]) -> dict[str, Any]:
+    """One report row: rank of the first gold article, the top articles and every metric."""
     gold = set(question.gold)
     articles = ranked_articles(retrieved)
     first_hit = next((rank for rank, a in enumerate(articles, start=1) if a in gold), None)
@@ -41,10 +42,12 @@ def score_question(question: Question, retrieved: list[str]) -> dict[str, Any]:
 
 
 def summarise(rows: list[dict[str, Any]]) -> dict[str, float]:
+    """Rounded mean of each metric over the rows, plus their count `n`."""
     return {"n": len(rows), **{m: round(mean([r[m] for r in rows]), 4) for m in METRICS}}
 
 
 def breakdown(rows: list[dict[str, Any]], field: str) -> dict[str, dict[str, float]]:
+    """`summarise()` for each value of `field`, such as each language or question type."""
     groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in rows:
         groups[row[field]].append(row)
@@ -81,10 +84,12 @@ def evaluate(search: SearchFn, questions: list[Question], pool: int = POOL) -> d
 
 
 def interval(bounds: tuple[float, float]) -> str:
+    """(0.45, 0.85) -> '[0.45, 0.85]'."""
     return f"[{bounds[0]:.2f}, {bounds[1]:.2f}]"
 
 
 def to_markdown(report: dict[str, Any]) -> str:
+    """Render a report as Markdown: metrics, breakdowns, and the questions missed at rank 1."""
     m, ci = report["metrics"], report["ci95"]
     lines = [
         f"# Retrieval report: {report['name']}",
