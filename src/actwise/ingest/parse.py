@@ -77,14 +77,14 @@ def _is_punctuation(line: str) -> bool:
 
 
 def _drop_footnote_marks(lines: list[str]) -> list[str]:
-    """EUR-Lex splits a footnote mark over lines: '(', '12', ')' and maybe ','."""
+    """EUR-Lex splits a footnote mark over lines: '(', '12' or '*', ')' and maybe ','."""
     out: list[str] = []
     i = 0
     while i < len(lines):
         is_mark = (
             lines[i] == "("
             and i + 2 < len(lines)
-            and lines[i + 1].isdigit()
+            and (lines[i + 1].isdigit() or lines[i + 1] == "*")
             and lines[i + 2].startswith(")")
         )
         if not is_mark:
@@ -94,8 +94,8 @@ def _drop_footnote_marks(lines: list[str]) -> list[str]:
 
         rest = lines[i + 2][1:].strip()  # text after ")" on the same line
         i += 3
-        if not rest and i < len(lines) and _is_punctuation(lines[i]):
-            rest = lines[i]  # the "," that followed the mark on its own line
+        if not rest and i < len(lines) and _is_punctuation(lines[i][0]):
+            rest = lines[i]  # the next line goes on with ", ..." after the mark
             i += 1
         if rest and out:
             out[-1] += rest if _is_punctuation(rest[0]) else " " + rest
