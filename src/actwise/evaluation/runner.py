@@ -10,6 +10,7 @@ from typing import Any
 from actwise.evaluation.golden import Question
 from actwise.evaluation.metrics import (
     bootstrap_ci,
+    first_hit_rank,
     mean,
     ndcg_at_k,
     ranked_articles,
@@ -26,15 +27,13 @@ POOL = 50  # passages fetched per query; the metrics deduplicate them to article
 def score_question(question: Question, retrieved: list[str]) -> dict[str, Any]:
     """One report row: rank of the first gold article, the top articles and every metric."""
     gold = set(question.gold)
-    articles = ranked_articles(retrieved)
-    first_hit = next((rank for rank, a in enumerate(articles, start=1) if a in gold), None)
     return {
         "id": question.id,
         "lang": question.lang,
         "type": question.type,
         "gold": list(question.gold),
-        "first_hit_rank": first_hit,
-        "top_articles": articles[:10],
+        "first_hit_rank": first_hit_rank(retrieved, gold),
+        "top_articles": ranked_articles(retrieved)[:10],
         **{f"recall@{k}": recall_at_k(retrieved, gold, k) for k in RECALL_AT},
         "mrr@10": reciprocal_rank(retrieved, gold, 10),
         "ndcg@10": ndcg_at_k(retrieved, gold, 10),
@@ -54,7 +53,7 @@ def breakdown(rows: list[dict[str, Any]], field: str) -> dict[str, dict[str, flo
     return {name: summarise(group) for name, group in sorted(groups.items())}
 
 
-def evaluate(search: SearchFn, questions: list[Question], pool: int = POOL) -> dict[str, Any]:
+def evaluate(search: SearchFn, questions: list[Question]) -> dict[str, Any]:
     """Score every question that has gold articles.
 
     Out-of-scope questions (no gold) have nothing to retrieve; they are scored
@@ -65,7 +64,7 @@ def evaluate(search: SearchFn, questions: list[Question], pool: int = POOL) -> d
         if not question.gold:
             continue
         start = time.perf_counter()
-        retrieved = search(question.question, pool)
+        retrieved = search(question.question, POOL)
         timings.append((time.perf_counter() - start) * 1000)
         rows.append(score_question(question, retrieved))
 

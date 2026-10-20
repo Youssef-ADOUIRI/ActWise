@@ -5,6 +5,27 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-20: Cleanup of the step 3 code
+
+**Goal:** give each rule that step 3 wrote twice a single home, and drop options nothing uses. No output changes.
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/ids.py` | `storage_key()` builds `id@lang` for `Chunk.key` and `Passage.key` | The storage-key format (review item R1) was written in two classes |
+| `src/actwise/ingest/chunk.py`, `build_chunks.py` | `unit_id()` and `parse_source()`, also used by the baseline | The article-id format behind the gold labels, and the raw-file naming, were in two modules |
+| `src/actwise/ingest/parse.py` | `_starts_with_punctuation()` replaces a helper that only ever got one character | The name says what the footnote rule checks |
+| `src/actwise/evaluation/metrics.py`, `runner.py` | `first_hit_rank()` shared by MRR and the report rows; `ranked_articles()` is one line; the unused `pool` argument is gone | The first-hit rule was written twice |
+| `src/actwise/evaluation/splits.py` | Reads `build_chunks.OUT_FILE` instead of its own copy of the path | One path to change if the chunks move |
+| `src/actwise/retrieval/dense.py`, `stores.py` | `Hit` extends `Passage`; `build_store()` always uses the cache; the temp shard name comes from `path()`; `search()` loses its unused default `k` | Fewer field lists and branches to keep in sync |
+| `src/actwise/retrieval/naive.py`, `evals/run_eval.py` | `MAX_WORDS` and `OVERLAP` name the baseline windows, and the report description is built from them | The description can't drift from the code |
+| `tests/unit/test_dense.py` | The retriever test uses a temporary cache | `build_store()` no longer has a mode without a cache |
+
+**Checked:** `chunks.jsonl` rebuilds byte for byte, the 2,385 baseline passages are identical, and a fresh dev run reproduces `baseline-dev.json` field for field (except time, commit and ms/query). 93 tests pass (92 % coverage); ruff and mypy are clean.
+
+**Left for step 4:** the embedding cache keys its folder on every text, so editing one passage re-embeds them all. Keying vectors by text hash would let the ablations reuse what is already embedded.
+
+---
+
 ## 2026-10-20: Docstrings on every function
 
 **Goal:** every function and method says in one line what it does.

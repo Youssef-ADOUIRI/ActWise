@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
-from actwise.ids import LAW_NAMES
+from actwise.ids import LAW_NAMES, storage_key
 from actwise.ingest.parse import Unit
 
 PREFIX = {"ai_act": "AIA", "gdpr": "GDPR"}
@@ -30,7 +30,7 @@ class Chunk:
     @property
     def key(self) -> str:
         """Storage key. EN and FR share an `id`, so stores must use this instead."""
-        return f"{self.id}@{self.lang}"
+        return storage_key(self.id, self.lang)
 
     @property
     def embed_text(self) -> str:
@@ -67,6 +67,11 @@ def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
     return [" ".join(words[start : start + max_words]) for start in starts]
 
 
+def unit_id(unit: Unit, law: str) -> str:
+    """Article-level id of a unit, such as AIA-Art5: the level of the gold labels."""
+    return f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"
+
+
 def chunk_units(
     units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
 ) -> list[Chunk]:
@@ -74,7 +79,7 @@ def chunk_units(
     chunks: list[Chunk] = []
     for unit in units:
         numbered = any(p.number for p in unit.paragraphs)
-        base_id = f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"
+        base_id = unit_id(unit, law)
 
         for paragraph in unit.paragraphs:
             # An intro sentence before numbered paragraphs becomes paragraph "0".
