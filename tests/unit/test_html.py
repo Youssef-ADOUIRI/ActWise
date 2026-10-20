@@ -8,6 +8,7 @@ RAW = Path(__file__).parents[2] / "data" / "raw"
 
 
 def test_drops_noise_and_nbsp():
+    """Scripts, styles, menus and footers are dropped, and &nbsp; becomes a space."""
     html = """
     <html><head><script>var x = 1;</script><style>p {}</style></head>
     <body><nav>Menu</nav><p>Article&nbsp;6</p><footer>Legal notice</footer></body></html>
@@ -27,6 +28,7 @@ def test_drops_noise_and_nbsp():
     ],
 )
 def test_saved_ai_act_pages_are_readable(filename, annex_heading):
+    """Both saved AI Act pages contain Article 6 and the Annex III heading."""
     text = html_to_text(RAW / filename)
 
     assert "Article 6" in text
@@ -35,6 +37,7 @@ def test_saved_ai_act_pages_are_readable(filename, annex_heading):
 
 @pytest.mark.parametrize("filename", ["gdpr.en.html", "gdpr.fr.html"])
 def test_saved_gdpr_pages_are_readable(filename):
+    """Both saved GDPR pages contain Article 17."""
     text = html_to_text(RAW / filename)
 
     assert "Article 17" in text

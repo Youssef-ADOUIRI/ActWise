@@ -11,6 +11,7 @@ NOISE_TAGS = ["script", "style", "nav", "header", "footer"]
 
 
 def html_string_to_text(html: str) -> str:
+    """HTML -> text without the `NOISE_TAGS` elements, one block per line."""
     with warnings.catch_warnings():
         # EUR-Lex serves XHTML with an XML declaration; the HTML parser handles it fine.
         warnings.simplefilter("ignore", XMLParsedAsHTMLWarning)
@@ -22,4 +23,5 @@ def html_string_to_text(html: str) -> str:
 
 
 def html_to_text(path: str | Path) -> str:
+    """Read a saved page (UTF-8) and convert it with `html_string_to_text()`."""
     return html_string_to_text(Path(path).read_text(encoding="utf-8"))

@@ -72,8 +72,9 @@ def normalise_lines(text: str) -> list[str]:
     return _glue_lone_markers(_drop_footnote_marks(lines))
 
 
-def _is_punctuation(line: str) -> bool:
-    return all(ch in ",.;:)" for ch in line)
+def _starts_with_punctuation(text: str) -> bool:
+    """True if `text` opens with one of ",.;:)", which attach to the word before."""
+    return text.startswith((",", ".", ";", ":", ")"))
 
 
 def _drop_footnote_marks(lines: list[str]) -> list[str]:
@@ -94,11 +95,11 @@ def _drop_footnote_marks(lines: list[str]) -> list[str]:
 
         rest = lines[i + 2][1:].strip()  # text after ")" on the same line
         i += 3
-        if not rest and i < len(lines) and _is_punctuation(lines[i][0]):
+        if not rest and i < len(lines) and _starts_with_punctuation(lines[i]):
             rest = lines[i]  # the next line goes on with ", ..." after the mark
             i += 1
         if rest and out:
-            out[-1] += rest if _is_punctuation(rest[0]) else " " + rest
+            out[-1] += rest if _starts_with_punctuation(rest) else " " + rest
     return out
 
 
@@ -117,10 +118,16 @@ def _glue_lone_markers(lines: list[str]) -> list[str]:
 
 
 def _line_after(lines: list[str], i: int) -> str:
+    """The line after line `i`, such as a heading's title; "" at the end of the text."""
     return lines[i + 1] if i + 1 < len(lines) else ""
 
 
 def parse_regulation(text: str) -> list[Unit]:
+    """Plain text of a regulation -> its recitals, articles and annexes, in order.
+
+    Before `PREAMBLE_END`, numbered lines are recitals. After it, `ARTICLE` and
+    `ANNEX` headings open units, and `Unit.add_line()` fills the open one.
+    """
     lines = normalise_lines(text)
     in_preamble = any(PREAMBLE_END.match(line) for line in lines)
     units: list[Unit] = []

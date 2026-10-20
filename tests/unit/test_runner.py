@@ -16,10 +16,12 @@ RESULTS = {
 
 
 def search(query, n):
+    """Fake retriever: canned results for each question."""
     return RESULTS[query][:n]
 
 
 def test_metrics_are_averaged_over_scored_questions():
+    """Metrics average the questions with gold; the out-of-scope one is skipped."""
     report = evaluate(search, QUESTIONS)
 
     assert report["questions"] == {"total": 3, "scored": 2, "skipped_no_gold": 1}
@@ -29,6 +31,7 @@ def test_metrics_are_averaged_over_scored_questions():
 
 
 def test_per_question_rows_show_where_the_gold_article_ranked():
+    """Each row gives the rank of the first gold article and the top articles."""
     rows = {row["id"]: row for row in evaluate(search, QUESTIONS)["per_question"]}
 
     assert rows["q1"]["first_hit_rank"] == 1
@@ -37,6 +40,7 @@ def test_per_question_rows_show_where_the_gold_article_ranked():
 
 
 def test_breakdowns_by_language_and_type():
+    """Metrics are also reported per language and per question type."""
     report = evaluate(search, QUESTIONS)
 
     assert report["by_lang"]["fr"]["n"] == 1
@@ -45,6 +49,7 @@ def test_breakdowns_by_language_and_type():
 
 
 def test_markdown_summary_lists_metrics_and_misses():
+    """The Markdown report shows the main metrics and the questions missed at rank 1."""
     report = evaluate(search, QUESTIONS) | {
         "name": "toy",
         "split": "dev",

@@ -9,11 +9,13 @@ class NumpyStore:
     """Exact cosine search over L2-normalised vectors: a few thousand passages take ~1 ms."""
 
     def __init__(self, keys: list[str], vectors: np.ndarray):
+        """One key per vector row (stored as float32); ValueError if the counts differ."""
         if len(keys) != len(vectors):
             raise ValueError(f"{len(keys)} keys for {len(vectors)} vectors")
         self.keys, self.vectors = keys, vectors.astype(np.float32)
 
-    def search(self, vector: np.ndarray, k: int = 30) -> list[tuple[str, float]]:
+    def search(self, vector: np.ndarray, k: int) -> list[tuple[str, float]]:
+        """The `k` keys with the highest dot product (cosine for unit vectors), best first."""
         scores = self.vectors @ vector.astype(np.float32)
         top = np.argsort(-scores, kind="stable")[:k]  # stable: ties keep corpus order
         return [(self.keys[i], float(scores[i])) for i in top]

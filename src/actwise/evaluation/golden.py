@@ -31,6 +31,7 @@ class Question:
 
 
 def load_golden(path: Path = GOLDEN_FILE) -> list[Question]:
+    """Read the golden set: one `Question` per non-empty line."""
     questions = []
     for line in path.read_text(encoding="utf-8").splitlines():
         if line.strip():

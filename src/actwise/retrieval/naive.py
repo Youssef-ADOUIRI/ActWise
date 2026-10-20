@@ -9,12 +9,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from actwise.ingest.build_chunks import RAW_DIR, SOURCES
-from actwise.ingest.chunk import PREFIX, TAG, window_starts
-from actwise.ingest.html import html_to_text
-from actwise.ingest.parse import Unit, parse_regulation
+from actwise.ingest.build_chunks import RAW_DIR, SOURCES, parse_source
+from actwise.ingest.chunk import unit_id, window_starts
+from actwise.ingest.parse import Unit
 from actwise.retrieval.dense import Passage
 
+MAX_WORDS, OVERLAP = 150, 25  # the baseline's windows; independent of chunk.py's defaults
 HEADING = {
     "en": {"article": "Article", "annex": "ANNEX"},
     "fr": {"article": "Article", "annex": "ANNEXE"},
@@ -31,14 +31,15 @@ def unit_text(unit: Unit, lang: str) -> str:
 
 
 def naive_windows(
-    units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
+    units: list[Unit], law: str, lang: str, max_words: int = MAX_WORDS, overlap: int = OVERLAP
 ) -> list[Passage]:
+    """Fixed windows over the units laid end to end, each labelled with the article it starts in."""
     words: list[str] = []
     owners: list[str] = []  # article id of each word
     for unit in units:
         unit_words = unit_text(unit, lang).split()
         words += unit_words
-        owners += [f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"] * len(unit_words)
+        owners += [unit_id(unit, law)] * len(unit_words)
 
     starts = window_starts(len(words), max_words, overlap)
     return [
@@ -48,8 +49,8 @@ def naive_windows(
 
 
 def naive_passages(raw_dir: Path = RAW_DIR) -> list[Passage]:
+    """Baseline passages for every page in `SOURCES`."""
     passages: list[Passage] = []
     for law, lang in SOURCES:
-        units = parse_regulation(html_to_text(raw_dir / f"{law}.{lang}.html"))
-        passages += naive_windows(units, law, lang)
+        passages += naive_windows(parse_source(law, lang, raw_dir), law, lang)
     return passages
