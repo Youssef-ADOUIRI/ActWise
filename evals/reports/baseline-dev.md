@@ -10,7 +10,7 @@ Baseline: fixed 150-word windows (25 shared) ignoring structure, dense BGE-M3, c
 | Recall@20 | 0.825 |
 | MRR@10 | 0.504 [0.32, 0.69] |
 | nDCG@10 | 0.547 |
-| ms / query | 170 |
+| ms / query | 184 |
 
 ## By language
 
