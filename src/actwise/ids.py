@@ -40,6 +40,11 @@ def storage_key(chunk_id: str, lang: str) -> str:
     return f"{chunk_id}@{lang}"
 
 
+def is_recital(chunk_id: str) -> bool:
+    """True for recital ids (AIA-Rec63): recitals explain the law but do not bind."""
+    return (parse_id(chunk_id) or {}).get("tag") == "Rec"
+
+
 def article_id(chunk_id: str) -> str:
     """AIA-Art6-2#1 -> AIA-Art6, the level used for gold labels."""
     parts = parse_id(chunk_id)

@@ -63,6 +63,7 @@ source = ["src"]
 # Thin I/O glue, checked by hand and smoke tests rather than unit tests.
 omit = [
     "src/actwise/api/app.py",
+    "src/actwise/retrieval/index.py",
     "src/actwise/integrations/slack_bot.py",
     "src/actwise/integrations/mcp_server.py",
     "src/actwise/integrations/sheets.py",

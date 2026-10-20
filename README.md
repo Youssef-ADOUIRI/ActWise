@@ -10,7 +10,11 @@ Ask the EU AI Act and GDPR in English or French and get answers with article-lev
 cp .env.example .env
 make install
 make test
+make eval-retrieval SYSTEM=hybrid-binding  # dev metrics; the first run embeds the chunks (~30 min on a CPU)
+docker compose up -d qdrant && make index  # optional: the same vectors in Qdrant
 ```
+
+Retrieval results: [docs/ablations.md](docs/ablations.md).
 
 Plan: [docs/ROADMAP.md](docs/ROADMAP.md) · Tasks: [TODO.md](TODO.md) · Changes: [docs/CHANGELOG.md](docs/CHANGELOG.md)
 
