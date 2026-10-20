@@ -11,22 +11,28 @@ from pathlib import Path
 
 from actwise.ingest.chunk import Chunk, chunk_units
 from actwise.ingest.html import html_to_text
-from actwise.ingest.parse import parse_regulation
+from actwise.ingest.parse import Unit, parse_regulation
 
 SOURCES = [("ai_act", "en"), ("ai_act", "fr"), ("gdpr", "en"), ("gdpr", "fr")]
 RAW_DIR = Path("data/raw")
 OUT_FILE = Path("data/processed/chunks.jsonl")
 
 
+def parse_source(law: str, lang: str, raw_dir: Path = RAW_DIR) -> list[Unit]:
+    """Units of one saved page, such as data/raw/ai_act.en.html."""
+    return parse_regulation(html_to_text(raw_dir / f"{law}.{lang}.html"))
+
+
 def build_chunks(raw_dir: Path = RAW_DIR) -> list[Chunk]:
+    """Parse and chunk every page in `SOURCES`."""
     chunks: list[Chunk] = []
     for law, lang in SOURCES:
-        units = parse_regulation(html_to_text(raw_dir / f"{law}.{lang}.html"))
-        chunks += chunk_units(units, law, lang)
+        chunks += chunk_units(parse_source(law, lang, raw_dir), law, lang)
     return chunks
 
 
 def write_jsonl(chunks: list[Chunk], path: Path = OUT_FILE) -> None:
+    """Write one chunk per line (UTF-8, LF line ends), so the file is identical on every OS."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as f:
         for chunk in chunks:
@@ -48,6 +54,7 @@ def summary(chunks: list[Chunk]) -> str:
 
 
 def main() -> None:
+    """Rebuild `OUT_FILE` and print the counts."""
     chunks = build_chunks()
     write_jsonl(chunks)
     print(summary(chunks))

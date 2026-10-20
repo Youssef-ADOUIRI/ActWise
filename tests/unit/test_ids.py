@@ -16,6 +16,7 @@ from actwise.ids import article_id, human_label, is_valid_id
     ],
 )
 def test_valid_ids(chunk_id):
+    """Articles, recitals, annex points, sections and parts all match the id format."""
     assert is_valid_id(chunk_id)
 
 
@@ -23,16 +24,19 @@ def test_valid_ids(chunk_id):
     "chunk_id", ["", "1", "note", "AIA", "aia-Art6", "AIA-Article6", "AIA-Art6-", "AIA-Art6-2."]
 )
 def test_invalid_ids(chunk_id):
+    """Malformed ids are rejected, including near misses such as `AIA-Article6`."""
     assert not is_valid_id(chunk_id)
 
 
 def test_article_id_drops_paragraph_and_part():
+    """`article_id()` keeps only the law, kind and number."""
     assert article_id("AIA-Art6-2#1") == "AIA-Art6"
     assert article_id("AIA-AnnexIII-4") == "AIA-AnnexIII"
     assert article_id("GDPR-Rec10") == "GDPR-Rec10"
 
 
 def test_article_id_rejects_garbage():
+    """`article_id()` raises ValueError on a string that is not an id."""
     with pytest.raises(ValueError):
         article_id("not an id")
 
@@ -53,4 +57,5 @@ def test_article_id_rejects_garbage():
     ],
 )
 def test_human_label(chunk_id, lang, label):
+    """User-facing labels in EN and FR; a string that is not an id comes back unchanged."""
     assert human_label(chunk_id, lang) == label

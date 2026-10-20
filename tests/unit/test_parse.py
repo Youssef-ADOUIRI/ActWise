@@ -3,6 +3,7 @@ from tests.unit.sample_text import EN_SAMPLE, FR_SAMPLE
 
 
 def test_parse_structure():
+    """The EN sample gives its recitals, articles and annex in order, with titles and points."""
     units = parse_regulation(EN_SAMPLE)
 
     assert [(u.kind, u.number) for u in units] == [
@@ -22,6 +23,7 @@ def test_parse_structure():
 
 
 def test_chapter_titles_not_glued():
+    """Chapter headings and their titles never end up inside a paragraph."""
     units = parse_regulation(EN_SAMPLE)
     texts = " ".join(p.text for u in units for p in u.paragraphs)
 
@@ -30,6 +32,7 @@ def test_chapter_titles_not_glued():
 
 
 def test_french_structure():
+    """The FR layout ("ONT ADOPTÉ", "Article premier", "1)" definitions) parses like EN."""
     units = parse_regulation(FR_SAMPLE)
 
     assert [(u.kind, u.number) for u in units] == [
@@ -45,12 +48,14 @@ def test_french_structure():
 
 
 def test_footnote_marks_are_removed():
+    """A footnote mark split over three lines is removed; the comma after it stays."""
     lines = normalise_lines("opinion of the Committee\n(\n12\n)\n,\nand of the Council")
 
     assert lines == ["opinion of the Committee,", "and of the Council"]
 
 
 def test_star_footnote_marks_are_removed():
+    """A "*" footnote mark is removed too, and the text after it rejoins the line."""
     # Articles 102 to 110 amend other acts and mark their footnotes with '*'.
     lines = normalise_lines("of the Council\n(\n*\n)\n, the requirements")
 
@@ -58,6 +63,7 @@ def test_star_footnote_marks_are_removed():
 
 
 def test_signatures_and_footnotes_after_body_are_ignored():
+    """The closing formula, signatures and footnotes are skipped until the next heading."""
     text = """\
 Article 113
 Entry into force
@@ -80,6 +86,7 @@ List of Union harmonisation legislation
 
 
 def test_page_footer_is_ignored():
+    """The ELI page footer does not leak into the last annex."""
     text = "ANNEX XIII\nCriteria\n(g) the number of registered end-users.\n"
     text += "ELI: http://data.europa.eu/eli/reg/2024/1689/oj\nISSN 1977-0677 (electronic edition)\n"
     (annex,) = parse_regulation(text)
@@ -88,6 +95,7 @@ def test_page_footer_is_ignored():
 
 
 def test_annex_lettered_sections_restart_numbering():
+    """Points restart in each lettered annex section: a.1, a.2, then b.1."""
     text = """\
 ANNEX VIII
 Information to be submitted upon registration
@@ -104,6 +112,7 @@ Section B — Information to be submitted by deployers
 
 
 def test_annex_numbered_sections_keep_the_annex_open():
+    """A "Section n" heading inside an annex starts a section instead of closing it."""
     text = """\
 ANNEX XI
 Technical documentation
@@ -121,6 +130,7 @@ Additional information
 
 
 def test_gdpr_section_heading_is_skipped():
+    """A GDPR "Section 1" heading and its title stay out of the article before it."""
     text = """\
 Article 11
 Title

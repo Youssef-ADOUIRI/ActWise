@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 
-from actwise.ids import LAW_NAMES
+from actwise.ids import LAW_NAMES, storage_key
 from actwise.ingest.parse import Unit
 
 PREFIX = {"ai_act": "AIA", "gdpr": "GDPR"}
@@ -30,7 +30,7 @@ class Chunk:
     @property
     def key(self) -> str:
         """Storage key. EN and FR share an `id`, so stores must use this instead."""
-        return f"{self.id}@{self.lang}"
+        return storage_key(self.id, self.lang)
 
     @property
     def embed_text(self) -> str:
@@ -44,6 +44,7 @@ class Chunk:
         return f"{header}\n{self.text}"
 
     def to_json(self) -> dict:
+        """The chunk as a plain dict: one line of chunks.jsonl."""
         return asdict(self)
 
 
@@ -61,17 +62,24 @@ def window_starts(n_words: int, max_words: int, overlap: int) -> list[int]:
 
 
 def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
+    """Words -> overlapping windows of text, placed by `window_starts()`."""
     starts = window_starts(len(words), max_words, overlap)
     return [" ".join(words[start : start + max_words]) for start in starts]
+
+
+def unit_id(unit: Unit, law: str) -> str:
+    """Article-level id of a unit, such as AIA-Art5: the level of the gold labels."""
+    return f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"
 
 
 def chunk_units(
     units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
 ) -> list[Chunk]:
+    """One chunk per paragraph (or per window of a long one), with its stable id."""
     chunks: list[Chunk] = []
     for unit in units:
         numbered = any(p.number for p in unit.paragraphs)
-        base_id = f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"
+        base_id = unit_id(unit, law)
 
         for paragraph in unit.paragraphs:
             # An intro sentence before numbered paragraphs becomes paragraph "0".

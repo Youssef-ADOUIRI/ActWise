@@ -6,7 +6,7 @@ AIA-AnnexVIII-b.1 (Annex VIII, Section B, point 1)
 
 An ID never contains the language: the EN and FR versions of a paragraph
 share one ID, so a French question is scored against the same gold article.
-To store both languages side by side, use `Chunk.key` (`<id>@<lang>`).
+To store both languages side by side, key them by `storage_key()` (`<id>@<lang>`).
 """
 
 from __future__ import annotations
@@ -25,12 +25,19 @@ LAW_NAMES = {
 
 
 def parse_id(chunk_id: str) -> dict[str, str | None] | None:
+    """Split an id into law, tag, num, para and part; None if it is not a valid id."""
     match = ID_RE.match(chunk_id.strip())
     return match.groupdict() if match else None
 
 
 def is_valid_id(chunk_id: str) -> bool:
+    """True if the id follows the format in the module docstring."""
     return parse_id(chunk_id) is not None
+
+
+def storage_key(chunk_id: str, lang: str) -> str:
+    """`id@lang`: EN and FR share an id, so stores key each text by this."""
+    return f"{chunk_id}@{lang}"
 
 
 def article_id(chunk_id: str) -> str:
