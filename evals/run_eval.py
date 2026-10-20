@@ -23,7 +23,7 @@ from actwise.evaluation.runner import evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
 from actwise.retrieval.dense import DenseRetriever, Passage, build_store
 from actwise.retrieval.embedders import SentenceTransformerEmbedder
-from actwise.retrieval.naive import naive_passages
+from actwise.retrieval.naive import MAX_WORDS, OVERLAP, naive_passages
 
 REPORTS = Path("evals/reports")
 CACHE = Path(".cache/embeddings")
@@ -41,8 +41,8 @@ class System:
 
 SYSTEMS = {
     "baseline": System(
-        description="Baseline: fixed 150-word windows (25 shared) ignoring structure, "
-        "dense BGE-M3, cosine similarity, no rerank",
+        description=f"Baseline: fixed {MAX_WORDS}-word windows ({OVERLAP} shared) ignoring "
+        "structure, dense BGE-M3, cosine similarity, no rerank",
         passages=naive_passages,
         embedder=BGE_M3,
     ),

@@ -13,6 +13,7 @@ from typing import Any
 
 import numpy as np
 
+from actwise.ids import storage_key
 from actwise.retrieval.embedders import Embedder
 from actwise.retrieval.stores import NumpyStore
 
@@ -30,14 +31,11 @@ class Passage:
     @property
     def key(self) -> str:
         """Storage key `id@lang`: the EN and FR versions of a passage share an `id`."""
-        return f"{self.id}@{self.lang}"
+        return storage_key(self.id, self.lang)
 
 
 @dataclass(frozen=True)
-class Hit:
-    id: str
-    lang: str
-    text: str
+class Hit(Passage):
     score: float
 
 
@@ -73,7 +71,7 @@ class EmbeddingCache:
         todo = self.missing() if shards is None else list(shards)
         for done, shard in enumerate(todo, start=1):
             texts = self.texts[shard * self.shard_size : (shard + 1) * self.shard_size]
-            tmp = self.dir / f"{shard:05d}.tmp.npy"
+            tmp = self.path(shard).with_suffix(".tmp.npy")
             np.save(tmp, embedder.encode(texts, kind="passage"))
             tmp.replace(self.path(shard))  # atomic: a killed run never leaves half a shard
             log.info("embedded shard %d/%d (%d to go)", done, len(todo), len(todo) - done)
@@ -86,17 +84,12 @@ class EmbeddingCache:
 
 
 def build_store(
-    passages: list[Passage], embedder: Embedder, cache_root: Path | None, shard_size: int = 64
+    passages: list[Passage], embedder: Embedder, cache_root: Path, shard_size: int = 64
 ) -> NumpyStore:
-    """Embed every passage (reusing the cache under `cache_root` when given)."""
-    texts = [p.text for p in passages]
-    if cache_root is None:
-        vectors = embedder.encode(texts, kind="passage")
-    else:
-        cache = EmbeddingCache(cache_root, embedder.config, texts, shard_size)
-        cache.fill(embedder)
-        vectors = cache.load()
-    return NumpyStore([p.key for p in passages], vectors)
+    """Embed every passage, reusing the vectors cached under `cache_root`."""
+    cache = EmbeddingCache(cache_root, embedder.config, [p.text for p in passages], shard_size)
+    cache.fill(embedder)
+    return NumpyStore([p.key for p in passages], cache.load())
 
 
 class DenseRetriever:

@@ -72,9 +72,9 @@ def normalise_lines(text: str) -> list[str]:
     return _glue_lone_markers(_drop_footnote_marks(lines))
 
 
-def _is_punctuation(line: str) -> bool:
-    """True if `line` is only ",.;:)" characters, which attach to the word before."""
-    return all(ch in ",.;:)" for ch in line)
+def _starts_with_punctuation(text: str) -> bool:
+    """True if `text` opens with one of ",.;:)", which attach to the word before."""
+    return text.startswith((",", ".", ";", ":", ")"))
 
 
 def _drop_footnote_marks(lines: list[str]) -> list[str]:
@@ -95,11 +95,11 @@ def _drop_footnote_marks(lines: list[str]) -> list[str]:
 
         rest = lines[i + 2][1:].strip()  # text after ")" on the same line
         i += 3
-        if not rest and i < len(lines) and _is_punctuation(lines[i][0]):
+        if not rest and i < len(lines) and _starts_with_punctuation(lines[i]):
             rest = lines[i]  # the next line goes on with ", ..." after the mark
             i += 1
         if rest and out:
-            out[-1] += rest if _is_punctuation(rest[0]) else " " + rest
+            out[-1] += rest if _starts_with_punctuation(rest) else " " + rest
     return out
 
 

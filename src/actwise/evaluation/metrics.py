@@ -11,12 +11,7 @@ from actwise.ids import article_id
 
 def ranked_articles(retrieved: Iterable[str]) -> list[str]:
     """Chunk ids -> article ids, duplicates removed, order kept."""
-    seen: list[str] = []
-    for chunk_id in retrieved:
-        article = article_id(chunk_id)
-        if article not in seen:
-            seen.append(article)
-    return seen
+    return list(dict.fromkeys(map(article_id, retrieved)))
 
 
 def recall_at_k(retrieved: list[str], gold: set[str], k: int) -> float:
@@ -27,12 +22,16 @@ def recall_at_k(retrieved: list[str], gold: set[str], k: int) -> float:
     return len(top & gold) / len(gold)
 
 
+def first_hit_rank(retrieved: list[str], gold: set[str]) -> int | None:
+    """1-based rank of the first gold article, or None if none was retrieved."""
+    ranks = (rank for rank, a in enumerate(ranked_articles(retrieved), start=1) if a in gold)
+    return next(ranks, None)
+
+
 def reciprocal_rank(retrieved: list[str], gold: set[str], k: int = 10) -> float:
     """1 / rank of the first gold article in the top `k`, or 0.0 if none is there."""
-    for rank, article in enumerate(ranked_articles(retrieved)[:k], start=1):
-        if article in gold:
-            return 1.0 / rank
-    return 0.0
+    rank = first_hit_rank(retrieved, gold)
+    return 1.0 / rank if rank is not None and rank <= k else 0.0
 
 
 def ndcg_at_k(retrieved: list[str], gold: set[str], k: int = 10) -> float:

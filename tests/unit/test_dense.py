@@ -49,10 +49,10 @@ def test_store_needs_one_key_per_vector():
         NumpyStore(["a"], np.eye(2, dtype=np.float32))
 
 
-def test_dense_retriever_finds_the_right_article():
+def test_dense_retriever_finds_the_right_article(tmp_path):
     """A question about erasure retrieves the erasure article first."""
     embedder = CountingEmbedder()
-    retriever = DenseRetriever(PASSAGES, embedder, build_store(PASSAGES, embedder, cache_root=None))
+    retriever = DenseRetriever(PASSAGES, embedder, build_store(PASSAGES, embedder, tmp_path))
 
     hits = retriever.search("right to erasure", top_k=2)
 
