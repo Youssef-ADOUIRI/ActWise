@@ -1,7 +1,7 @@
 {
   "name": "baseline-dev",
-  "created": "2026-10-19T22:59:16+00:00",
-  "git_commit": "d10a575",
+  "created": "2026-10-20T04:03:40+00:00",
+  "git_commit": "8e5e84b",
   "split": "dev",
   "system": {
     "name": "baseline",
@@ -34,7 +34,7 @@
     "recall@20": 0.825,
     "mrr@10": 0.5044,
     "ndcg@10": 0.5472,
-    "ms_per_query": 170.4
+    "ms_per_query": 183.5
   },
   "ci95": {
     "recall@5": [

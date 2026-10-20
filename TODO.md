@@ -91,23 +91,24 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 4: Hybrid retrieval, reranking, ablations
 
-- [ ] `docker-compose.yml` with Qdrant
-- [ ] `[fix]` Index by storage key `id@lang`; point ID = `uuid5(key)`; payload holds `id`, `law`, `lang` (R1)
-- [ ] `[test]` `test_rrf`
-- [ ] `[test]` `test_bm25`
-- [ ] `[test]` `test_hybrid_end_to_end`
-- [ ] `[test]` `test_reranker_reorders`
-- [ ] `[test]` `test_store_failover`
-- [ ] `[test]` `test_gdpr_filter` (integration, Qdrant in Docker)
-- [ ] `retrieval/bm25.py`, `retrieval/fusion.py`
-- [ ] `retrieval/stores.py` (Numpy, Qdrant, Fallback)
-- [ ] `retrieval/hybrid.py`
-- [ ] Optional: filter or boost by query language
-- [ ] Cross-encoder `bge-reranker-v2-m3` ablation
-- [ ] `docs/ablations.md`: baseline (done), A, B, C, D, with ms/query
-- [ ] Error analysis of the 20 worst dev questions → fix the biggest cause → `docs/failure_cases.md` (start from the baseline patterns in `docs/ablations.md`)
-- [ ] Reach **Recall@5 ≥ 0.85** on dev
-- [ ] Decision notes: fusion, rerank
+- [x] `docker-compose.yml` with Qdrant (`qdrant/qdrant:v1.19.2`); `make index` uploads the 3,799 chunks
+- [x] `[fix]` Index by storage key `id@lang`; point ID = `uuid5(key)`; payload holds `key`, `id`, `law`, `lang` (R1): 3,799 points, EN and FR both kept
+- [x] `[test]` `test_rrf`
+- [x] `[test]` `test_bm25`
+- [x] `[test]` `test_hybrid_end_to_end`
+- [x] `[test]` `test_reranker_reorders`
+- [x] `[test]` `test_store_failover`
+- [x] `[test]` `test_gdpr_filter` (Qdrant in process in CI, plus the Docker server when it runs)
+- [x] `retrieval/bm25.py`, `retrieval/fusion.py`
+- [x] `retrieval/stores.py` (Numpy, Qdrant, Fallback)
+- [x] `retrieval/hybrid.py`
+- [ ] Optional: filter or boost by query language (not needed on dev: no failure came from the language, see `docs/failure_cases.md`)
+- [x] Cross-encoder `bge-reranker-v2-m3` ablation (row D and F; 12 s/query on CPU, offline only)
+- [x] `docs/ablations.md`: baseline, A to F, with ms/query
+- [x] Error analysis of the dev questions → biggest cause: recitals above the article → fix: binding text first (rows E, F) → `docs/failure_cases.md`
+- [x] Reach **Recall@5 ≥ 0.85** on dev: 0.925 with E (default) and F
+- [x] Decision notes: fusion (003), rerank (004)
+- [x] Embedding cache keyed by text, so subsets and edited passages reuse vectors (from the step 3 review)
 
 ---
 

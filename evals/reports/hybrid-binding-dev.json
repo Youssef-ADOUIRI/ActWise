@@ -1,0 +1,664 @@
+{
+  "name": "hybrid-binding-dev",
+  "created": "2026-10-20T04:05:04+00:00",
+  "git_commit": "8e5e84b",
+  "split": "dev",
+  "system": {
+    "name": "hybrid-binding",
+    "description": "E: as C, with articles and annexes ranked before recitals",
+    "embedder": {
+      "model": "BAAI/bge-m3",
+      "revision": "9a0624b896d81da7492a910ffa53731274b6cf3d",
+      "max_len": 512,
+      "prefix": {
+        "query": "",
+        "passage": ""
+      }
+    },
+    "passages": 3799,
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "fusion": {
+      "method": "rrf",
+      "k": 60,
+      "k_each": 30
+    },
+    "reranker": null,
+    "rerank_pool": null,
+    "binding_first": true
+  },
+  "inputs": {
+    "golden": "14c345cf25a1",
+    "splits": "fa7e857e8544"
+  },
+  "questions": {
+    "total": 22,
+    "scored": 20,
+    "skipped_no_gold": 2
+  },
+  "metrics": {
+    "n": 20,
+    "recall@1": 0.6,
+    "recall@5": 0.925,
+    "recall@10": 1.0,
+    "recall@20": 1.0,
+    "mrr@10": 0.8056,
+    "ndcg@10": 0.8422,
+    "ms_per_query": 148.7
+  },
+  "ci95": {
+    "recall@5": [
+      0.8,
+      1.0
+    ],
+    "mrr@10": [
+      0.6861,
+      0.925
+    ]
+  },
+  "by_lang": {
+    "en": {
+      "n": 13,
+      "recall@1": 0.5385,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.7692,
+      "ndcg@10": 0.8312
+    },
+    "fr": {
+      "n": 7,
+      "recall@1": 0.7143,
+      "recall@5": 0.7857,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.873,
+      "ndcg@10": 0.8626
+    }
+  },
+  "by_type": {
+    "cross_law": {
+      "n": 2,
+      "recall@1": 0.25,
+      "recall@5": 0.75,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.75,
+      "ndcg@10": 0.7342
+    },
+    "definition": {
+      "n": 1,
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309
+    },
+    "lookup": {
+      "n": 12,
+      "recall@1": 0.5417,
+      "recall@5": 0.9167,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.7593,
+      "ndcg@10": 0.812
+    },
+    "obligation": {
+      "n": 5,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    }
+  },
+  "per_question": [
+    {
+      "id": "q001",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-AnnexII"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art5",
+        "AIA-AnnexII",
+        "AIA-Art61",
+        "AIA-Art60",
+        "AIA-Art27",
+        "AIA-Art26",
+        "AIA-Rec33",
+        "AIA-Rec38",
+        "AIA-Rec35",
+        "AIA-Rec32"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q002",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-AnnexV"
+      ],
+      "first_hit_rank": 9,
+      "top_articles": [
+        "AIA-Art47",
+        "AIA-Art16",
+        "AIA-AnnexVIII",
+        "AIA-Art42",
+        "AIA-Art23",
+        "AIA-Art24",
+        "AIA-Art22",
+        "AIA-Art43",
+        "AIA-AnnexV",
+        "AIA-Art25"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.1111111111111111,
+      "ndcg@10": 0.3010299956639812
+    },
+    {
+      "id": "q003",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "AIA-Art15"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art15",
+        "AIA-Art43",
+        "AIA-Art14",
+        "AIA-Art3",
+        "AIA-Art26",
+        "AIA-Art17",
+        "AIA-Art9",
+        "AIA-Art23",
+        "AIA-Art25",
+        "AIA-Art13"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q004",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art36",
+        "AIA-Art44",
+        "AIA-Art45",
+        "AIA-Art30",
+        "AIA-Art29",
+        "AIA-AnnexVII",
+        "GDPR-Art42",
+        "AIA-Art31",
+        "AIA-AnnexV",
+        "GDPR-Art43"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q005",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art37",
+        "AIA-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art36",
+        "AIA-Art44",
+        "AIA-Art37",
+        "AIA-Art35",
+        "AIA-Art29",
+        "AIA-AnnexVII",
+        "AIA-Art31",
+        "GDPR-Art52",
+        "AIA-Art3",
+        "AIA-Art28"
+      ],
+      "recall@1": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 0.9197207891481876
+    },
+    {
+      "id": "q006",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "AIA-Art49"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art49",
+        "AIA-Art26",
+        "AIA-Art71",
+        "AIA-Art14",
+        "AIA-Art27",
+        "AIA-AnnexVIII",
+        "AIA-Art16",
+        "AIA-Art60",
+        "AIA-Art82",
+        "AIA-Art6"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q007",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art56"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art56",
+        "AIA-Art53",
+        "AIA-Art55",
+        "AIA-Art50",
+        "AIA-Art111",
+        "AIA-Art89",
+        "AIA-AnnexXI",
+        "AIA-Art95",
+        "AIA-AnnexXII",
+        "AIA-Art101"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q008",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art68"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art68",
+        "AIA-Art90",
+        "AIA-Art69",
+        "AIA-Art65",
+        "AIA-Art92",
+        "AIA-Art66",
+        "AIA-Art64",
+        "AIA-Art62",
+        "AIA-Art91",
+        "AIA-Art60"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q009",
+      "lang": "en",
+      "type": "definition",
+      "gold": [
+        "AIA-Art83"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art48",
+        "AIA-Art83",
+        "AIA-Art24",
+        "AIA-Art80",
+        "AIA-Art79",
+        "AIA-Art16",
+        "AIA-Art8",
+        "AIA-Art6",
+        "AIA-Art23",
+        "AIA-Art15"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q010",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art3"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art2",
+        "GDPR-Art3",
+        "GDPR-Art47",
+        "AIA-Art2",
+        "GDPR-Art27",
+        "GDPR-Art64",
+        "AIA-Art5",
+        "GDPR-Art57",
+        "AIA-AnnexX",
+        "AIA-AnnexV"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q011",
+      "lang": "fr",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art14"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art14",
+        "GDPR-Art13",
+        "GDPR-Art12",
+        "GDPR-Art11",
+        "GDPR-Art34",
+        "GDPR-Art6",
+        "GDPR-Art17",
+        "GDPR-Art15",
+        "GDPR-Art33",
+        "GDPR-Art19"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q012",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art22"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art22",
+        "AIA-Art5",
+        "AIA-Art14",
+        "AIA-Art26",
+        "GDPR-Art14",
+        "AIA-Art60",
+        "GDPR-Art13",
+        "GDPR-Art48",
+        "AIA-Art78",
+        "AIA-Art46"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q013",
+      "lang": "fr",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art36",
+        "GDPR-Art56",
+        "GDPR-Art41",
+        "GDPR-Art60",
+        "GDPR-Art58",
+        "GDPR-Art62",
+        "GDPR-Art31",
+        "GDPR-Art30",
+        "GDPR-Art4",
+        "GDPR-Art78"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q014",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art49"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art45",
+        "GDPR-Art49",
+        "GDPR-Art48",
+        "GDPR-Art46",
+        "GDPR-Art44",
+        "GDPR-Art13",
+        "GDPR-Art14",
+        "GDPR-Art4",
+        "GDPR-Art15",
+        "GDPR-Rec112"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q015",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art66"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art66",
+        "GDPR-Art60",
+        "GDPR-Art50",
+        "AIA-Art79",
+        "GDPR-Art70",
+        "AIA-Art5",
+        "GDPR-Art45",
+        "GDPR-Art58",
+        "AIA-Art70",
+        "GDPR-Art37"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q016",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art78"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art12",
+        "GDPR-Art78",
+        "GDPR-Art77",
+        "GDPR-Art57",
+        "GDPR-Art11",
+        "GDPR-Art79",
+        "GDPR-Art80",
+        "GDPR-Art47",
+        "GDPR-Art33",
+        "GDPR-Art34"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q017",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art79"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art79",
+        "GDPR-Art47",
+        "GDPR-Art78",
+        "GDPR-Art77",
+        "GDPR-Art2",
+        "GDPR-Art58",
+        "GDPR-Art26",
+        "GDPR-Art57",
+        "GDPR-Art36",
+        "AIA-Art101"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q018",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art82"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art82",
+        "GDPR-Art28",
+        "GDPR-Art32",
+        "GDPR-Art29",
+        "GDPR-Art38",
+        "GDPR-Art58",
+        "GDPR-Art83",
+        "GDPR-Art42",
+        "GDPR-Art30",
+        "GDPR-Art33"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q019",
+      "lang": "en",
+      "type": "cross_law",
+      "gold": [
+        "GDPR-Art30",
+        "AIA-Art49"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art71",
+        "AIA-Art49",
+        "AIA-AnnexV",
+        "GDPR-Art30",
+        "AIA-Art50",
+        "AIA-Art27",
+        "AIA-Art47",
+        "AIA-Art36",
+        "AIA-Art60",
+        "AIA-Art30"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6509209298071326
+    },
+    {
+      "id": "q020",
+      "lang": "fr",
+      "type": "cross_law",
+      "gold": [
+        "GDPR-Art80",
+        "AIA-Art77"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art77",
+        "AIA-AnnexVII",
+        "AIA-Art11",
+        "AIA-Art7",
+        "AIA-Art82",
+        "AIA-AnnexIII",
+        "GDPR-Art80",
+        "AIA-Art5",
+        "AIA-Art75",
+        "AIA-Art78"
+      ],
+      "recall@1": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 0.8175295903539445
+    }
+  ]
+}
