@@ -35,7 +35,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] `[fix]` Coverage `omit` for I/O glue modules (R8)
 - [x] `.github/workflows/ci.yml` (check the action versions)
 - [x] Placeholder test, one-line pitch in the README
-- [ ] Push and confirm the CI badge is green
+- [x] Push and confirm the CI badge is green
 - [x] Create the `docs/decisions/` folder
 
 ### Step 1: Legal text
@@ -71,15 +71,19 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 3: Baseline RAG + eval harness
 
-- [ ] `data/eval/splits.json`: 70/15/15 **by article**, seed 42
-- [ ] 50 hand-written golden questions (≥ 15 FR; types lookup / definition / obligation / cross-law / not-covered)
-- [ ] Naive baseline: 150-word windows, BGE-M3, cosine only
-- [ ] `[test]` Metric tests (article dedup, MRR = 1/3, nDCG by hand)
-- [ ] `src/actwise/evaluation/metrics.py`
-- [ ] `[fix]` The runner leaves empty-gold questions out of retrieval metrics (R7)
-- [ ] `evals/run_eval.py --split --profile --llm --slice`, writing a JSON report and a markdown summary
-- [ ] `make eval-retrieval`
-- [ ] Commit `evals/reports/baseline.json`
+- [x] `data/eval/splits.json`: 70/15/15 **by article**, seed 42 (404 / 87 / 87 units)
+- [x] 50 hand-written golden questions (18 FR; 20 dev, 20 test, 6 train, 4 out of scope; all five types)
+- [x] Naive baseline: 150-word windows, BGE-M3 (pinned revision), cosine only
+- [x] `[test]` Metric tests (article dedup, MRR = 1/3, nDCG by hand) + bootstrap intervals
+- [x] `src/actwise/evaluation/metrics.py`
+- [x] `[fix]` The runner leaves empty-gold questions out of retrieval metrics (R7)
+- [x] `evals/run_eval.py --system --split --name`, writing a JSON report and a markdown summary (`--llm` / `--slice` come with generation in steps 5–6)
+- [x] `make eval-retrieval` (`SYSTEM=`, `SPLIT=`)
+- [x] Commit `evals/reports/baseline-dev.json`: Recall@5 0.650, MRR@10 0.504, nDCG@10 0.547 (dev, n = 20)
+- [x] `tests/test_golden_set.py`: labels valid, no split-spanning question, no article named in a question
+- [x] Resumable embedding cache (`.cache/embeddings`, keyed by model, revision and texts)
+- [x] Parser: drop `*` footnote marks, glue punctuation after a removed mark (107 chunks, text only)
+- [x] Decision note: evaluation protocol (`docs/decisions/002-evaluation-protocol.md`)
 
 ---
 
@@ -100,8 +104,8 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] `retrieval/hybrid.py`
 - [ ] Optional: filter or boost by query language
 - [ ] Cross-encoder `bge-reranker-v2-m3` ablation
-- [ ] `docs/ablations.md`: baseline, A, B, C, D, with ms/query
-- [ ] Error analysis of the 20 worst dev questions → fix the biggest cause → `docs/failure_cases.md`
+- [ ] `docs/ablations.md`: baseline (done), A, B, C, D, with ms/query
+- [ ] Error analysis of the 20 worst dev questions → fix the biggest cause → `docs/failure_cases.md` (start from the baseline patterns in `docs/ablations.md`)
 - [ ] Reach **Recall@5 ≥ 0.85** on dev
 - [ ] Decision notes: fusion, rerank
 
@@ -124,6 +128,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] `[fix]` Serving profile fails over quickly (`max_tries=2`, per-request deadline) (R5)
 - [ ] `llm/factory.py`
 - [ ] Script: the same prompt through Gemini, Groq (and Anthropic if you have credits), printing answer, tokens and latency
+- [ ] Baseline answers with a plain prompt and no citation check (deferred from step 3)
 
 ### Step 6: Cited answers, guardrails, prompts, judge
 

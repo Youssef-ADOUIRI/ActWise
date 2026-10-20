@@ -47,17 +47,22 @@ class Chunk:
         return asdict(self)
 
 
-def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
-    """Windows of `max_words` words; consecutive windows share `overlap` words."""
-    if len(words) <= max_words:
-        return [" ".join(words)]
+def window_starts(n_words: int, max_words: int, overlap: int) -> list[int]:
+    """Start of each window of `max_words` words; consecutive windows share `overlap` words."""
+    if n_words <= max_words:
+        return [0]
     step = max_words - overlap
-    windows = []
-    for start in range(0, len(words), step):
-        windows.append(" ".join(words[start : start + max_words]))
-        if start + max_words >= len(words):
+    starts = []
+    for start in range(0, n_words, step):
+        starts.append(start)
+        if start + max_words >= n_words:
             break
-    return windows
+    return starts
+
+
+def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
+    starts = window_starts(len(words), max_words, overlap)
+    return [" ".join(words[start : start + max_words]) for start in starts]
 
 
 def chunk_units(
