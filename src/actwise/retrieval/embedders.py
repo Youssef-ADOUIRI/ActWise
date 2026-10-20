@@ -15,10 +15,13 @@ import numpy as np
 class Embedder(Protocol):
     config: dict[str, Any]
 
-    def encode(self, texts: list[str], kind: str = "passage") -> np.ndarray: ...
+    def encode(self, texts: list[str], kind: str = "passage") -> np.ndarray:
+        """One L2-normalised float32 row per text; `kind` is "query" or "passage"."""
+        ...
 
 
 def l2_normalize(x: np.ndarray) -> np.ndarray:
+    """Scale each row to unit length, so a dot product is a cosine similarity."""
     return x / np.clip(np.linalg.norm(x, axis=1, keepdims=True), 1e-12, None)
 
 
@@ -34,6 +37,7 @@ class SentenceTransformerEmbedder:
         query_prefix: str = "",
         passage_prefix: str = "",
     ):
+        """Load the model (at `revision`, if given) and record the settings in `config`."""
         from sentence_transformers import SentenceTransformer  # heavy: imported only when used
 
         # Pin `revision` (a Hub commit hash) so reported numbers stay reproducible.
@@ -49,6 +53,7 @@ class SentenceTransformerEmbedder:
         }
 
     def encode(self, texts: list[str], kind: str = "passage") -> np.ndarray:
+        """Add the prefix for `kind`, embed in batches and L2-normalise the result."""
         vectors = self.model.encode(
             [self.prefix[kind] + text for text in texts],
             batch_size=self.batch_size,

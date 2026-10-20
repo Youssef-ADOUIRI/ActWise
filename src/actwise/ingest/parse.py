@@ -73,6 +73,7 @@ def normalise_lines(text: str) -> list[str]:
 
 
 def _is_punctuation(line: str) -> bool:
+    """True if `line` is only ",.;:)" characters, which attach to the word before."""
     return all(ch in ",.;:)" for ch in line)
 
 
@@ -117,10 +118,16 @@ def _glue_lone_markers(lines: list[str]) -> list[str]:
 
 
 def _line_after(lines: list[str], i: int) -> str:
+    """The line after line `i`, such as a heading's title; "" at the end of the text."""
     return lines[i + 1] if i + 1 < len(lines) else ""
 
 
 def parse_regulation(text: str) -> list[Unit]:
+    """Plain text of a regulation -> its recitals, articles and annexes, in order.
+
+    Before `PREAMBLE_END`, numbered lines are recitals. After it, `ARTICLE` and
+    `ANNEX` headings open units, and `Unit.add_line()` fills the open one.
+    """
     lines = normalise_lines(text)
     in_preamble = any(PREAMBLE_END.match(line) for line in lines)
     units: list[Unit] = []

@@ -29,6 +29,7 @@ class Passage:
 
     @property
     def key(self) -> str:
+        """Storage key `id@lang`: the EN and FR versions of a passage share an `id`."""
         return f"{self.id}@{self.lang}"
 
 
@@ -43,26 +44,31 @@ class Hit:
 class EmbeddingCache:
     """Passage vectors saved in shards on disk, so a slow CPU run can stop and resume.
 
-    The folder name hashes the embedder config and every text: change either
-    and the cache starts fresh instead of serving stale vectors.
+    The folder name hashes the embedder config, the shard size and every text:
+    change any of them and the cache starts fresh instead of serving stale vectors.
     """
 
     def __init__(self, root: Path, config: dict[str, Any], texts: list[str], shard_size: int = 64):
+        """Choose the cache folder for these inputs; embed nothing until `fill()`."""
         blob = json.dumps({"config": config, "shard_size": shard_size, "texts": texts})
         self.dir = root / hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
         self.texts, self.shard_size = texts, shard_size
 
     @property
     def n_shards(self) -> int:
+        """Number of shards that hold all the texts."""
         return math.ceil(len(self.texts) / self.shard_size)
 
     def path(self, shard: int) -> Path:
+        """File of one shard: 00000.npy, 00001.npy, ..."""
         return self.dir / f"{shard:05d}.npy"
 
     def missing(self) -> list[int]:
+        """Shards not embedded yet, in order."""
         return [shard for shard in range(self.n_shards) if not self.path(shard).exists()]
 
     def fill(self, embedder: Embedder, shards: Iterable[int] | None = None) -> None:
+        """Embed the missing shards (or just `shards`), saving each as soon as it is done."""
         self.dir.mkdir(parents=True, exist_ok=True)
         todo = self.missing() if shards is None else list(shards)
         for done, shard in enumerate(todo, start=1):
@@ -73,6 +79,7 @@ class EmbeddingCache:
             log.info("embedded shard %d/%d (%d to go)", done, len(todo), len(todo) - done)
 
     def load(self) -> np.ndarray:
+        """All vectors in text order; RuntimeError if a shard is still missing."""
         if missing := self.missing():
             raise RuntimeError(f"{len(missing)} of {self.n_shards} shards are not embedded yet")
         return np.concatenate([np.load(self.path(shard)) for shard in range(self.n_shards)])
@@ -94,10 +101,12 @@ def build_store(
 
 class DenseRetriever:
     def __init__(self, passages: list[Passage], embedder: Embedder, store: NumpyStore):
+        """Keep the passages by storage key, so a search can return their text."""
         self.passages = {p.key: p for p in passages}
         self.embedder, self.store = embedder, store
 
     def search(self, query: str, top_k: int = 5) -> list[Hit]:
+        """Embed the query and return the `top_k` closest passages, best first."""
         vector = self.embedder.encode([query], kind="query")[0]
         hits = []
         for key, score in self.store.search(vector, top_k):

@@ -33,6 +33,7 @@ def unit_text(unit: Unit, lang: str) -> str:
 def naive_windows(
     units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
 ) -> list[Passage]:
+    """Fixed windows over the units laid end to end, each labelled with the article it starts in."""
     words: list[str] = []
     owners: list[str] = []  # article id of each word
     for unit in units:
@@ -48,6 +49,7 @@ def naive_windows(
 
 
 def naive_passages(raw_dir: Path = RAW_DIR) -> list[Passage]:
+    """Baseline passages for every page in `SOURCES`."""
     passages: list[Passage] = []
     for law, lang in SOURCES:
         units = parse_regulation(html_to_text(raw_dir / f"{law}.{lang}.html"))

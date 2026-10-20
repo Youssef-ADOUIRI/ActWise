@@ -19,6 +19,7 @@ OUT_FILE = Path("data/processed/chunks.jsonl")
 
 
 def build_chunks(raw_dir: Path = RAW_DIR) -> list[Chunk]:
+    """Parse and chunk every page in `SOURCES`."""
     chunks: list[Chunk] = []
     for law, lang in SOURCES:
         units = parse_regulation(html_to_text(raw_dir / f"{law}.{lang}.html"))
@@ -27,6 +28,7 @@ def build_chunks(raw_dir: Path = RAW_DIR) -> list[Chunk]:
 
 
 def write_jsonl(chunks: list[Chunk], path: Path = OUT_FILE) -> None:
+    """Write one chunk per line (UTF-8, LF line ends), so the file is identical on every OS."""
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", encoding="utf-8", newline="\n") as f:
         for chunk in chunks:
@@ -48,6 +50,7 @@ def summary(chunks: list[Chunk]) -> str:
 
 
 def main() -> None:
+    """Rebuild `OUT_FILE` and print the counts."""
     chunks = build_chunks()
     write_jsonl(chunks)
     print(summary(chunks))

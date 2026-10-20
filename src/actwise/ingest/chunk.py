@@ -44,6 +44,7 @@ class Chunk:
         return f"{header}\n{self.text}"
 
     def to_json(self) -> dict:
+        """The chunk as a plain dict: one line of chunks.jsonl."""
         return asdict(self)
 
 
@@ -61,6 +62,7 @@ def window_starts(n_words: int, max_words: int, overlap: int) -> list[int]:
 
 
 def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
+    """Words -> overlapping windows of text, placed by `window_starts()`."""
     starts = window_starts(len(words), max_words, overlap)
     return [" ".join(words[start : start + max_words]) for start in starts]
 
@@ -68,6 +70,7 @@ def split_words(words: list[str], max_words: int, overlap: int) -> list[str]:
 def chunk_units(
     units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
 ) -> list[Chunk]:
+    """One chunk per paragraph (or per window of a long one), with its stable id."""
     chunks: list[Chunk] = []
     for unit in units:
         numbered = any(p.number for p in unit.paragraphs)

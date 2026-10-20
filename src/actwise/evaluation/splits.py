@@ -41,15 +41,18 @@ def split_of(splits: dict[str, list[str]]) -> dict[str, str]:
 
 
 def load_splits(path: Path = SPLIT_FILE) -> dict[str, list[str]]:
+    """Read the committed splits: split name -> sorted article ids."""
     return json.loads(path.read_text(encoding="utf-8"))
 
 
 def corpus_articles(chunk_file: Path = CHUNK_FILE) -> list[str]:
+    """Every article-level id in the chunk file, recitals and annexes included, sorted."""
     with chunk_file.open(encoding="utf-8") as f:
         return sorted({article_id(json.loads(line)["id"]) for line in f})
 
 
 def main() -> None:
+    """Write `SPLIT_FILE` and print each split's counts by kind."""
     splits = make_splits(corpus_articles())
     SPLIT_FILE.parent.mkdir(parents=True, exist_ok=True)
     SPLIT_FILE.write_text(json.dumps(splits, indent=2) + "\n", encoding="utf-8", newline="\n")

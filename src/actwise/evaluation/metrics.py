@@ -20,6 +20,7 @@ def ranked_articles(retrieved: Iterable[str]) -> list[str]:
 
 
 def recall_at_k(retrieved: list[str], gold: set[str], k: int) -> float:
+    """Share of the gold articles in the top `k` distinct articles; gold must not be empty."""
     if not gold:
         raise ValueError("gold set is empty")
     top = set(ranked_articles(retrieved)[:k])
@@ -27,6 +28,7 @@ def recall_at_k(retrieved: list[str], gold: set[str], k: int) -> float:
 
 
 def reciprocal_rank(retrieved: list[str], gold: set[str], k: int = 10) -> float:
+    """1 / rank of the first gold article in the top `k`, or 0.0 if none is there."""
     for rank, article in enumerate(ranked_articles(retrieved)[:k], start=1):
         if article in gold:
             return 1.0 / rank
@@ -34,6 +36,7 @@ def reciprocal_rank(retrieved: list[str], gold: set[str], k: int = 10) -> float:
 
 
 def ndcg_at_k(retrieved: list[str], gold: set[str], k: int = 10) -> float:
+    """Normalised DCG with binary gains: 1.0 when the gold articles fill the top ranks."""
     ranked = ranked_articles(retrieved)[:k]
     dcg = sum(1.0 / math.log2(rank + 1) for rank, a in enumerate(ranked, start=1) if a in gold)
     ideal = sum(1.0 / math.log2(rank + 1) for rank in range(1, min(len(gold), k) + 1))
@@ -41,6 +44,7 @@ def ndcg_at_k(retrieved: list[str], gold: set[str], k: int = 10) -> float:
 
 
 def mean(values: list[float]) -> float:
+    """Average of the values, or 0.0 when there are none."""
     return sum(values) / len(values) if values else 0.0
 
 
