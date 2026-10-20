@@ -12,7 +12,7 @@ from pathlib import Path
 from actwise.ingest.build_chunks import RAW_DIR, SOURCES, parse_source
 from actwise.ingest.chunk import unit_id, window_starts
 from actwise.ingest.parse import Unit
-from actwise.retrieval.dense import Passage
+from actwise.retrieval.passages import Passage
 
 MAX_WORDS, OVERLAP = 150, 25  # the baseline's windows; independent of chunk.py's defaults
 HEADING = {

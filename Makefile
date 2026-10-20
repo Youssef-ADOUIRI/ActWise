@@ -1,4 +1,4 @@
-.PHONY: install lint test ingest splits index eval eval-retrieval serve deploy
+.PHONY: install lint test ingest splits index eval eval-retrieval ablations serve deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -21,13 +21,20 @@ ingest:
 splits:
 	uv run python -m actwise.evaluation.splits
 
+# Needs Qdrant: docker compose up -d qdrant. Vectors come from the embedding cache.
 index:
-	@echo "TODO step 4: embed chunks and upload to Qdrant"
+	uv run --extra local python -m actwise.retrieval.index
 
 # Retrieval metrics on the golden set. First run downloads the embedder;
 # vectors are cached in .cache/embeddings, so an interrupted run resumes.
 eval-retrieval:
 	uv run --extra local python evals/run_eval.py --system $(SYSTEM) --split $(SPLIT)
+
+# Every row of docs/ablations.md; the reranked run takes minutes on a laptop CPU.
+ablations:
+	for system in baseline dense bm25 hybrid hybrid-rerank hybrid-binding hybrid-rerank-binding; do \
+		uv run --extra local python evals/run_eval.py --system $$system --split $(SPLIT) || exit 1; \
+	done
 
 eval: eval-retrieval
 
