@@ -1,52 +1,114 @@
 """Evaluate retrieval on the golden set; write evals/reports/<name>.json and .md.
 
-    uv run --extra local python evals/run_eval.py --system baseline --split dev
+    uv run --extra local python evals/run_eval.py --system hybrid --split dev
 
-Questions follow the split of their gold articles. Tune on dev; report test
-numbers only once, at the end of the project.
+Systems are the rows of docs/ablations.md. Questions follow the split of their
+gold articles. Tune on dev; report test numbers only once, at the end of the project.
 """
 
 from __future__ import annotations
 
 import argparse
+import gc
 import hashlib
 import json
 import logging
 import subprocess
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any, Protocol
 
-from actwise.evaluation.golden import GOLDEN_FILE, load_golden, question_split
-from actwise.evaluation.runner import evaluate, to_markdown
+from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, question_split
+from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
-from actwise.retrieval.dense import DenseRetriever, Passage, build_store
-from actwise.retrieval.embedders import SentenceTransformerEmbedder
+from actwise.retrieval.bm25 import BM25
+from actwise.retrieval.dense import CACHE_DIR, DenseRetriever, build_store
+from actwise.retrieval.embedders import BGE_M3, SentenceTransformerEmbedder
+from actwise.retrieval.hybrid import HybridRetriever
 from actwise.retrieval.naive import MAX_WORDS, OVERLAP, naive_passages
+from actwise.retrieval.passages import Hit, Passage, chunk_passages
+from actwise.retrieval.rerank import BGE_RERANKER, CrossEncoderReranker
 
 REPORTS = Path("evals/reports")
-CACHE = Path(".cache/embeddings")
-# Hub name and pinned commit. 9a0624b is the bot-made safetensors variant of main (5617a9f):
-# same weights, but it loads without pickle and without transformers' silent PR redirect.
-BGE_M3 = ("BAAI/bge-m3", "9a0624b896d81da7492a910ffa53731274b6cf3d")
+
+
+class Retriever(Protocol):
+    config: dict[str, Any]
+
+    def search(self, query: str, top_k: int = 5) -> list[Hit]:
+        """The `top_k` best passages for the query, best first."""
+        ...
+
+
+def dense(passages: list[Passage]) -> DenseRetriever:
+    """Cosine search with the pinned BGE-M3 over cached passage vectors."""
+    embedder = SentenceTransformerEmbedder(*BGE_M3)
+    return DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE_DIR))
+
+
+def hybrid(rerank: bool = False, binding_first: bool = False) -> HybridRetriever:
+    """Dense and BM25 over the structure-aware chunks, fused with RRF."""
+    passages = chunk_passages()
+    reranker = CrossEncoderReranker(*BGE_RERANKER) if rerank else None
+    return HybridRetriever(dense(passages), BM25(passages), reranker, binding_first=binding_first)
 
 
 @dataclass(frozen=True)
 class System:
     description: str
-    passages: Callable[[], list[Passage]]
-    embedder: tuple[str, str]  # (model name, revision)
+    build: Callable[[], Retriever]
 
 
+CHUNKS = "structure-aware chunks with their headers"
 SYSTEMS = {
     "baseline": System(
-        description=f"Baseline: fixed {MAX_WORDS}-word windows ({OVERLAP} shared) ignoring "
+        f"Baseline: fixed {MAX_WORDS}-word windows ({OVERLAP} shared) ignoring "
         "structure, dense BGE-M3, cosine similarity, no rerank",
-        passages=naive_passages,
-        embedder=BGE_M3,
+        lambda: dense(naive_passages()),
+    ),
+    "dense": System(f"A: {CHUNKS}, dense BGE-M3, no rerank", lambda: dense(chunk_passages())),
+    "bm25": System(f"B: {CHUNKS}, BM25 only, no rerank", lambda: BM25(chunk_passages())),
+    "hybrid": System(f"C: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, no rerank", hybrid),
+    "hybrid-rerank": System(
+        f"D: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, top 20 reranked by bge-reranker-v2-m3",
+        lambda: hybrid(rerank=True),
+    ),
+    "hybrid-binding": System(
+        "E: as C, with articles and annexes ranked before recitals",
+        lambda: hybrid(binding_first=True),
+    ),
+    "hybrid-rerank-binding": System(
+        "F: as D, with articles and annexes ranked before recitals",
+        lambda: hybrid(rerank=True, binding_first=True),
     ),
 }
+
+
+def in_two_passes(hybrid: HybridRetriever, questions: list[Question]) -> tuple[SearchFn, float]:
+    """Fuse for every question, free the embedder, then rerank on demand.
+
+    The embedder and the reranker take about 2 GB each, more than this laptop can
+    hold together. Rankings are exactly those of `hybrid.search()`; the returned
+    float is the stage-1 time per query, which the caller adds to the rerank time.
+    """
+    queries = [q.question for q in questions if q.gold]
+    hybrid.fused("warm-up")
+    start = time.perf_counter()
+    fused = {query: hybrid.fused(query) for query in queries}
+    first_ms = (time.perf_counter() - start) * 1000 / len(queries)
+    hybrid.dense.embedder.unload()
+    gc.collect()
+    hybrid.reranked("warm-up", fused[queries[0]])  # load the reranker outside the timings
+
+    def search(query: str, n: int) -> list[str]:
+        """Rerank the stage-1 list of a golden question."""
+        ranked = hybrid.reranked(query, fused[query])[:n]
+        return [hybrid.dense.passages[key].id for key, _ in ranked]
+
+    return search, first_ms
 
 
 def fingerprint(path: Path) -> str:
@@ -81,24 +143,24 @@ def main() -> None:
     article_split = split_of(load_splits())
     questions = [q for q in load_golden() if question_split(q, article_split) == args.split]
 
-    passages = system.passages()
-    embedder = SentenceTransformerEmbedder(*system.embedder)
-    retriever = DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE))
-    retriever.search("warm-up", 1)  # keep one-off start-up costs out of the timings
+    retriever = system.build()
+    if isinstance(retriever, HybridRetriever) and retriever.reranker is not None:
+        search, first_ms = in_two_passes(retriever, questions)
+    else:
+        retriever.search("warm-up", 1)  # keep one-off start-up costs (model loading) out of timings
+        search, first_ms = (lambda query, n: [hit.id for hit in retriever.search(query, n)]), 0.0
 
     report = {
         "name": args.name or f"{args.system}-{args.split}",
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
-        "system": {
-            "name": args.system,
-            "description": system.description,
-            "embedder": embedder.config,
-            "passages": len(passages),
-        },
+        "system": {"name": args.system, "description": system.description, **retriever.config},
         "inputs": {"golden": fingerprint(GOLDEN_FILE), "splits": fingerprint(SPLIT_FILE)},
-    } | evaluate(lambda query, n: [hit.id for hit in retriever.search(query, n)], questions)
+    } | evaluate(search, questions)
+    if first_ms:  # timed in two passes: add the stage-1 time to the rerank time
+        report["system"]["timed_in_two_passes"] = True
+        report["metrics"]["ms_per_query"] = round(report["metrics"]["ms_per_query"] + first_ms, 1)
 
     REPORTS.mkdir(parents=True, exist_ok=True)
     out = REPORTS / report["name"]

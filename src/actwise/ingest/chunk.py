@@ -72,6 +72,12 @@ def unit_id(unit: Unit, law: str) -> str:
     return f"{PREFIX[law]}-{TAG[unit.kind]}{unit.number}"
 
 
+def law_of(chunk_id: str) -> str:
+    """AIA-Art5-1 -> "ai_act": the law of a chunk id, as in `Chunk.law`."""
+    code = chunk_id.split("-", 1)[0]
+    return next(law for law, prefix in PREFIX.items() if prefix == code)
+
+
 def chunk_units(
     units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
 ) -> list[Chunk]:
