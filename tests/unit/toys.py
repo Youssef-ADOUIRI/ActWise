@@ -1,4 +1,4 @@
-"""Toy passages and a bag-of-words embedder, shared by the retrieval tests."""
+"""Toys shared by the tests: passages, a bag-of-words embedder and a scripted LLM."""
 
 import numpy as np
 
@@ -6,6 +6,32 @@ from actwise.retrieval.embedders import l2_normalize
 from actwise.retrieval.passages import Passage
 
 VOCAB = ["erasure", "ban", "risk", "fine"]
+
+
+class ScriptedLLM:
+    """Fake LLM: returns or raises its script in order (the last item repeats); records calls."""
+
+    def __init__(self, *script, model="scripted"):
+        """`script` holds `LLMResponse`s and exceptions."""
+        self.script = list(script)
+        self.config = {"provider": "fake", "model": model}
+        self.calls = []
+
+    def chat(self, messages, tools=None, temperature=None, max_tokens=1024, deadline=None):
+        """Record the request, then answer with the next item of the script."""
+        self.calls.append(
+            {
+                "messages": messages,
+                "tools": tools,
+                "temperature": temperature,
+                "max_tokens": max_tokens,
+                "deadline": deadline,
+            }
+        )
+        item = self.script[min(len(self.calls), len(self.script)) - 1]
+        if isinstance(item, Exception):
+            raise item
+        return item
 
 
 class CountingEmbedder:
