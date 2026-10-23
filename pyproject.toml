@@ -15,6 +15,7 @@ dependencies = [
     "pydantic",
     "pypdf",
     "python-docx",
+    "python-dotenv",
     "python-multipart",
     "uvicorn[standard]",
 ]
@@ -67,4 +68,5 @@ omit = [
     "src/actwise/integrations/slack_bot.py",
     "src/actwise/integrations/mcp_server.py",
     "src/actwise/integrations/sheets.py",
+    "src/actwise/llm/smoke.py",
 ]
