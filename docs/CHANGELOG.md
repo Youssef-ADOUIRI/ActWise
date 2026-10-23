@@ -5,6 +5,43 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-20: Step 4, hybrid retrieval, reranking and ablations
+
+**Goal:** reach Recall@5 ≥ 0.85 on dev, with each change measured on its own.
+**Branch:** `step-4-hybrid-rerank`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/retrieval/passages.py` | `Passage` and `Hit` (moved from `dense.py`); `chunk_passages()` builds structure-aware passages with their headers; payloads hold `key`, `id`, `law` and `lang` | Every retriever shares them; stores filter on the payload |
+| `src/actwise/retrieval/bm25.py` | Okapi BM25 on an inverted index; accents folded, elisions split | No dependency; finds exact legal terms, and French typed without accents still matches |
+| `src/actwise/retrieval/fusion.py` | Reciprocal rank fusion | Merges rankings with no score normalisation or tuned weight (decision 003) |
+| `src/actwise/retrieval/hybrid.py` | Stage 1: dense + BM25 fused with RRF; stage 2: optional rerank. `binding_first` ranks articles and annexes before recitals | The fix for the biggest failure cause (`docs/failure_cases.md`) |
+| `src/actwise/retrieval/rerank.py` | `CrossEncoderReranker` for `bge-reranker-v2-m3`, pinned to commit `953dc6f` | Rows D and F (decision 004) |
+| `src/actwise/retrieval/stores.py` | `Store` protocol and payload filters; `QdrantStore` with point id = `uuid5(id@lang)`; `FallbackStore` | R1: with `uuid5(chunk id)`, FR points would overwrite EN ones. The fallback keeps search up if Qdrant fails |
+| `src/actwise/retrieval/dense.py` | The embedding cache is keyed by text; `build_store()` returns a store with payloads | Rows A to F share one set of vectors, and an edited passage re-embeds only itself |
+| `src/actwise/retrieval/embedders.py` | The `BGE_M3` pin moves here; the model loads on first use; `unload()` | With a warm cache the model never loads (`make index` takes 10 s) |
+| `src/actwise/retrieval/index.py`, `docker-compose.yml`, `Makefile` | `make index` uploads the 3,799 chunks to Qdrant 1.19.2; `make ablations` runs every row | One command per step |
+| `src/actwise/ids.py`, `src/actwise/ingest/chunk.py` | `is_recital()`, `law_of()` | For the ordering rule and the payloads |
+| `evals/run_eval.py` | Systems baseline and A to F; reranked rows run in two passes | The embedder and the reranker take about 2 GB each, more than the laptop can hold together |
+| `evals/reports/*-dev.json`, `.md` | One report per row, all from commit `8e5e84b` | The source of the table |
+| `docs/ablations.md` | The filled table, what each change did, and the choice of E | The step 4 deliverable |
+| `docs/failure_cases.md` | Each dev failure labelled with its cause, before and after the fix | Picks the fix and lists what is left |
+| `docs/decisions/003-fusion.md`, `004-rerank.md` | Fusion and reranking decisions | Design record |
+| `tests/unit/` | `test_rrf`, `test_bm25`, `test_hybrid_end_to_end`, `test_reranker_reorders`, `test_store_failover`, `test_gdpr_filter`, plus cache, payload and lazy-model tests; shared toys in `toys.py` | `test_gdpr_filter` runs on Qdrant in process in CI, and on the Docker server when one is running |
+| `README.md` | Retrieval commands in the quickstart | |
+
+**Results (dev, n = 20):**
+- **E (the default):** Recall@5 **0.925** [0.80, 1.00], MRR@10 0.806, 149 ms/query, against a baseline of 0.650.
+- **F (with the reranker):** MRR@10 0.906, at 11.8 s/query.
+- **Qdrant:** gives the same top 10 as the NumPy store in 150 of 150 samples.
+- **Checks:** 110 tests pass, plus the Qdrant server test; coverage is 93.6 %; ruff and mypy are clean.
+
+**Cache migration:** the step 3 baseline vectors moved into the text-keyed cache bit for bit, and the baseline report reproduces field for field.
+
+**Deferred:** NumPy snapshots for the cloud image (`save()`/`load()`) arrive with `make index-cloud` in step 9.
+
+---
+
 ## 2026-10-20: Cleanup of the step 3 code
 
 **Goal:** give each rule that step 3 wrote twice a single home, and drop options nothing uses. No output changes.

@@ -44,7 +44,7 @@
 | ------------------------------------------------------------------------------- | ----- | ----------- | -------------- |
 | [M0 Foundation and corpus](#m0-foundation-and-corpus)                           | 1     | 0, 1, 2     | ✅ Done        |
 | [M1 Measured baseline](#m1-measured-baseline)                                   | 2     | 3           | ✅ Done        |
-| [M2 Retrieval quality](#m2-retrieval-quality)                                   | 3–4   | 4           | ⬜             |
+| [M2 Retrieval quality](#m2-retrieval-quality)                                   | 3–4   | 4           | ✅ Done        |
 | [M3 Grounded generation](#m3-grounded-generation)                               | 3–4   | 5, 6        | ⬜             |
 | [M4 Classifier agent and API](#m4-classifier-agent-and-api)                     | 5     | 7, 8        | ⬜             |
 | [M5 Own model and framework comparison](#m5-own-model-and-framework-comparison) | 6     | 9, 10       | ⬜             |
@@ -71,7 +71,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done (exit criteria met a
 
 ### M2 Retrieval quality
 
-**Delivers:** Qdrant + BM25 + RRF + an optional reranker, `docs/ablations.md` (baseline → A–D, with ms/query), and `docs/failure_cases.md`.
+**Delivers:** Qdrant + BM25 + RRF + an optional reranker, `docs/ablations.md` (baseline → A–F, with ms/query), and `docs/failure_cases.md`.
 **Exit criteria:** **Recall@5 ≥ 0.85** on dev, or the gap is explained in `failure_cases.md`.
 
 ### M3 Grounded generation
