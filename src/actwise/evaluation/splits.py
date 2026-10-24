@@ -17,7 +17,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 from actwise.ids import article_id, parse_id
-from actwise.ingest.build_chunks import OUT_FILE
+from actwise.ingest.build_chunks import OUT_FILE, load_chunks
 
 SPLIT_FILE = Path("data/eval/splits.json")
 SEED = 42
@@ -47,8 +47,7 @@ def load_splits(path: Path = SPLIT_FILE) -> dict[str, list[str]]:
 
 def corpus_articles(chunk_file: Path = OUT_FILE) -> list[str]:
     """Every article-level id in the chunk file, recitals and annexes included, sorted."""
-    with chunk_file.open(encoding="utf-8") as f:
-        return sorted({article_id(json.loads(line)["id"]) for line in f})
+    return sorted({article_id(c.id) for c in load_chunks(chunk_file)})
 
 
 def main() -> None:

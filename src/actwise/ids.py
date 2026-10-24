@@ -45,6 +45,11 @@ def is_recital(chunk_id: str) -> bool:
     return (parse_id(chunk_id) or {}).get("tag") == "Rec"
 
 
+def paragraph_id(chunk_id: str) -> str:
+    """AIA-Art3-12#2 -> AIA-Art3-12: the parts of a long paragraph are cited as the paragraph."""
+    return chunk_id.split("#")[0]
+
+
 def article_id(chunk_id: str) -> str:
     """AIA-Art6-2#1 -> AIA-Art6, the level used for gold labels."""
     parts = parse_id(chunk_id)

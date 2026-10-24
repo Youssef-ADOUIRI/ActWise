@@ -1,23 +1,26 @@
-"""Answer golden questions from retrieved passages, and keep the answers for scoring in step 6.
+"""Answer golden questions, judge the answers, and render them for docs/generation.md.
 
-The baseline prompt is plain on purpose: no citation format and no refusal rule,
-so the cited prompts of step 6 have a "before" to beat.
+The step 5 baseline prompt stays plain on purpose: no citation format and no refusal
+rule, so the cited prompts have a "before" to beat.
 """
 
 from __future__ import annotations
 
-from collections import Counter
 from collections.abc import Callable, Sequence
+from dataclasses import asdict
 from typing import Any
 
 from actwise.evaluation.golden import Question
+from actwise.evaluation.judge import judge_answer
+from actwise.generation.rag import CONTEXT_PASSAGES, AskResult, Search, sources_of
 from actwise.llm.base import LLM, Message
-from actwise.retrieval.passages import Hit, Passage
+from actwise.retrieval.passages import Passage
 
 PLAIN_PROMPT = (
     "Answer the question using the context below.\n\nContext:\n{context}\n\nQuestion: {question}"
 )
-CONTEXT_PASSAGES = 5  # the generator reads the top 5 passages (decision 004)
+
+Ask = Callable[[str, str], AskResult]  # (question, lang) -> result, like RagPipeline.ask
 
 
 def plain_messages(question: str, passages: Sequence[Passage]) -> list[Message]:
@@ -26,59 +29,70 @@ def plain_messages(question: str, passages: Sequence[Passage]) -> list[Message]:
     return [{"role": "user", "content": PLAIN_PROMPT.format(context=context, question=question)}]
 
 
+def plain_ask(llm: LLM, search: Search, question: str, lang: str) -> AskResult:
+    """The baseline answer: no citation check and no refusal, at temperature 0."""
+    hits = search(question, CONTEXT_PASSAGES)
+    reply = llm.chat(plain_messages(question, hits), temperature=0)
+    return AskResult(reply.text.strip(), "", [], [], sources_of(hits, lang), reply)
+
+
+def quote(text: str) -> list[str]:
+    """Markdown quote lines for a block of text; a blank line becomes a bare ">"."""
+    return [f"> {line}".rstrip() for line in text.strip().splitlines()]
+
+
 def answer_questions(
-    llm: LLM,
-    search: Callable[[str, int], list[Hit]],
-    questions: list[Question],
-    top_k: int = CONTEXT_PASSAGES,
-) -> dict[str, Any]:
-    """Answer every question, out-of-scope ones included, at temperature 0: one row each."""
+    ask: Ask, questions: list[Question], judge: LLM | None = None
+) -> list[dict[str, Any]]:
+    """One row per question, out-of-scope ones included; the judge scores each answer given."""
     rows: list[dict[str, Any]] = []
     for question in questions:
-        hits = search(question.question, top_k)
-        response = llm.chat(plain_messages(question.question, hits), temperature=0)
-        rows.append(
-            {
-                "id": question.id,
-                "lang": question.lang,
-                "type": question.type,
-                "question": question.question,
-                "passages": [hit.key for hit in hits],
-                "answer": response.text,
-                "model": response.model,
-                "input_tokens": response.input_tokens,
-                "output_tokens": response.output_tokens,
-            }
-        )
-    summary = {
-        "n": len(rows),
-        "models": dict(Counter(row["model"] for row in rows)),
-        "input_tokens": sum(row["input_tokens"] for row in rows),
-        "output_tokens": sum(row["output_tokens"] for row in rows),
-    }
-    return {"prompt": PLAIN_PROMPT, "top_k": top_k, "summary": summary, "per_question": rows}
+        result = ask(question.question, question.lang)
+        reply = result.reply
+        row = {
+            "id": question.id,
+            "lang": question.lang,
+            "type": question.type,
+            "question": question.question,
+            "gold": list(question.gold),
+            "answer": result.answer,
+            "refused": result.refused,
+            "reason": result.reason,
+            "citations": result.citations,
+            "invented": result.invented,
+            "sources": result.sources,
+            "model": reply.model if reply else "",
+            "input_tokens": reply.input_tokens if reply else 0,
+            "output_tokens": reply.output_tokens if reply else 0,
+        }
+        if judge is not None and not result.refused:
+            verdict = judge_answer(judge, question.question, result.sources, result.answer)
+            row["judge"] = asdict(verdict)
+        rows.append(row)
+    return rows
 
 
 def answers_markdown(answers: dict[str, Any]) -> str:
-    """Render the answers as Markdown: a summary line, then each question and its quoted answer."""
+    """Render the answers: the headline numbers, then each question and its quoted answer."""
     s = answers["summary"]
-    models = ", ".join(f"{model} ({n})" for model, n in s["models"].items())
     lines = [
         "",
-        "## Answers",
+        f"## Answers: `{answers['prompt']}`",
         "",
-        f"Plain prompt, top {answers['top_k']} passages, temperature 0. {s['n']} answers by "
-        f"{models}; {s['input_tokens']:,} input and {s['output_tokens']:,} output tokens.",
+        f"Top {CONTEXT_PASSAGES} passages, temperature 0, judge: {answers['judge'] or 'none'}.",
+        "",
+        "| Metric | Value |",
+        "|---|---|",
     ]
+    lines += [f"| {key} | {value} |" for key, value in s.items() if not isinstance(value, dict)]
     for row in answers["per_question"]:
-        lines += [
-            "",
-            f"### {row['id']} ({row['lang']}, {row['type']})",
-            "",
-            f"**Question:** {row['question']}",
-            "",
-            f"**Answer** ({row['model']}):",
-            "",
-        ]
-        lines += [f"> {line}".rstrip() for line in row["answer"].strip().splitlines()]
+        lines += ["", f"### {row['id']} ({row['lang']}, {row['type']})", ""]
+        lines += [f"**Question:** {row['question']}", ""]
+        status = f"refused ({row['reason']})" if row["refused"] else row["model"]
+        lines += [f"**Answer** ({status}):", ""]
+        lines += quote(row["answer"])
+        if row["invented"]:
+            lines += ["", f"Invented citations removed: {', '.join(row['invented'])}"]
+        if verdict := row.get("judge"):
+            lines += ["", f"Judge: {verdict['score']}/5. {verdict['reason']}"]
     return "\n".join(lines) + "\n"

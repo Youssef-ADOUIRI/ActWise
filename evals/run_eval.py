@@ -1,12 +1,13 @@
 """Evaluate retrieval on the golden set; write evals/reports/<name>.json and .md.
 
     uv run --extra local python evals/run_eval.py --system hybrid --split dev
-    uv run --extra local python evals/run_eval.py --system baseline --split dev --llm
+    uv run --extra local python evals/run_eval.py --system hybrid-binding --prompt answer.v1 --judge
 
 Systems are the rows of docs/ablations.md. Questions follow the split of their
 gold articles. Tune on dev; report test numbers only once, at the end of the project.
-With --llm, each question is also answered from its top passages by the LLM chain
-in .env (answers are cached in .cache/llm), to be scored in step 6.
+With --prompt, each question is also answered by the LLM in .env: "plain" is the step 5
+baseline, answer.vN the cited pipeline. --judge scores the answers with JUDGE_MODEL.
+Every LLM call is cached in .cache/llm, so a re-run costs nothing.
 """
 
 from __future__ import annotations
@@ -22,16 +23,21 @@ import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from functools import partial
 from pathlib import Path
 from typing import Any, Protocol
 
 from dotenv import load_dotenv
 
-from actwise.evaluation.answers import answer_questions, answers_markdown
+from actwise.evaluation.answers import Ask, answer_questions, answers_markdown, plain_ask
+from actwise.evaluation.generation import summarise_answers
 from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, question_split
+from actwise.evaluation.judge import JUDGE_PROMPT
 from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
-from actwise.llm.factory import OFFLINE, build_llm
+from actwise.generation.prompts import answer_prompts, load_prompt
+from actwise.generation.rag import RagPipeline
+from actwise.llm.factory import OFFLINE, build_judge, build_llm
 from actwise.retrieval.bm25 import BM25
 from actwise.retrieval.dense import CACHE_DIR, DenseRetriever, build_store
 from actwise.retrieval.embedders import BGE_M3, SentenceTransformerEmbedder
@@ -142,15 +148,18 @@ def main() -> None:
     )
     parser.add_argument("--system", choices=SYSTEMS, default="baseline")
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
-    parser.add_argument("--name", help="report name (default: <system>-<split>[-answers])")
-    parser.add_argument(
-        "--llm", action="store_true", help="also answer each question (plain prompt)"
-    )
+    parser.add_argument("--name", help="report name (default: <system>-<split>[-<prompt>])")
+    parser.add_argument("--prompt", choices=["plain", *answer_prompts()], help="answer too")
+    parser.add_argument("--judge", action="store_true", help="score the answers (with --prompt)")
     args = parser.parse_args()
+    if args.judge and not args.prompt:
+        parser.error("--judge needs --prompt")
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)  # our progress, not every HTTP call
     load_dotenv()  # .env fills in what the environment doesn't set
-    llm = build_llm(os.environ, OFFLINE) if args.llm else None  # a bad .env fails before any work
+    # Built first, so a bad .env fails before any model loads.
+    llm = build_llm(os.environ, OFFLINE) if args.prompt else None
+    judge = build_judge(os.environ) if args.judge else None
 
     system = SYSTEMS[args.system]
     article_split = split_of(load_splits())
@@ -159,14 +168,14 @@ def main() -> None:
     retriever = system.build()
     if isinstance(retriever, HybridRetriever) and retriever.reranker is not None:
         if llm is not None:
-            parser.error("--llm can't run a reranked system yet: both 2 GB models would be loaded")
+            parser.error("--prompt can't use a reranked system yet: both 2 GB models would load")
         search, first_ms = in_two_passes(retriever, questions)
     else:
         retriever.search("warm-up", 1)  # keep one-off start-up costs (model loading) out of timings
         search, first_ms = (lambda query, n: [hit.id for hit in retriever.search(query, n)]), 0.0
 
     report = {
-        "name": args.name or f"{args.system}-{args.split}" + ("-answers" if args.llm else ""),
+        "name": args.name or "-".join(filter(None, [args.system, args.split, args.prompt])),
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
@@ -185,18 +194,35 @@ def main() -> None:
 
     markdown = to_markdown(report)
     if llm is not None:
-        answers = answer_questions(llm, retriever.search, questions)
-        answers["summary"]["cache"] = {"hits": llm.hits, "misses": llm.misses}
+        ask: Ask = (
+            partial(plain_ask, llm, retriever.search)
+            if args.prompt == "plain"
+            else RagPipeline(llm, retriever.search, load_prompt(args.prompt)).ask
+        )
+        rows = answer_questions(ask, questions, judge)
+        cache = {"answers": [llm.hits, llm.misses], "judge": judge and [judge.hits, judge.misses]}
+        answers = {
+            "prompt": args.prompt,
+            "judge": judge and {**judge.config, "prompt": JUDGE_PROMPT},
+            "summary": summarise_answers(rows) | {"cache_hits_misses": cache},
+            "per_question": rows,
+        }
         report |= {"llm": llm.config, "answers": answers}
         markdown += answers_markdown(answers)
         s = answers["summary"]
-        print(f"answers: {s['n']} by {s['models']}, cache {s['cache']}")
+        print(
+            f"answers: refusals {s['refusal_rate']}, false refusals {s['false_refusal_rate']}, "
+            f"invented {s['invented_citations']} (shown {s['invented_shown']}), "
+            f"faithfulness {s['faithfulness']}, "
+            f"precision strict {s['citation_precision_strict']} / lenient "
+            f"{s['citation_precision_lenient']}; cache {cache}"
+        )
 
     REPORTS.mkdir(parents=True, exist_ok=True)
-    out = REPORTS / report["name"]
+    out = REPORTS / report["name"]  # names like answer.v1 hold a dot: add suffixes by hand
     json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    out.with_suffix(".json").write_text(json_text, encoding="utf-8", newline="\n")
-    out.with_suffix(".md").write_text(markdown, encoding="utf-8", newline="\n")
+    Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
+    Path(f"{out}.md").write_text(markdown, encoding="utf-8", newline="\n")
     print(f"wrote {out}.json and {out}.md")
 
 
