@@ -138,23 +138,37 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 6: Cited answers, guardrails, prompts, judge
 
-- [ ] `configs/prompts/answer.v1.md`
-- [ ] `[test]` `test_extract_citations`
-- [ ] `[test]` `test_verify_flags_invented`
-- [ ] `[test]` `test_rag_strips_invented_citations` (+ a case where an invented `AIA-Art6` sits next to a valid `AIA-Art6-2`)
-- [ ] `[test]` `test_rag_refuses_in_user_language` (+ variants like `NOT_COVERED.`)
-- [ ] `[test]` `test_redact_pii`
-- [ ] `[test]` `test_injection_detection`
-- [ ] `generation/citations.py`, `generation/rag.py`, `generation/guardrails.py`
-- [ ] `[fix]` Strip only the exact bracketed invented IDs (R2)
-- [ ] `[fix]` Robust `NOT_COVERED` detection (R3)
-- [ ] `answer.v2.md` + A/B on dev → record the winner
-- [ ] LLM judge prompt (score 1–5 + reason, JSON)
-- [ ] 60 human labels in `data/eval/human_labels.csv` → **kappa ≥ 0.6**
-- [ ] Citation precision, strict and lenient
-- [ ] `evals/make_synthetic.py`: 100 synthetic questions (~30 % FR), all reviewed by hand → 150 total
-- [ ] Re-run the Step 4 ablations on 150 questions; report hand-written and synthetic separately
-- [ ] Before the 150-question runs: honour `Retry-After` and skip a provider whose quota is spent (from the step 5 review)
+**6a (PR: cited answers, judge, review files)**
+
+- [x] `answer.v1` prompt (in `src/actwise/prompts/`, shipped with the package so serving finds it from any directory)
+- [x] `[test]` `test_extract_citations`
+- [x] `[test]` `test_verify_flags_invented`
+- [x] `[test]` `test_rag_strips_invented_citations` (+ a case where an invented `AIA-Art6` sits next to a valid `AIA-Art6-2`)
+- [x] `[test]` `test_rag_refuses_in_user_language` (+ variants like `NOT_COVERED.`)
+- [x] `[test]` `test_redact_pii`
+- [x] `[test]` `test_injection_detection`
+- [x] `generation/citations.py`, `generation/rag.py`, `generation/guardrails.py`
+- [x] `[fix]` Strip only the exact bracketed invented IDs (R2)
+- [x] `[fix]` Robust `NOT_COVERED` detection (R3)
+- [x] `answer.v2` + A/B on today's dev set (22 questions): v2 answers partly covered questions, so false refusals go from 4 to 0 (`docs/generation.md`)
+- [x] LLM judge prompt (score 1–5 + reason + unsupported citations, JSON) on `gpt-oss-120b` (Groq): Gemini 3.8 Flash is too slow and 3.6 Flash allows 20 requests a day
+- [x] Citation precision, strict and lenient
+- [x] `evals/make_synthetic.py`: 144 candidates (60 dev + 60 test in scope, 24 out of scope), screened by rule, pre-screened by Claude
+- [x] `evals/make_calibration.py`: blind sheet of 58 answers (45 real, 13 with a planted unsupported claim)
+- [x] Before the 150-question runs: honour `Retry-After` and Gemini's in-body `retryDelay`; evals use one provider, so a spent quota stops the run (skipping a spent provider while serving is in step 8)
+
+**Your hand-off**
+
+- [ ] Score the 58 answers in `data/eval/human_labels.csv` (read them in `human_labels.md`)
+- [ ] Confirm or override the keep / drop / fix marks in `data/eval/candidates.csv` (passages in `candidates.md`)
+
+**6b (PR: calibrated judge, 150+ questions)**
+
+- [ ] Kappa between the judge and the human labels → **kappa ≥ 0.6** (else `judge.v2`)
+- [ ] Merge the kept candidates into `golden.jsonl` (`source: hand | synthetic`) → 150+ questions, 10+ refusal questions in dev and in test
+- [ ] Re-run the Step 4 ablations on the grown dev set; report hand-written and synthetic separately
+- [ ] Confirm the A/B winner on the grown dev set
+- [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev)
 - [ ] Hit the dev targets: 0 invented · faithfulness ≥ 0.85 · citation precision ≥ 0.90 · refusals ≥ 95 %
 
 ---
@@ -181,6 +195,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] `[test]` `test_register_failure_is_ignored`
 - [ ] `api/guards.py`, `api/main.py`, `ingest/files.py`
 - [ ] `[fix]` One deadline per API request, passed to every `chat()` of `/ask` and `/classify` (R5, API side)
+- [ ] Skip a provider whose quota is spent while serving (a `blocked_until` next to the throttle; from the step 6a review)
 - [ ] `[fix]` Decide on the per-instance cap: document it or move it to Firestore (R6)
 - [ ] `api/app.py` wiring (profiles: local, cloud)
 - [ ] `make serve` + curl examples
