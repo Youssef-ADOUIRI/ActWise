@@ -51,3 +51,11 @@ def summarise_answers(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "input_tokens": sum(r["input_tokens"] for r in rows),
         "output_tokens": sum(r["output_tokens"] for r in rows),
     }
+
+
+def by_source(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """`summarise_answers()` for the hand-written and the synthetic questions apart."""
+    return {
+        source: summarise_answers([r for r in rows if r["source"] == source])
+        for source in sorted({r["source"] for r in rows})
+    }

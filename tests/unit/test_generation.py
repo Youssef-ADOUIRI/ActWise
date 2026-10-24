@@ -1,10 +1,11 @@
-from actwise.evaluation.generation import summarise_answers
+from actwise.evaluation.generation import by_source, summarise_answers
 
 
 def row(**fields):
     """An answer row with harmless defaults."""
     base = {
         "lang": "en",
+        "source": "hand",
         "gold": ["AIA-Art5"],
         "answer": "Banned [AIA-Art5-1].",
         "refused": False,
@@ -71,3 +72,16 @@ def test_no_judge_means_no_faithfulness():
     s = summarise_answers([row()])
 
     assert s["faithfulness"] is None and s["citation_precision_lenient"] is None
+
+
+def test_by_source():
+    """Hand-written and synthetic questions are summarised apart."""
+    rows = [
+        row(),
+        row(source="synthetic", refused=True, reason="uncited", citations=[], answer="r"),
+    ]
+
+    sources = by_source(rows)
+
+    assert sources["hand"]["false_refusal_rate"] == 0.0
+    assert sources["synthetic"]["false_refusal_rate"] == 1.0

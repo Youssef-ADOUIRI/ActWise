@@ -25,10 +25,10 @@ def article_split():
 
 
 def test_size_and_languages(questions):
-    """At least 50 questions with unique ids, in both languages, 15+ in French."""
+    """At least 150 questions with unique ids, in both languages, 15+ in French."""
     langs = Counter(q.lang for q in questions)
 
-    assert len(questions) >= 50
+    assert len(questions) >= 150
     assert len({q.id for q in questions}) == len(questions)
     assert set(langs) == {"en", "fr"}
     assert langs["fr"] >= 15
@@ -71,11 +71,19 @@ def test_no_question_spans_two_splits(questions, article_split):
 
 
 def test_dev_and_test_have_enough_scored_questions(questions, article_split):
-    """Dev and test each have at least 20 scored questions (decision 002)."""
+    """Dev and test each have at least 50 scored and 10 out-of-scope questions (decision 002)."""
     scored = Counter(question_split(q, article_split) for q in questions if q.gold)
+    refusals = Counter(q.split for q in questions if not q.gold)
 
-    assert scored["dev"] >= 20
-    assert scored["test"] >= 20
+    assert scored["dev"] >= 50 and scored["test"] >= 50
+    assert refusals["dev"] >= 10 and refusals["test"] >= 10
+
+
+def test_sources(questions):
+    """Every question is hand-written or reviewed synthetic; the 50 hand-written ones come first."""
+    assert {q.source for q in questions} == {"hand", "synthetic"}
+    assert [q.source for q in questions[:50]] == ["hand"] * 50
+    assert all(q.source == "synthetic" for q in questions[50:])
 
 
 def test_questions_do_not_name_the_article(questions):
