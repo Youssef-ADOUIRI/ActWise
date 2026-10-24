@@ -5,6 +5,45 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-24: Step 6a, cited answers, guardrails and the judge
+
+**Goal:** answers that cite only retrieved passages and refuse otherwise; a judge, answer metrics and a first prompt A/B; review files for the human steps of 6b.
+**Branch:** `step-6a-cited-answers`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/generation/citations.py` | Extract paragraph-level citation ids, flag invented ones, and strip exactly those ids from their brackets | R2: `str.replace` damaged valid ids such as `[AIA-Art6-2]` |
+| `src/actwise/generation/rag.py` | `RagPipeline`: refuses injection-looking questions, `NOT_COVERED` in any dress, and answers left with no valid citation. Citations are read back from the shown text, and the pipeline fails closed | R3. No citation reaches a user that the system can't back, on the serving path too |
+| `src/actwise/generation/guardrails.py` | PII redaction (used before logging) and injection regexes, EN and FR | Cheap input checks |
+| `src/actwise/prompts/*.md`, `generation/prompts.py` | Versioned prompts shipped in the package: `answer.v1`, `answer.v2`, `judge.v1`, and the synthetic and perturbation prompts. `json_object()` reads JSON replies | Serving finds them from any directory |
+| `src/actwise/evaluation/judge.py` | Verdicts as JSON: score 1–5, a reason and the unsupported citations. An unreadable reply stays unreadable, never a 0 | Faithfulness and lenient citation precision from one call |
+| `src/actwise/evaluation/generation.py` | Refusal rate, **false-refusal rate**, invented citations raw and shown, citation precision strict and lenient, faithfulness with an interval | Refusing everything must not pass the refusal target |
+| `src/actwise/evaluation/answers.py`, `evals/run_eval.py` | `--prompt plain\|answer.vN` and `--judge` replace `--llm`; one row format for the baseline and the cited pipeline | The A/B table in `docs/generation.md` |
+| `src/actwise/llm/factory.py` | `Profile.fallback` (evals use one model) and `build_judge` (`JUDGE_PROVIDER`, `JUDGE_MODEL`) | A prompt A/B must not mix two models. The judge is another model family |
+| `src/actwise/llm/wrappers.py` | Honour `Retry-After` and Gemini's in-body `retryDelay`; a wait over 60 s raises at once | Gemini's spent daily quota had burned four tries |
+| `src/actwise/evaluation/synthetic.py`, `evals/make_synthetic.py` | 144 golden-set candidates: 60 dev + 60 test in scope from seeded paragraphs, 24 out of scope; screened by rule | The 150-question set of 6b |
+| `evals/make_calibration.py` | A blind sheet of 58 answers, 13 of them with a planted unsupported claim | Without unfaithful items, kappa can't tell a good judge from a bad one |
+| `data/eval/candidates.csv`, `.md` | The candidates with Claude's pre-screen: 129 kept or fixed, 15 dropped, each with a reason | For you to confirm or override |
+| `data/eval/human_labels.csv`, `.md`, `_key.json` | The sheet to score, the reading file, and the key for 6b | Judge calibration |
+| `evals/reports/*-dev-{plain,answer.v1,answer.v2}.*` | Dev answer reports from commit `9d5aefa`; `baseline-dev-answers` becomes `baseline-dev-plain` | The source of `docs/generation.md` |
+| `docs/generation.md`, `docs/decisions/006-cited-answers.md` | The provisional A/B table and the design record | |
+| `ids.py`, `build_chunks.py`, `golden.py`, `splits.py` | `paragraph_id`, `load_chunks`, `NAMES_AN_ARTICLE` each get one home | Found by the `/simplify` pass |
+| `tests/unit/` | The six TODO tests, plus judge, metrics, candidate, Retry-After and fallback-profile tests | |
+
+**Results (dev, 22 questions, provisional):**
+- **v1** refuses 4 of 20 in-scope questions. They are partly covered: two by retrieval misses on cross-law questions, two by the strict prompt.
+- **v2** answers the covered part and has **0 false refusals**. Both v1 and v2 refuse 2 of 2 out-of-scope questions and invent no citation.
+- **Faithfulness** is 0.99–1.00 for every row, plain included, from a judge that is not calibrated yet.
+- **Checks:** 186 tests pass, coverage is 96 %, and ruff and mypy are clean. A full re-run is served from the cache.
+
+**Judge choice:**
+- `gemini-3.8-flash` takes 130–150 s for a one-word reply on the free tier, and `gemini-3.6-flash` allows 20 requests a day.
+- `openai/gpt-oss-120b` on Groq caught a planted claim, and costs about 1.5K tokens per verdict.
+
+**Left for 6b:** kappa from the human labels; merging the reviewed candidates; the ablations and the A/B on 150+ questions; and optionally dropping repeated passages from the context.
+
+---
+
 ## 2026-10-24: Step 5, the LLM provider layer
 
 **Goal:** one `chat()` over Gemini, Groq, Ollama and Anthropic, with a disk cache, retries and a fallback chain, so that evals can be re-run for free and the demo stays up.

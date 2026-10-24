@@ -1,0 +1,30 @@
+# 006: Cited answers: what reaches the user, and how answers are judged
+
+- **Options:**
+  - Show answers as the model writes them, or strip invented citations as the guide does.
+  - Refuse only on `NOT_COVERED`, or also refuse any answer left with no valid citation.
+  - Refuse partly covered questions (v1), or answer the covered part (v2).
+  - Cite chunk ids, or paragraph ids.
+  - Judge with the answering model, a stronger Gemini model, or another model family.
+  - Let evals fall back to another provider, or keep one model per run.
+- **Measured (dev, 20 in-scope and 2 out-of-scope questions, [generation.md](../generation.md)):**
+  - v1 refuses 4 of the 20 in-scope questions and v2 refuses none. Both refuse 2 of 2 out of scope, and neither invents a citation.
+  - Faithfulness is 0.99–1.00 for every row, plain baseline included.
+  - `gemini-3.8-flash` takes 130–150 s for a one-word reply on the free tier, and `gemini-3.6-flash` allows 20 requests a day.
+  - `gpt-oss-120b` on Groq caught a planted unsupported claim and returns clean JSON, at about 1.5K tokens per verdict.
+- **Chosen:**
+  - **Invented citations:** stripped exactly (R2). Citations are then read back from the text the user sees, and any answer without a retrieved citation is refused (fail closed).
+  - **Refusal:** `NOT_COVERED` is detected after normalisation (R3). Injection-looking questions are refused before the model is called.
+  - **Prompt:** v2 answers the covered part of a partly covered question.
+  - **Ids:** citations are paragraph-level, so part 2 of a long paragraph is cited as the paragraph.
+  - **Judge:** `openai/gpt-oss-120b` on Groq, `judge.v1`, one call per answer. It returns faithfulness and lenient citation precision together.
+  - **Evals:** use only the first provider. A spent quota stops the run, and a re-run resumes from the cache.
+- **Why:**
+  - A user can never see a citation the system can't back, and the check sits where serving uses it, not only in the eval metrics.
+  - v1's refusals were questions the sources partly answer, so refusing them was a retrieval problem shown as caution.
+  - A judge from another family doesn't grade its own answers. Gemini's free tiers are too slow or too small for about 300 verdicts.
+  - One model per run keeps a prompt A/B from mixing two models.
+- **Revisit if:**
+  - Kappa against the human labels (step 6b) stays under 0.6: tighten `judge.v1`, or change judge.
+  - The 150-question run shows v2 answering out-of-scope questions it should refuse.
+  - Groq's 200K tokens a day slow step 6b too much.
