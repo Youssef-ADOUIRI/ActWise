@@ -1,37 +1,49 @@
 # Answer quality
 
-Each row answers the **dev** split: 20 in-scope questions and 2 out-of-scope ones. Run it with `make eval-answers SYSTEM=<system> PROMPT=<prompt>`. The judge is `openai/gpt-oss-120b` on Groq with `judge.v1`. It is a different model family from the Gemini answerer, and it is **not yet calibrated**: the human labels come in step 6b. The numbers are provisional. With two out-of-scope questions, the refusal rate can only be 0, 0.5 or 1.
+Each row answers the **dev** split: 71 in-scope questions (20 hand-written, 51 reviewed synthetic) and 12 out-of-scope ones. Run it with `make eval-answers SYSTEM=<system> PROMPT=<prompt>`.
+- **Answers:** Gemini 3.5 Flash-Lite writes each one at temperature 0, from the top 5 passages of system E (`hybrid-binding`, Recall@5 0.979 on these questions).
+- **Judge:** `openai/gpt-oss-120b` on Groq with `judge.v1`, calibrated against 58 human labels: **kappa 0.739** ([decision 007](decisions/007-judge-calibration.md)).
 
-| Row | Retrieval | Prompt | Out-of-scope refused | False refusals | Invented (shown) | Faithfulness | Citation precision strict / lenient | Report |
+| Row | Prompt | Out-of-scope refused | False refusals | Invented (shown) | Faithfulness | Fully supported | Citation precision strict / lenient | Report |
 |---|---|---|---|---|---|---|---|---|
-| baseline | naive windows, dense (Recall@5 0.650) | `plain` (step 5) | 0 / 2 | 0 / 20 | 0 (0) | 0.989 [0.97, 1.00] | n/a: no citations | [baseline-dev-plain](../evals/reports/baseline-dev-plain.md) |
-| v1 | E, `hybrid-binding` (0.925) | `answer.v1` | 2 / 2 | **4 / 20** | 0 (0) | 1.000 [1.00, 1.00] | 0.870 / 1.000 | [answer.v1](../evals/reports/hybrid-binding-dev-answer.v1.md) |
-| **v2** | E, `hybrid-binding` (0.925) | `answer.v2` | 2 / 2 | **0 / 20** | 0 (0) | 0.988 [0.96, 1.00] | 0.828 / 0.897 | [answer.v2](../evals/reports/hybrid-binding-dev-answer.v2.md) |
+| v1 | `answer.v1` | 12 / 12 | 5 / 71 (7.0 %) | 0 (0) | 0.992 [0.98, 1.00] | 0.985 | 0.925 / 1.000 | [answer.v1](../evals/reports/hybrid-binding-dev-answer.v1.md) |
+| **v2** | `answer.v2` | 12 / 12 | **2 / 71 (2.8 %)** | 0 (0) | 0.971 [0.93, 1.00] | 0.942 | 0.899 / 0.944 | [answer.v2](../evals/reports/hybrid-binding-dev-answer.v2.md) |
+| baseline | `plain`, naive retrieval | pending | pending | | | | | Groq's daily tokens ran out; the 22-question run of 6a is in [baseline-dev-plain](../evals/reports/baseline-dev-plain.md): no refusals, faithfulness 0.989 |
 
-Every report comes from commit `9d5aefa`. Gemini 3.5 Flash-Lite writes every answer, at temperature 0 from the top 5 passages.
+Both rows come from commit `c07703c`. Faithfulness is (score − 1) / 4 averaged over the answers given. Fully supported is the share of answers scored 5, with no unsupported claim at all; the judge and the human labels agree best on that one (kappa 0.952).
 
-## What each change did
+## Hand-written and synthetic apart
 
-- **Plain baseline:** the answers stick to their context, with faithfulness at 0.99. But the baseline cites nothing and refuses nothing. On both out-of-scope questions it says the context has no information, then adds unrelated facts from it (q021 lists GPAI fines).
-- **v1:** both out-of-scope questions are refused, and no citation is invented. But it refuses **4 in-scope questions** whose sources answer only part of the question:
-  - q006 and q007: the gold article is in the top 5.
-  - q019 and q020: cross-law questions whose GDPR article is not retrieved (`failure_cases.md`).
-- **v2:** one rule changed. When the sources cover part of a question, answer that part and say what they don't cover; `NOT_COVERED` is kept for questions the sources say nothing about. False refusals fall from 4 to 0, and both out-of-scope questions are still refused. Lenient precision drops to 0.90 because the four partial answers bring harder citations.
+| Prompt | Source | n | False refusals | Faithfulness | Fully supported | Precision strict / lenient |
+|---|---|---|---|---|---|---|
+| v1 | hand-written | 22 | 4 / 20 | 1.000 | 1.000 | 0.870 / 1.000 |
+| v1 | synthetic | 61 | 1 / 51 | 0.990 | 0.980 | 0.947 / 1.000 |
+| v2 | hand-written | 22 | 0 / 20 | 0.988 | 0.950 | 0.828 / 0.897 |
+| v2 | synthetic | 61 | 2 / 51 | 0.964 | 0.939 | 0.933 / 0.967 |
 
-## Choice (provisional)
+Each source has its out-of-scope questions (2 hand-written, 10 synthetic), and both prompts refuse all of them.
 
-**v2** is the working prompt. It answers every in-scope question and still refuses the out-of-scope ones, with no invented citation. Step 6b re-runs this table on the 150-question set, with 10 dev refusal questions and a judge calibrated against human labels. Only then is the choice final.
+## The A/B: v2 wins
 
-## Against the M3 targets (dev)
+v2 changes one rule: when the sources answer part of a question, answer that part and say what they don't cover. `NOT_COVERED` is kept for questions the sources say nothing about.
 
-| Target | v2 now | Status |
+- **False refusals fall from 5 to 2.**
+  - v1's misses are the four partly covered hand-written questions (q006, q007, q019, q020) plus q073.
+  - v2's two (q072, q081) are answers that came back with no citation. The pipeline refuses those rather than show an uncited answer.
+- **The cost is faithfulness, 0.992 → 0.971.** The new rule sometimes claims a part is not covered when a source covers it:
+  - q061: it says the sources don't say what to send the Commission, but Art. 37(2) does. Judge score 1; v1 gets 5.
+  - q085: it adds a "not covered" sentence that Art. 3(2) and 3(3) contradict. Judge score 3.
+
+Both prompts pass every target. **v2 is the serving prompt**, because a refusal gives the user nothing. Its known failure, a wrong "not covered" sentence in 2 of 69 answers, is the first thing a v3 would fix.
+
+## Against the M3 targets (dev, v2)
+
+| Target | v2 | Status |
 |---|---|---|
 | Invented citations shown = 0 | 0 | ✅ guaranteed by the pipeline, which reads citations back from the shown text and refuses otherwise |
-| Faithfulness ≥ 0.85 | 0.988 | provisional: judge not calibrated yet |
-| Citation precision ≥ 0.90 | 0.897 lenient, 0.828 strict | just below; re-measured on 150 questions |
-| Out-of-scope refusals ≥ 95 % | 2 / 2 | not measurable on 2 questions; 10 in step 6b |
-| Judge kappa ≥ 0.6 | — | step 6b, from 58 human labels |
+| Faithfulness ≥ 0.85 | 0.971 [0.93, 1.00] | ✅ (fully supported: 0.942) |
+| Citation precision ≥ 0.90 | 0.944 lenient, 0.899 strict | ✅ on the judge-based reading. Strict counts a citation outside the gold article as wrong, even when it supports the sentence |
+| Out-of-scope refusals ≥ 95 % | 12 / 12 | ✅ |
+| Judge vs human kappa ≥ 0.6 | 0.739 | ✅ |
 
-## Why the judge is not trusted yet
-
-It gives almost every answer a 5: 56 of the 58 verdicts across the three rows. Either the answers really are faithful (the plain baseline only rephrases its context), or the judge is lenient. The calibration sheet settles this. It mixes 45 real answers with 13 that were rewritten to include one unsupported claim, all scored blind by a person. If the judge misses the planted claims, `judge.v2` gets stricter rules before any number above is final.
+Test-split numbers are reported once, at the end of the project.
