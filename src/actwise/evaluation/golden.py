@@ -1,12 +1,13 @@
-"""The golden set: hand-written questions with article-level gold labels.
+"""The golden set: questions with article-level gold labels, hand-written or reviewed synthetic.
 
 One JSON object per line in data/eval/golden.jsonl:
 
     {"id": "q001", "lang": "en", "type": "lookup", "question": "...",
-     "gold": ["AIA-Art5"], "reference": "..."}
+     "gold": ["AIA-Art5"], "reference": "...", "source": "hand"}
 
 A question belongs to the split of its gold articles. Out-of-scope questions
 have no gold article ("gold": []), so they carry an explicit "split" instead.
+"source" says who wrote the question: "hand", or "synthetic" (LLM-drafted, then reviewed).
 """
 
 from __future__ import annotations
@@ -33,6 +34,7 @@ class Question:
     gold: tuple[str, ...]  # article-level ids, such as "AIA-Art5"; empty if out of scope
     reference: str  # one-sentence reference answer, used for generation metrics later
     split: str | None = None  # only for out-of-scope questions
+    source: str = "hand"  # "hand" or "synthetic"
 
 
 def load_golden(path: Path = GOLDEN_FILE) -> list[Question]:
