@@ -86,10 +86,14 @@ def answers_markdown(answers: dict[str, Any]) -> str:
         "|---|---|",
     ]
     lines += [f"| {key} | {value} |" for key, value in s.items() if not isinstance(value, dict)]
-    lines += ["", "| Source | n | Refused (out of scope) | False refusals | Faithfulness |"]
-    lines += ["|---|---|---|---|---|"]
+    lines += [
+        "",
+        "| Source | n | Refused (out of scope) | False refusals | Faithfulness | Fully supported |",
+    ]
+    lines += ["|---|---|---|---|---|---|"]
     for name, b in answers["by_source"].items():
         rates = f"{b['refusal_rate']} | {b['false_refusal_rate']} | {b['faithfulness']}"
+        rates += f" | {b['fully_supported']}"
         lines.append(f"| {name} | {b['n']} | {rates} |")
     for row in answers["per_question"]:
         lines += ["", f"### {row['id']} ({row['lang']}, {row['type']})", ""]

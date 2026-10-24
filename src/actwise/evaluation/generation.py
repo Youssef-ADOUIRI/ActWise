@@ -43,6 +43,8 @@ def summarise_answers(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "citation_precision_strict": share(strict),
         "citation_precision_lenient": share(lenient),
         "faithfulness": share(faithfulness),
+        # score 5: no unsupported claim at all, where judge and humans agree best (kappa 0.95)
+        "fully_supported": share([r["judge"]["score"] == 5 for r in judged]),
         "faithfulness_ci95": bootstrap_ci(faithfulness) if faithfulness else None,
         "judged": len(judged),
         "judge_failed": sum(1 for r in answered if "judge" in r and r["judge"]["score"] is None),

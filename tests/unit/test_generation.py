@@ -58,6 +58,7 @@ def test_faithfulness_and_judge_failures():
     s = summarise_answers(ROWS)
 
     assert s["faithfulness"] == (1.0 + 0.5) / 2
+    assert s["fully_supported"] == 0.5  # one 5 and one 3
     assert (s["judged"], s["judge_failed"]) == (2, 1)
     assert s["invented_citations"] == 1 and s["invented_shown"] == 0
 
