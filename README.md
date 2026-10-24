@@ -12,6 +12,7 @@ make install
 make test
 make eval-retrieval SYSTEM=hybrid-binding  # dev metrics; the first run embeds the chunks (~30 min on a CPU)
 docker compose up -d qdrant && make index  # optional: the same vectors in Qdrant
+make llm-smoke                             # one prompt through each LLM provider set in .env
 ```
 
 Retrieval results: [docs/ablations.md](docs/ablations.md).
