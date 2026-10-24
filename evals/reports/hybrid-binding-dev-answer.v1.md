@@ -10,7 +10,7 @@ E: as C, with articles and annexes ranked before recitals. Split `dev`, 71 score
 | Recall@20 | 1.000 |
 | MRR@10 | 0.904 [0.85, 0.95] |
 | nDCG@10 | 0.925 |
-| ms / query | 159 |
+| ms / query | 156 |
 
 ## By language
 
@@ -68,6 +68,7 @@ Top 5 passages, temperature 0, judge: {'fallback': [{'provider': 'groq', 'model'
 | citation_precision_strict | 0.925 |
 | citation_precision_lenient | 1.0 |
 | faithfulness | 0.9924 |
+| fully_supported | 0.9848 |
 | faithfulness_ci95 | (0.9773, 1.0) |
 | judged | 66 |
 | judge_failed | 0 |
@@ -75,10 +76,10 @@ Top 5 passages, temperature 0, judge: {'fallback': [{'provider': 'groq', 'model'
 | input_tokens | 75268 |
 | output_tokens | 7368 |
 
-| Source | n | Refused (out of scope) | False refusals | Faithfulness |
-|---|---|---|---|---|
-| hand | 22 | 1.0 | 0.2 | 1.0 |
-| synthetic | 61 | 1.0 | 0.0196 | 0.99 |
+| Source | n | Refused (out of scope) | False refusals | Faithfulness | Fully supported |
+|---|---|---|---|---|---|
+| hand | 22 | 1.0 | 0.2 | 1.0 | 1.0 |
+| synthetic | 61 | 1.0 | 0.0196 | 0.99 | 0.98 |
 
 ### q001 (en, lookup)
 

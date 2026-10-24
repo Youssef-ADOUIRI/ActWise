@@ -1,0 +1,21 @@
+# 007: Judge calibration: judge.v1 passes; labels made consistent, not the judge tuned
+
+- **Options:**
+  - Tune the judge prompt until it fits the labels (`judge.v2`).
+  - Redefine "faithful" as score 5 only.
+  - Keep the guide's protocol (faithful = 4 or 5) and re-check the labels against one written rule.
+- **Measured ([judge-calibration](../../evals/reports/judge-calibration.md); 58 answers scored blind, 13 of them with a planted unsupported claim):**
+  - **First labels:** Cohen's kappa 0.567 at faithful = 4–5. All five disagreements sat at the 3-versus-4 boundary, and the labels scored the same kind of error differently: invented deadlines got 4, 4, 3 and 3, and contradicted numbers got 1, 2, 1 and 4.
+  - **After the re-check:** six labels moved under one rule (an invented or contradicted number, date, deadline, amount, actor or condition scores 3 or lower). Kappa rose to **0.739**, with 93 % agreement.
+  - **Diagnostics:** kappa is 0.952 when only 5 counts as faithful and 0.900 quadratic-weighted. Human and judge each mark 12 of the 13 planted claims below 5.
+- **Chosen:**
+  - `judge.v1` on `openai/gpt-oss-120b` stays unchanged, binarised at 4 as the guide says.
+  - Reports add **fully supported**, the share of answers scored 5, next to faithfulness.
+- **Why:**
+  - The disagreements came from inconsistent labels, not from the judge. Tuning a prompt to fit them would have fitted noise.
+  - The judge has one remaining bias: it calls an invented deadline or a wrong "not covered" claim a minor detail (4), where the rule says 3. So faithfulness reads slightly optimistic.
+  - On "any unsupported claim" the judge and the human agree almost perfectly, which makes fully supported the stricter companion number.
+- **Caveat:** the re-check came after seeing which items disagreed. The rule is stated here, and every label it moved can be audited in `human_labels.csv` and the git history.
+- **Revisit if:**
+  - A new answer prompt or model changes the kind of errors (calibrate again on 50 or more fresh items).
+  - The judge model changes.

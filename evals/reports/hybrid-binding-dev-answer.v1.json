@@ -1,7 +1,7 @@
 {
   "name": "hybrid-binding-dev-answer.v1",
-  "created": "2026-10-24T22:08:14+00:00",
-  "git_commit": "c2288b1",
+  "created": "2026-10-24T22:42:46+00:00",
+  "git_commit": "c07703c",
   "split": "dev",
   "system": {
     "name": "hybrid-binding",
@@ -46,7 +46,7 @@
     "recall@20": 1.0,
     "mrr@10": 0.9041,
     "ndcg@10": 0.9249,
-    "ms_per_query": 159.4
+    "ms_per_query": 156.2
   },
   "ci95": {
     "recall@5": [
@@ -2162,6 +2162,7 @@
       "citation_precision_strict": 0.925,
       "citation_precision_lenient": 1.0,
       "faithfulness": 0.9924,
+      "fully_supported": 0.9848,
       "faithfulness_ci95": [
         0.9773,
         1.0
@@ -2176,12 +2177,12 @@
       "output_tokens": 7368,
       "cache_hits_misses": {
         "answers": [
-          22,
-          61
+          83,
+          0
         ],
         "judge": [
-          24,
-          42
+          66,
+          0
         ]
       }
     },
@@ -2200,6 +2201,7 @@
         "citation_precision_strict": 0.8696,
         "citation_precision_lenient": 1.0,
         "faithfulness": 1.0,
+        "fully_supported": 1.0,
         "faithfulness_ci95": [
           1.0,
           1.0
@@ -2227,6 +2229,7 @@
         "citation_precision_strict": 0.9474,
         "citation_precision_lenient": 1.0,
         "faithfulness": 0.99,
+        "fully_supported": 0.98,
         "faithfulness_ci95": [
           0.97,
           1.0
