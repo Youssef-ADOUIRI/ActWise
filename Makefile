@@ -1,7 +1,9 @@
-.PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke serve deploy
+.PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke \
+	candidates label-sheet serve deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
+PROMPT ?= answer.v1
 
 install:
 	uv sync --extra local
@@ -36,10 +38,17 @@ ablations:
 		uv run --extra local python evals/run_eval.py --system $$system --split $(SPLIT) || exit 1; \
 	done
 
-# Retrieval metrics plus an answer per question: plain prompt, LLM chain from .env,
-# answers cached in .cache/llm, so a re-run makes no API call.
+# Retrieval metrics plus an answer per question (PROMPT=plain|answer.v1|answer.v2), scored by
+# the judge. Every LLM call is cached in .cache/llm, so a re-run makes no API call.
 eval-answers:
-	uv run --extra local python evals/run_eval.py --system $(SYSTEM) --split $(SPLIT) --llm
+	uv run --extra local python evals/run_eval.py --system $(SYSTEM) --split $(SPLIT) --prompt $(PROMPT) --judge
+
+# Step 6 review files: golden-set candidates, and 60 answers to score by hand.
+candidates:
+	uv run python evals/make_synthetic.py
+
+label-sheet:
+	uv run python evals/make_calibration.py
 
 eval: eval-retrieval
 

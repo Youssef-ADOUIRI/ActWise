@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import logging
+import re
 import time
 import uuid
 from collections.abc import Callable, Sequence
@@ -21,6 +22,26 @@ log = logging.getLogger(__name__)
 
 # 408 request timeout, 429 rate limit, 5xx server errors, 529 Anthropic overloaded
 RETRYABLE = {408, 429, 500, 502, 503, 504, 529}
+MAX_RETRY_AFTER = 60.0  # a longer Retry-After means a spent quota, not a busy minute
+
+
+RETRY_DELAY = re.compile(r"""['"]retryDelay['"]:\s*['"](\d+(?:\.\d+)?)s['"]""")
+
+
+def retry_after(error: Exception) -> float:
+    """The seconds a provider asks to wait, or 0 if it gives no hint.
+
+    Groq and Anthropic send a Retry-After header; Gemini puts a `retryDelay` in the
+    error body instead, such as "17389s" once the daily quota is spent.
+    """
+    response = getattr(error, "response", None)
+    value = response.headers.get("retry-after") if response is not None else None
+    if value is None and (match := RETRY_DELAY.search(str(error))):
+        value = match.group(1)
+    try:
+        return float(value) if value else 0.0
+    except ValueError:  # an HTTP date: rare enough to treat as no hint
+        return 0.0
 
 
 class CachedLLM:
@@ -89,12 +110,14 @@ class RetryingLLM:
     ) -> LLMResponse:
         """Ask `inner`; retry a RETRYABLE status while tries remain and the wait fits the deadline.
 
-        Before each try, wait for the backoff or the rate-limit interval, whichever is longer.
+        Before each try, wait for the longest of the backoff, the provider's Retry-After
+        and the rate-limit interval. A Retry-After above `MAX_RETRY_AFTER` raises at once.
         """
         error: Exception | None = None
+        hint = 0.0  # the provider's Retry-After after the last failure
         for attempt in range(self.max_tries):
             backoff = self.base_delay * 2 ** (attempt - 1) if attempt else 0.0
-            wait = max(backoff, self.min_interval - (self.clock() - self._last))
+            wait = max(backoff, hint, self.min_interval - (self.clock() - self._last))
             if deadline is not None and self.clock() + wait >= deadline:
                 break
             if wait > 0:
@@ -104,6 +127,9 @@ class RetryingLLM:
                 return self.inner.chat(messages, tools, temperature, max_tokens, deadline=deadline)
             except Exception as exc:  # SDK error classes differ, but both carry `status_code`
                 if getattr(exc, "status_code", None) not in RETRYABLE:
+                    raise
+                hint = retry_after(exc)
+                if hint > MAX_RETRY_AFTER:  # waiting can't help: keep the tries for later
                     raise
                 error = exc
         raise error or TimeoutError("the deadline passed before the first try")
