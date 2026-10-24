@@ -5,6 +5,38 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-24: Step 5, the LLM provider layer
+
+**Goal:** one `chat()` over Gemini, Groq, Ollama and Anthropic, with a disk cache, retries and a fallback chain, so that evals can be re-run for free and the demo stays up.
+**Branch:** `step-5-provider-layer`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/llm/base.py` | Provider-neutral messages, `ToolCall`, `LLMResponse` (with the model that answered), and the `LLM` protocol, whose `chat()` takes a `deadline` | One interface for every provider. The deadline lets retries, fallbacks and HTTP timeouts share one time budget (R5) |
+| `src/actwise/llm/openai_compat.py` | One adapter for Gemini, Groq and Ollama; it sends `max_tokens` and shrinks the HTTP timeout to the deadline | All three speak the OpenAI protocol. The guide's adapter never sent `max_tokens` (R12) |
+| `src/actwise/llm/anthropic_adapter.py` | Messages API adapter: system prompt split off, tool results merged into one user turn, no `temperature` | `anthropic` 1.x has no `temperature` argument (R11) |
+| Both adapters | SDK clients built with `max_retries=0` | Stacked under the SDKs' own retries, 4 tries became 12 (R13) |
+| `src/actwise/llm/wrappers.py` | `CachedLLM`, keyed by the chain's model ids, the request and `max_tokens`, with atomic writes. `RetryingLLM` retries 408, 429, 5xx and 529, waiting for the backoff or the rate-limit interval, whichever is longer, within the deadline. `FallbackLLM` logs each failover and starts no provider after the deadline | R4, R5, R15 |
+| `src/actwise/llm/factory.py` | Providers from `.env`; `OFFLINE` and `SERVING` profiles; `build_llm(env, profile)`, with the profile required | An empty key or model skips a provider and an unknown name raises (R14). Evals wait out rate limits, while serving fails over within 25 s (R5) |
+| `src/actwise/llm/smoke.py`, `make llm-smoke` | One prompt through each provider, then through the cached chain | The live check of the step. It found the retired Gemini model |
+| `src/actwise/evaluation/answers.py`, `evals/run_eval.py --llm`, `make eval-answers` | The baseline answers deferred from step 3: plain prompt, top 5 passages, temperature 0, and the model of each answer recorded | The "before" row that the step 6 judge scores. `--llm` builds the chain first, so a bad `.env` fails before model loading. It refuses reranked systems, which would load both 2 GB models |
+| `evals/reports/baseline-dev-answers.json`, `.md` | 22 dev answers from commit `d511957` | The baseline for step 6 |
+| `pyproject.toml`, `uv.lock` | `python-dotenv` becomes a direct dependency; `smoke.py` is left out of coverage | It reads `.env` correctly, while `uv run --env-file` stops at `REGISTER_NAME=ActWise register` |
+| `.env.example` | `GEMINI_MODEL=gemini-3.5-flash-lite`; empty providers are skipped | `gemini-2.5-flash-lite` answers 404 to new users |
+| `docs/decisions/005-provider-chain.md` | Provider order, one retry layer, the two profiles | Design record |
+| `docs/ROADMAP.md` | M3 in progress; review items R11 to R15 | Defects found by reading the guide's code against the installed SDKs |
+| `tests/unit/` | `test_openai_adapter_round_trip`, `test_anthropic_adapter`, `test_cache_hits_skip_provider`, `test_retry_backoff` (R10), `test_fallback_chain`, `test_factory_skips_unconfigured`, plus deadline, rate-limit, config and answers tests; `ScriptedLLM` in `toys.py` | Real SDK error classes and fake clients, so CI makes no network call |
+
+**Results:**
+- **Live check:** `gemini-3.5-flash-lite` answers in 0.8–0.9 s and names the right article (Art. 5). `gpt-oss-20b` on Groq answers in 0.2–0.5 s and names the wrong one (Art. 6).
+- **`max_tokens=16`:** caps both providers. gpt-oss then returns empty text, because its reasoning uses up the budget.
+- **Baseline answers:** 22 dev answers, all from Gemini, using 21,837 input and 2,536 output tokens. A re-run makes 22 cache hits and no API call.
+- **Checks:** 137 tests pass; coverage is 95 %, and 100 % on `llm/`; ruff and mypy are clean.
+
+**Left for later:** honouring `Retry-After` before the 150-question runs (step 6); one deadline per API request (step 8); loading `.env` in `retrieval/index.py` (step 9).
+
+---
+
 ## 2026-10-20: Step 4, hybrid retrieval, reranking and ablations
 
 **Goal:** reach Recall@5 ≥ 0.85 on dev, with each change measured on its own.

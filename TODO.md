@@ -8,9 +8,9 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ## Before you start: accounts (all free)
 
-- [ ] GitHub public repo `actwise`
-- [ ] Google AI Studio: Gemini key in a project with **no billing account**
-- [ ] Groq console key
+- [x] GitHub public repo `actwise`
+- [x] Google AI Studio: Gemini key in a project with **no billing account**
+- [x] Groq console key
 - [ ] Qdrant Cloud account
 - [ ] Langfuse Cloud (Hobby plan)
 - [ ] Hugging Face account
@@ -116,20 +116,25 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 5: Provider layer
 
-- [ ] Gemini and Groq keys in `.env`; Ollama `qwen3:4b` (optional)
-- [ ] `[test]` `test_openai_adapter_round_trip`
-- [ ] `[test]` `test_anthropic_adapter`
-- [ ] `[test]` `test_cache_hits_skip_provider`
-- [ ] `[test]` `test_retry_backoff` (`[fix]` inject `base_delay=1` and a fake sleep, R10)
-- [ ] `[test]` `test_fallback_chain`
-- [ ] `[test]` `test_factory_skips_unconfigured`
-- [ ] `llm/base.py`, `llm/openai_compat.py`, `llm/anthropic_adapter.py`
-- [ ] `llm/wrappers.py` (cache, retry, fallback)
-- [ ] `[fix]` Cache key includes model IDs and `max_tokens` (R4)
-- [ ] `[fix]` Serving profile fails over quickly (`max_tries=2`, per-request deadline) (R5)
-- [ ] `llm/factory.py`
-- [ ] Script: the same prompt through Gemini, Groq (and Anthropic if you have credits), printing answer, tokens and latency
-- [ ] Baseline answers with a plain prompt and no citation check (deferred from step 3)
+- [x] Gemini and Groq keys in `.env` (`gemini-2.5-flash-lite` is closed to new users: `gemini-3.5-flash-lite`); Ollama `qwen3:4b` (optional, not installed)
+- [x] `[test]` `test_openai_adapter_round_trip`
+- [x] `[test]` `test_anthropic_adapter`
+- [x] `[test]` `test_cache_hits_skip_provider`
+- [x] `[test]` `test_retry_backoff` (`[fix]` inject `base_delay=1` and a fake sleep, R10)
+- [x] `[test]` `test_fallback_chain`
+- [x] `[test]` `test_factory_skips_unconfigured`
+- [x] `llm/base.py`, `llm/openai_compat.py`, `llm/anthropic_adapter.py`
+- [x] `llm/wrappers.py` (cache, retry, fallback)
+- [x] `[fix]` Cache key includes model IDs and `max_tokens` (R4)
+- [x] `[fix]` Serving profile fails over quickly (`max_tries=2`, a deadline through every layer) (R5, LLM side; the API side is in step 8)
+- [x] `[fix]` No `temperature` for Anthropic: `anthropic` 1.x has none (R11)
+- [x] `[fix]` The OpenAI-compatible adapter sends `max_tokens` (R12)
+- [x] `[fix]` SDK clients with `max_retries=0`: one retry layer (R13)
+- [x] `[fix]` An empty key or model skips a provider; an unknown name raises (R14)
+- [x] `[fix]` Each failover is logged; each response records the model that answered (R15)
+- [x] `llm/factory.py`
+- [x] Script: the same prompt through Gemini, Groq (and Anthropic if you have credits), printing answer, tokens and latency (`make llm-smoke`)
+- [x] Baseline answers with a plain prompt and no citation check (deferred from step 3): `evals/reports/baseline-dev-answers`, 22 dev answers
 
 ### Step 6: Cited answers, guardrails, prompts, judge
 
@@ -149,6 +154,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Citation precision, strict and lenient
 - [ ] `evals/make_synthetic.py`: 100 synthetic questions (~30 % FR), all reviewed by hand → 150 total
 - [ ] Re-run the Step 4 ablations on 150 questions; report hand-written and synthetic separately
+- [ ] Before the 150-question runs: honour `Retry-After` and skip a provider whose quota is spent (from the step 5 review)
 - [ ] Hit the dev targets: 0 invented · faithfulness ≥ 0.85 · citation precision ≥ 0.90 · refusals ≥ 95 %
 
 ---
@@ -174,6 +180,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] `[test]` `test_api_contract` (422 / 401 / 429 / 415)
 - [ ] `[test]` `test_register_failure_is_ignored`
 - [ ] `api/guards.py`, `api/main.py`, `ingest/files.py`
+- [ ] `[fix]` One deadline per API request, passed to every `chat()` of `/ask` and `/classify` (R5, API side)
 - [ ] `[fix]` Decide on the per-instance cap: document it or move it to Firestore (R6)
 - [ ] `api/app.py` wiring (profiles: local, cloud)
 - [ ] `make serve` + curl examples
@@ -195,7 +202,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query
 - [ ] `retrieval/embedders.py` (SentenceTransformer, ONNX)
 - [ ] Publish the int8 model and model card on the HF Hub
-- [ ] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8`
+- [ ] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply)
 
 ### Step 10: Frameworks (first to cut)
 

@@ -1,0 +1,24 @@
+# 005: LLM providers: Gemini first, Groq as fallback, one retry layer, two profiles
+
+- **Options:**
+  - One provider, or a fallback chain.
+  - The SDKs' built-in retries, or our own `RetryingLLM`.
+  - One retry policy for everything, or separate offline and serving profiles.
+- **Measured (2026-10-24, `make llm-smoke`, one prompt with no context, temperature 0):**
+  - `gemini-3.5-flash-lite`: 0.8–0.9 s, 18 tokens in, 14 out. It names the right article (Art. 5).
+  - `openai/gpt-oss-20b` on Groq: 0.2–0.5 s, 88 tokens in, 118 out (its reasoning counts as output). It names the wrong article (Art. 6), the same way on every run.
+  - `gemini-2.5-flash-lite`, the guide's pick three weeks earlier: 404, "no longer available to new users".
+  - With `max_tokens=16`, Gemini returns truncated text and gpt-oss returns empty text, because its reasoning uses up the budget.
+  - Free tiers as the guide read them: Groq gives 1,000 requests and 200,000 tokens a day. Gemini's limits are shown per key in AI Studio.
+- **Chosen:**
+  - Order `gemini,groq,ollama`, and the SDKs' retries switched off (`max_retries=0`). `RetryingLLM` retries only 408, 429, 5xx and 529.
+  - **Offline (evals):** 4 tries, backoff 2, 4 and 8 s. Calls are spaced 4 s apart on Gemini and 2 s on Groq, with 60 s per HTTP call and no time budget.
+  - **Serving:** 2 tries, 1 s backoff, no spacing, 15 s per HTTP call, and 25 s per `chat()` across retries and providers.
+- **Why:**
+  - Gemini got the article right where gpt-oss didn't. Groq is fast, and its daily cap suits a fallback.
+  - With one retry layer, the delays the tests check are the real ones. Stacked under the SDKs' own retries, 4 tries became 12.
+  - Evals can wait out a rate limit. A user on Cloud Run, where requests time out at 60 s, can't.
+- **Revisit if:**
+  - Gemini's free models or quotas change again.
+  - The step 6 judge scores another model higher.
+  - The 150-question runs spend their time on doomed retries: honour `Retry-After`, and skip a provider whose quota is spent.

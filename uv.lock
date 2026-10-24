@@ -23,6 +23,7 @@ dependencies = [
     { name = "pydantic" },
     { name = "pypdf" },
     { name = "python-docx" },
+    { name = "python-dotenv" },
     { name = "python-multipart" },
     { name = "uvicorn", extra = ["standard"] },
 ]
@@ -63,6 +64,7 @@ requires-dist = [
     { name = "pydantic" },
     { name = "pypdf" },
     { name = "python-docx" },
+    { name = "python-dotenv" },
     { name = "python-multipart" },
     { name = "qdrant-client", marker = "extra == 'cloud'" },
     { name = "qdrant-client", marker = "extra == 'local'" },

@@ -1,9 +1,12 @@
 """Evaluate retrieval on the golden set; write evals/reports/<name>.json and .md.
 
     uv run --extra local python evals/run_eval.py --system hybrid --split dev
+    uv run --extra local python evals/run_eval.py --system baseline --split dev --llm
 
 Systems are the rows of docs/ablations.md. Questions follow the split of their
 gold articles. Tune on dev; report test numbers only once, at the end of the project.
+With --llm, each question is also answered from its top passages by the LLM chain
+in .env (answers are cached in .cache/llm), to be scored in step 6.
 """
 
 from __future__ import annotations
@@ -13,6 +16,7 @@ import gc
 import hashlib
 import json
 import logging
+import os
 import subprocess
 import time
 from collections.abc import Callable
@@ -21,9 +25,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any, Protocol
 
+from dotenv import load_dotenv
+
+from actwise.evaluation.answers import answer_questions, answers_markdown
 from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, question_split
 from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
+from actwise.llm.factory import OFFLINE, build_llm
 from actwise.retrieval.bm25 import BM25
 from actwise.retrieval.dense import CACHE_DIR, DenseRetriever, build_store
 from actwise.retrieval.embedders import BGE_M3, SentenceTransformerEmbedder
@@ -134,10 +142,15 @@ def main() -> None:
     )
     parser.add_argument("--system", choices=SYSTEMS, default="baseline")
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
-    parser.add_argument("--name", help="report name (default: <system>-<split>)")
+    parser.add_argument("--name", help="report name (default: <system>-<split>[-answers])")
+    parser.add_argument(
+        "--llm", action="store_true", help="also answer each question (plain prompt)"
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)  # our progress, not every HTTP call
+    load_dotenv()  # .env fills in what the environment doesn't set
+    llm = build_llm(os.environ, OFFLINE) if args.llm else None  # a bad .env fails before any work
 
     system = SYSTEMS[args.system]
     article_split = split_of(load_splits())
@@ -145,13 +158,15 @@ def main() -> None:
 
     retriever = system.build()
     if isinstance(retriever, HybridRetriever) and retriever.reranker is not None:
+        if llm is not None:
+            parser.error("--llm can't run a reranked system yet: both 2 GB models would be loaded")
         search, first_ms = in_two_passes(retriever, questions)
     else:
         retriever.search("warm-up", 1)  # keep one-off start-up costs (model loading) out of timings
         search, first_ms = (lambda query, n: [hit.id for hit in retriever.search(query, n)]), 0.0
 
     report = {
-        "name": args.name or f"{args.system}-{args.split}",
+        "name": args.name or f"{args.system}-{args.split}" + ("-answers" if args.llm else ""),
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
@@ -162,17 +177,26 @@ def main() -> None:
         report["system"]["timed_in_two_passes"] = True
         report["metrics"]["ms_per_query"] = round(report["metrics"]["ms_per_query"] + first_ms, 1)
 
-    REPORTS.mkdir(parents=True, exist_ok=True)
-    out = REPORTS / report["name"]
-    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    out.with_suffix(".json").write_text(json_text, encoding="utf-8", newline="\n")
-    out.with_suffix(".md").write_text(to_markdown(report), encoding="utf-8", newline="\n")
-
     m = report["metrics"]
     print(
         f"{report['name']}: Recall@5 {m['recall@5']:.3f}  MRR@10 {m['mrr@10']:.3f}  "
         f"nDCG@10 {m['ndcg@10']:.3f}  (n={m['n']}, {m['ms_per_query']:.0f} ms/query)"
     )
+
+    markdown = to_markdown(report)
+    if llm is not None:
+        answers = answer_questions(llm, retriever.search, questions)
+        answers["summary"]["cache"] = {"hits": llm.hits, "misses": llm.misses}
+        report |= {"llm": llm.config, "answers": answers}
+        markdown += answers_markdown(answers)
+        s = answers["summary"]
+        print(f"answers: {s['n']} by {s['models']}, cache {s['cache']}")
+
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    out = REPORTS / report["name"]
+    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+    out.with_suffix(".json").write_text(json_text, encoding="utf-8", newline="\n")
+    out.with_suffix(".md").write_text(markdown, encoding="utf-8", newline="\n")
     print(f"wrote {out}.json and {out}.md")
 
 

@@ -1,4 +1,4 @@
-.PHONY: install lint test ingest splits index eval eval-retrieval ablations serve deploy
+.PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke serve deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -36,7 +36,16 @@ ablations:
 		uv run --extra local python evals/run_eval.py --system $$system --split $(SPLIT) || exit 1; \
 	done
 
+# Retrieval metrics plus an answer per question: plain prompt, LLM chain from .env,
+# answers cached in .cache/llm, so a re-run makes no API call.
+eval-answers:
+	uv run --extra local python evals/run_eval.py --system $(SYSTEM) --split $(SPLIT) --llm
+
 eval: eval-retrieval
+
+# One prompt through each LLM provider configured in .env, then through the cached chain.
+llm-smoke:
+	uv run python -m actwise.llm.smoke
 
 serve:
 	@echo "TODO step 8: uv run uvicorn actwise.api.app:app --reload"
