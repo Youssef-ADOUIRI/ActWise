@@ -6,6 +6,7 @@ from actwise.evaluation.answers import (
     plain_ask,
     plain_messages,
 )
+from actwise.evaluation.generation import summarise_answers
 from actwise.evaluation.golden import Question
 from actwise.generation.rag import RagPipeline
 from actwise.llm.base import LLMResponse
@@ -66,7 +67,13 @@ def test_answers_markdown_quotes_each_answer():
     rows = answer_questions(
         partial(plain_ask, ScriptedLLM(ANSWER), search), QUESTIONS, ScriptedLLM(VERDICT)
     )
-    answers = {"prompt": "plain", "judge": "judge-x", "summary": {"n": 2}, "per_question": rows}
+    answers = {
+        "prompt": "plain",
+        "judge": "judge-x",
+        "summary": {"n": 2},
+        "by_source": {"hand": summarise_answers(rows)},
+        "per_question": rows,
+    }
 
     text = answers_markdown(answers)
 

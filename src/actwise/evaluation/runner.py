@@ -31,6 +31,7 @@ def score_question(question: Question, retrieved: list[str]) -> dict[str, Any]:
         "id": question.id,
         "lang": question.lang,
         "type": question.type,
+        "source": question.source,
         "gold": list(question.gold),
         "first_hit_rank": first_hit_rank(retrieved, gold),
         "top_articles": ranked_articles(retrieved)[:10],
@@ -78,6 +79,7 @@ def evaluate(search: SearchFn, questions: list[Question]) -> dict[str, Any]:
         "ci95": {m: bootstrap_ci([r[m] for r in rows]) for m in ("recall@5", "mrr@10")},
         "by_lang": breakdown(rows, "lang"),
         "by_type": breakdown(rows, "type"),
+        "by_source": breakdown(rows, "source"),
         "per_question": rows,
     }
 
@@ -107,7 +109,9 @@ def to_markdown(report: dict[str, Any]) -> str:
         f"| nDCG@10 | {m['ndcg@10']:.3f} |",
         f"| ms / query | {m['ms_per_query']:.0f} |",
     ]
-    for title, field in (("By language", "by_lang"), ("By question type", "by_type")):
+    breakdowns = [("By language", "by_lang"), ("By question type", "by_type")]
+    breakdowns.append(("By source (hand-written or synthetic)", "by_source"))
+    for title, field in breakdowns:
         lines += ["", f"## {title}", "", "| | n | Recall@5 | MRR@10 |", "|---|---|---|---|"]
         lines += [
             f"| {name} | {g['n']} | {g['recall@5']:.3f} | {g['mrr@10']:.3f} |"

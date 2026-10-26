@@ -30,7 +30,7 @@ from typing import Any, Protocol
 from dotenv import load_dotenv
 
 from actwise.evaluation.answers import Ask, answer_questions, answers_markdown, plain_ask
-from actwise.evaluation.generation import summarise_answers
+from actwise.evaluation.generation import by_source, summarise_answers
 from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, question_split
 from actwise.evaluation.judge import JUDGE_PROMPT
 from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
@@ -205,6 +205,7 @@ def main() -> None:
             "prompt": args.prompt,
             "judge": judge and {**judge.config, "prompt": JUDGE_PROMPT},
             "summary": summarise_answers(rows) | {"cache_hits_misses": cache},
+            "by_source": by_source(rows),
             "per_question": rows,
         }
         report |= {"llm": llm.config, "answers": answers}

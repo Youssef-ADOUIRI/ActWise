@@ -5,6 +5,32 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-25: Step 6b, calibrated judge and 179 questions
+
+**Goal:** a judge calibrated against human labels, a golden set of 150+ questions, and the retrieval and answer results re-measured on it. This closes M3.
+**Branch:** `step-6b-golden-150`
+
+| File | What | Why |
+|---|---|---|
+| `data/eval/human_labels.csv` | 58 answers scored blind by a person, then re-checked at the 3/4 boundary with one written rule (six labels moved) | Calibration data |
+| `evals/judge_kappa.py`, `evals/reports/judge-calibration.*` | Cohen's kappa at faithful = 4–5 (the target), plus kappa at 5 only, quadratic-weighted kappa and planted claims caught | **0.739**, with `judge.v1` unchanged (decision 007) |
+| `evals/merge_candidates.py`, `data/eval/golden.jsonl` | 129 reviewed candidates become q051–q179 with `source: synthetic` | Dev has 71 scored + 12 out-of-scope questions, test 78 + 12 |
+| `src/actwise/evaluation/golden.py`, `tests/test_golden_set.py` | `Question.source`; ≥ 150 questions, and ≥ 50 scored and ≥ 10 refusal questions in dev and in test | Decision 002 revisited |
+| `src/actwise/evaluation/runner.py`, `generation.py`, `answers.py`, `evals/run_eval.py` | Breakdowns by source in every report, and a **fully supported** rate (answers scored 5) | Synthetic questions are easier; the judge agrees with humans best on "any unsupported claim" |
+| `evals/reports/*-dev.*` | Seven retrieval rows (commit `c2288b1`) and v1/v2 answers (`c07703c`) on the grown dev set | The source of the tables |
+| `docs/ablations.md`, `docs/generation.md` | Both tables on the grown dev set, hand-written and synthetic apart | |
+| `docs/decisions/002-evaluation-protocol.md`, `007-judge-calibration.md` | The new allocation, and the calibration record | |
+
+**Results (dev):**
+- **Retrieval, 71 questions:** E has Recall@5 **0.979** [0.94, 1.00] and MRR 0.904; F has MRR 0.966. The hand-written numbers reproduce step 4 exactly, and synthetic questions reach Recall@5 1.000 on every structure-aware row.
+- **Answers, 83 questions:** v2 refuses 12/12 out of scope and wrongly refuses 2/71, shows 0 invented citations, and scores faithfulness 0.971 [0.93, 1.00] (fully supported 0.942) and lenient citation precision 0.944. v1 is more faithful (0.992) but refuses 5/71.
+- **Every M3 target is met with v2.**
+- **Checks:** 188 tests pass, coverage is 96 %, and ruff and mypy are clean.
+
+**Pending:** the plain baseline on the grown set. Its answers are cached; the judge calls wait for Groq's daily tokens (200K a day, about 130 verdicts).
+
+---
+
 ## 2026-10-24: Step 6a, cited answers, guardrails and the judge
 
 **Goal:** answers that cite only retrieved passages and refuse otherwise; a judge, answer metrics and a first prompt A/B; review files for the human steps of 6b.
