@@ -183,11 +183,11 @@ def test_reading_an_unknown_article_says_so():
 
 
 def test_an_agent_that_keeps_searching_is_told_to_conclude():
-    """Two steps before the budget runs out, the agent is told to submit with what it has."""
+    """Three steps before the budget runs out, the agent is told to submit with what it has."""
     llm = ScriptedLLM(reply(SEARCH))  # searches forever
 
     with pytest.raises(ClassificationError):
-        classify(llm, search, read, "Something.", max_steps=4)
+        classify(llm, search, read, "Something.", max_steps=5)
 
     assert llm.calls[2]["messages"][-1] == {"role": "user", "content": BUDGET_NUDGE}
     assert all(BUDGET_NUDGE not in str(m) for m in llm.calls[1]["messages"])

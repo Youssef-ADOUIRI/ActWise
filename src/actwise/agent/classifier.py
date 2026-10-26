@@ -24,7 +24,8 @@ from actwise.retrieval.passages import Passage
 
 CLASSIFY_PROMPT = "classify.v1"
 NUDGE = "Call submit_classification now."
-BUDGET_NUDGE = "Two steps left: submit your classification now, with the ids you have."
+BUDGET_STEPS = 3  # left when the agent is told to conclude: room to fix a refused submission
+BUDGET_NUDGE = f"{BUDGET_STEPS} steps left: submit your classification now, with the ids you have."
 DEFAULT_TOP_K, MAX_TOP_K = 5, 8
 READ_TOOL = {
     "name": "read_ai_act_article",
@@ -160,6 +161,6 @@ def classify(
             else:
                 content = f"Unknown tool {call.name!r}."
             messages.append({"role": "tool", "tool_call_id": call.id, "content": content})
-        if max_steps - step == 2:  # an agent that keeps researching has to conclude
+        if max_steps - step == BUDGET_STEPS:  # an agent that keeps researching has to conclude
             messages.append({"role": "user", "content": BUDGET_NUDGE})
     raise ClassificationError(f"no valid classification within {max_steps} steps")
