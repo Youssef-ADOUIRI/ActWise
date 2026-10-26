@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass
 from pathlib import Path
 
 from actwise.ids import storage_key
-from actwise.ingest.build_chunks import OUT_FILE
-from actwise.ingest.chunk import Chunk, law_of
+from actwise.ingest.build_chunks import OUT_FILE, load_chunks
+from actwise.ingest.chunk import law_of
 
 
 @dataclass(frozen=True)
@@ -42,6 +41,4 @@ def to_hit(passage: Passage, score: float) -> Hit:
 
 def chunk_passages(chunk_file: Path = OUT_FILE) -> list[Passage]:
     """Structure-aware passages: one per chunk, with its header (`Chunk.embed_text`)."""
-    with chunk_file.open(encoding="utf-8") as f:
-        chunks = [Chunk(**json.loads(line)) for line in f]
-    return [Passage(c.id, c.lang, c.embed_text) for c in chunks]
+    return [Passage(c.id, c.lang, c.embed_text) for c in load_chunks(chunk_file)]

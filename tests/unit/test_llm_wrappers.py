@@ -14,11 +14,11 @@ ANSWER = LLMResponse("Article 5.", [ToolCall("c1", "lookup", {"id": "AIA-Art5"})
 REQUEST = httpx.Request("POST", "https://llm.invalid/v1/chat/completions")
 
 
-def sdk_error(error_class, status):
-    """A real SDK error carrying an HTTP status, as a provider would raise it."""
-    return error_class(
-        "provider error", response=httpx.Response(status, request=REQUEST), body=None
-    )
+def sdk_error(error_class, status, retry_after=None):
+    """A real SDK error carrying an HTTP status (and a Retry-After), as a provider raises it."""
+    headers = {"retry-after": retry_after} if retry_after else {}
+    response = httpx.Response(status, headers=headers, request=REQUEST)
+    return error_class("provider error", response=response, body=None)
 
 
 class FakeClock:
@@ -114,6 +114,41 @@ def test_retry_skips_errors_that_waiting_cannot_fix(error):
     inner = ScriptedLLM(error, ANSWER)
 
     with pytest.raises(type(error)):
+        RetryingLLM(inner, max_tries=4, base_delay=1, sleep=clock.sleep, clock=clock).chat(MESSAGES)
+
+    assert len(inner.calls) == 1 and clock.sleeps == []
+
+
+def test_retry_waits_for_a_short_retry_after():
+    """A 429 asking for 7 s is retried after 7 s, not after the 1 s backoff."""
+    clock = FakeClock()
+    inner = ScriptedLLM(sdk_error(openai.RateLimitError, 429, retry_after="7"), ANSWER)
+
+    llm = RetryingLLM(inner, max_tries=4, base_delay=1, sleep=clock.sleep, clock=clock)
+
+    assert llm.chat(MESSAGES) == ANSWER
+    assert clock.sleeps == [7.0]
+
+
+def test_a_long_retry_after_means_a_spent_quota():
+    """A 429 asking for an hour raises at once: no more tries, no sleep."""
+    clock = FakeClock()
+    inner = ScriptedLLM(sdk_error(openai.RateLimitError, 429, retry_after="3600"), ANSWER)
+
+    with pytest.raises(openai.RateLimitError):
+        RetryingLLM(inner, max_tries=4, base_delay=1, sleep=clock.sleep, clock=clock).chat(MESSAGES)
+
+    assert len(inner.calls) == 1 and clock.sleeps == []
+
+
+def test_gemini_retry_delay_in_the_body_counts_as_retry_after():
+    """Gemini says how long to wait in the error body; a spent daily quota raises at once."""
+    clock = FakeClock()
+    body = "Error code: 429 - [{'error': {'details': [{'retryDelay': '17389s'}]}}]"
+    response = httpx.Response(429, request=REQUEST)
+    inner = ScriptedLLM(openai.RateLimitError(body, response=response, body=None), ANSWER)
+
+    with pytest.raises(openai.RateLimitError):
         RetryingLLM(inner, max_tries=4, base_delay=1, sleep=clock.sleep, clock=clock).chat(MESSAGES)
 
     assert len(inner.calls) == 1 and clock.sleeps == []

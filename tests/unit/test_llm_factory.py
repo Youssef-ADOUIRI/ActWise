@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from actwise.llm.factory import OFFLINE, SERVING, build_llm
+from actwise.llm.factory import OFFLINE, SERVING, build_judge, build_llm
 
 ENV = {
     "GEMINI_API_KEY": "gemini-secret",
@@ -20,7 +20,7 @@ def models(llm):
 
 def test_factory_builds_the_default_order():
     """Without LLM_PROVIDER_ORDER, the chain is Gemini, then Groq, then Ollama."""
-    assert models(build_llm(ENV, OFFLINE)) == [
+    assert models(build_llm(ENV, SERVING)) == [
         "gemini-2.5-flash-lite",
         "openai/gpt-oss-20b",
         "qwen3:4b",
@@ -44,13 +44,13 @@ def test_unknown_provider_fails_loudly():
 
 
 def test_serving_profile_fails_over_fast():
-    """Serving: two tries, no throttle and a time budget; offline: throttled, no budget (R5)."""
+    """Serving: 2 tries, no throttle, a budget, fallback; offline: throttled, one provider (R5)."""
     serving, offline = build_llm(ENV, SERVING).inner, build_llm(ENV, OFFLINE).inner
 
     assert serving.budget == SERVING.budget
     assert [(p.max_tries, p.min_interval) for p in serving.providers] == [(2, 0.0)] * 3
     assert offline.budget is None
-    assert [p.min_interval for p in offline.providers] == [4.0, 2.0, 0.0]
+    assert [p.min_interval for p in offline.providers] == [4.0]  # an eval run is one model
 
 
 def test_config_never_holds_a_key():
@@ -61,7 +61,22 @@ def test_config_never_holds_a_key():
         "ANTHROPIC_MODEL": "claude-x",
     }
 
-    config = json.dumps(build_llm(env, OFFLINE).config)
+    config = json.dumps(build_llm(env, SERVING).config)
 
     assert "secret" not in config
-    assert models(build_llm(env, OFFLINE))[0] == "claude-x"
+    assert models(build_llm(env, SERVING)) == [
+        "claude-x",
+        "gemini-2.5-flash-lite",
+        "openai/gpt-oss-20b",
+    ]
+
+
+def test_build_judge():
+    """The judge runs JUDGE_MODEL with its provider's key; without a model it raises."""
+    judge = build_judge(ENV | {"JUDGE_PROVIDER": "gemini", "JUDGE_MODEL": "gemini-3.6-flash"})
+
+    assert models(judge) == ["gemini-3.6-flash"]
+    with pytest.raises(RuntimeError, match="JUDGE_MODEL"):
+        build_judge(ENV)
+    with pytest.raises(ValueError, match="JUDGE_PROVIDER"):
+        build_judge(ENV | {"JUDGE_PROVIDER": "openai", "JUDGE_MODEL": "x"})

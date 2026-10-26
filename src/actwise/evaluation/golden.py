@@ -12,10 +12,15 @@ have no gold article ("gold": []), so they carry an explicit "split" instead.
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
 GOLDEN_FILE = Path("data/eval/golden.jsonl")
+# "What does Article 6 say?" makes retrieval trivial, so no question may name its article.
+NAMES_AN_ARTICLE = re.compile(
+    r"\b(?:Article|article|Annex|ANNEX|Annexe|annexe|Recital|considérant)\s+[0-9IVXL]+"
+)
 TYPES = ("lookup", "definition", "obligation", "cross_law", "not_covered")
 
 

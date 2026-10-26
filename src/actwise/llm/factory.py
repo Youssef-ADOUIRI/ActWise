@@ -48,10 +48,11 @@ class Profile:
     throttle: bool  # space each provider's calls by its `min_interval`
     timeout: float  # seconds for one HTTP call
     budget: float | None  # seconds for one chat(), retries and fallbacks included
+    fallback: bool  # move on to the next provider; evals don't, so one run is one model
 
 
-OFFLINE = Profile(max_tries=4, base_delay=2.0, throttle=True, timeout=60.0, budget=None)
-SERVING = Profile(max_tries=2, base_delay=1.0, throttle=False, timeout=15.0, budget=25.0)
+OFFLINE = Profile(4, 2.0, throttle=True, timeout=60.0, budget=None, fallback=False)
+SERVING = Profile(2, 1.0, throttle=False, timeout=15.0, budget=25.0, fallback=True)
 
 
 def build_provider(name: str, env: Mapping[str, str], profile: Profile) -> RetryingLLM | None:
@@ -83,4 +84,17 @@ def build_llm(env: Mapping[str, str], profile: Profile) -> CachedLLM:
     providers = [p for name in names if (p := build_provider(name, env, profile)) is not None]
     if not providers:
         raise RuntimeError("no LLM provider configured: set a key and a model in .env")
+    if not profile.fallback:  # a spent quota stops the run; a re-run resumes from the cache
+        providers = providers[:1]
     return CachedLLM(FallbackLLM(providers, profile.budget), CACHE_DIR)
+
+
+def build_judge(env: Mapping[str, str]) -> CachedLLM:
+    """The judge: JUDGE_MODEL on JUDGE_PROVIDER (with that provider's key), offline profile."""
+    name, model = env.get("JUDGE_PROVIDER") or "gemini", env.get("JUDGE_MODEL", "")
+    if name not in PROVIDERS:
+        raise ValueError(f"unknown JUDGE_PROVIDER: {name}")
+    judge = build_provider(name, {**env, PROVIDERS[name].model_var: model}, OFFLINE)
+    if judge is None:
+        raise RuntimeError(f"no judge: set JUDGE_MODEL and the {name} key in .env")
+    return CachedLLM(FallbackLLM([judge]), CACHE_DIR)

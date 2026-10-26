@@ -1,5 +1,13 @@
-from actwise.evaluation.answers import answer_questions, answers_markdown, plain_messages
+from functools import partial
+
+from actwise.evaluation.answers import (
+    answer_questions,
+    answers_markdown,
+    plain_ask,
+    plain_messages,
+)
 from actwise.evaluation.golden import Question
+from actwise.generation.rag import RagPipeline
 from actwise.llm.base import LLMResponse
 from actwise.retrieval.passages import to_hit
 from tests.unit.toys import PASSAGES, ScriptedLLM
@@ -9,6 +17,7 @@ QUESTIONS = [
     Question("q2", "fr", "not_covered", "Que dit le DMA ?", (), "...", split="dev"),
 ]
 ANSWER = LLMResponse("Article 5 bans them.\n\n- social scoring", [], 100, 10, "gemini-x")
+VERDICT = LLMResponse('{"score": 4, "reason": "One detail is missing."}', [], 1, 1, "judge-x")
 
 
 def search(query, top_k):
@@ -26,28 +35,41 @@ def test_plain_prompt_holds_the_passages_then_the_question():
     assert "cit" not in message["content"].lower()
 
 
-def test_every_question_is_answered_and_its_model_recorded():
-    """Out-of-scope questions are answered too, at temperature 0, from the top passages."""
+def test_plain_answers_are_never_refused_and_record_their_model():
+    """The baseline answers every question, out-of-scope ones too, at temperature 0."""
     llm = ScriptedLLM(ANSWER)
 
-    answers = answer_questions(llm, search, QUESTIONS, top_k=2)
+    rows = answer_questions(partial(plain_ask, llm, search), QUESTIONS)
 
-    rows = answers["per_question"]
-    assert [row["id"] for row in rows] == ["q1", "q2"]
-    assert rows[0]["passages"] == ["GDPR-Art17-1@en", "AIA-Art5-1@en"]
-    assert (rows[0]["answer"], rows[0]["model"]) == (ANSWER.text, "gemini-x")
-    assert answers["summary"] == {
-        "n": 2,
-        "models": {"gemini-x": 2},
-        "input_tokens": 200,
-        "output_tokens": 20,
-    }
+    assert [(r["id"], r["refused"], r["model"]) for r in rows] == [
+        ("q1", False, "gemini-x"),
+        ("q2", False, "gemini-x"),
+    ]
+    assert [s["key"] for s in rows[0]["sources"][:2]] == ["GDPR-Art17-1@en", "AIA-Art5-1@en"]
     assert [call["temperature"] for call in llm.calls] == [0, 0]
 
 
+def test_the_judge_scores_answers_but_not_refusals():
+    """A refused question gets no verdict; an answered one gets the judge's score."""
+    rag = RagPipeline(ScriptedLLM(LLMResponse("NOT_COVERED", [], 1, 1, "m")), search, "rules")
+    judge = ScriptedLLM(VERDICT)
+
+    rows = answer_questions(rag.ask, QUESTIONS, judge)
+    plain = answer_questions(partial(plain_ask, ScriptedLLM(ANSWER), search), QUESTIONS[:1], judge)
+
+    assert "judge" not in rows[0] and rows[0]["reason"] == "not_covered"
+    assert plain[0]["judge"]["score"] == 4
+
+
 def test_answers_markdown_quotes_each_answer():
-    """Each question gets a heading, and its answer is quoted line by line."""
-    text = answers_markdown(answer_questions(ScriptedLLM(ANSWER), search, QUESTIONS, top_k=2))
+    """Each question gets a heading, its quoted answer and the judge's verdict."""
+    rows = answer_questions(
+        partial(plain_ask, ScriptedLLM(ANSWER), search), QUESTIONS, ScriptedLLM(VERDICT)
+    )
+    answers = {"prompt": "plain", "judge": "judge-x", "summary": {"n": 2}, "per_question": rows}
+
+    text = answers_markdown(answers)
 
     assert "### q2 (fr, not_covered)" in text
     assert "> Article 5 bans them.\n>\n> - social scoring" in text
+    assert "Judge: 4/5. One detail is missing." in text
