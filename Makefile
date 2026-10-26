@@ -1,5 +1,5 @@
 .PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet serve deploy
+	candidates label-sheet eval-classifier serve deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -42,6 +42,10 @@ ablations:
 # the judge. Every LLM call is cached in .cache/llm, so a re-run makes no API call.
 eval-answers:
 	uv run --extra local python evals/run_eval.py --system $(SYSTEM) --split $(SPLIT) --prompt $(PROMPT) --judge
+
+# Risk classifier on the scenarios of SPLIT (agent calls cached in .cache/llm).
+eval-classifier:
+	uv run --extra local python evals/run_classifier.py --split $(SPLIT)
 
 # Step 6 review files: golden-set candidates, and 60 answers to score by hand.
 candidates:

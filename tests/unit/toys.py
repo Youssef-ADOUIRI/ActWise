@@ -21,7 +21,7 @@ class ScriptedLLM:
         """Record the request, then answer with the next item of the script."""
         self.calls.append(
             {
-                "messages": messages,
+                "messages": list(messages),  # a copy: an agent keeps appending to its list
                 "tools": tools,
                 "temperature": temperature,
                 "max_tokens": max_tokens,
