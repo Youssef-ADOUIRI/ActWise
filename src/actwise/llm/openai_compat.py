@@ -18,6 +18,7 @@ def to_openai_messages(messages: list[Message]) -> list[dict[str, Any]]:
                     "id": tc["id"],
                     "type": "function",
                     "function": {"name": tc["name"], "arguments": json.dumps(tc["arguments"])},
+                    **tc.get("extra", {}),  # e.g. Gemini's extra_content.google.thought_signature
                 }
                 for tc in m["tool_calls"]
             ]
@@ -75,7 +76,12 @@ class OpenAICompatLLM:
         response = self.client.chat.completions.create(**kwargs)
         message = response.choices[0].message
         calls = [
-            ToolCall(tc.id, tc.function.name, json.loads(tc.function.arguments or "{}"))
+            ToolCall(
+                tc.id,
+                tc.function.name,
+                json.loads(tc.function.arguments or "{}"),
+                dict(getattr(tc, "model_extra", None) or {}),  # fields the SDK doesn't know
+            )
             for tc in message.tool_calls or []
         ]
         usage = getattr(response, "usage", None)

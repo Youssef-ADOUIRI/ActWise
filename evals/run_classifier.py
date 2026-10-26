@@ -19,10 +19,11 @@ from typing import Any
 from dotenv import load_dotenv
 from run_eval import REPORTS, SYSTEMS, fingerprint, git_commit
 
-from actwise.agent.classifier import CLASSIFY_PROMPT
+from actwise.agent.classifier import CLASSIFY_PROMPT, article_reader
 from actwise.evaluation.classifier_eval import classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import SCENARIOS_FILE, load_scenarios
 from actwise.llm.factory import OFFLINE, build_llm
+from actwise.retrieval.passages import chunk_passages
 
 SYSTEM = "hybrid-binding"
 
@@ -44,7 +45,7 @@ def to_markdown(report: dict[str, Any]) -> str:
         f"| Prohibited or high risk labelled minimal risk | {s['dangerous_downgrades']} |",
         f"| Runs that hit the step budget | {s['failed']} |",
         f"| Results citing only retrieved ids | {s['citations_retrieved']} |",
-        f"| Steps / searches per run | {s['steps']} / {s['searches']} |",
+        f"| Steps / lookups (reads and searches) per run | {s['steps']} / {s['lookups']} |",
         "",
         "## Confusion (clear scenarios: gold → predicted)",
         "",
@@ -74,7 +75,8 @@ def main() -> None:
 
     scenarios = [s for s in load_scenarios() if s.split == args.split]
     retriever = SYSTEMS[SYSTEM].build()
-    rows = classify_scenarios(llm, retriever.search, scenarios)
+    read = article_reader(chunk_passages())
+    rows = classify_scenarios(llm, retriever.search, read, scenarios)
     report = {
         "name": f"classifier-{args.split}",
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
