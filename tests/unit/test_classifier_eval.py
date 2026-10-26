@@ -15,7 +15,7 @@ def row(gold, predicted, ambiguous=False, lang="en"):
         "predicted": predicted,
         "citations_retrieved": True,
         "steps": 2,
-        "searches": 1,
+        "lookups": 1,
     }
 
 
@@ -60,8 +60,8 @@ def test_classify_scenarios_records_failures_and_results():
         "s01", "dev", "en", False, "prohibited", "AIA-Art5-1", "", "Scoring.", "yes"
     )
 
-    [ok] = classify_scenarios(good, lambda q, k: [passage], [scenario])
-    [failed] = classify_scenarios(stuck, lambda q, k: [passage], [scenario])
+    [ok] = classify_scenarios(good, lambda q, k: [passage], lambda a: [], [scenario])
+    [failed] = classify_scenarios(stuck, lambda q, k: [passage], lambda a: [], [scenario])
 
     assert (ok["predicted"], ok["citations_retrieved"], ok["steps"]) == ("prohibited", True, 2)
     assert failed["predicted"] == FAILED and "step" in failed["error"]

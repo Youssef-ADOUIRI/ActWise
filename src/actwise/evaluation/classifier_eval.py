@@ -5,7 +5,7 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any
 
-from actwise.agent.classifier import ClassificationError, classify
+from actwise.agent.classifier import ClassificationError, Read, classify
 from actwise.agent.schemas import TIERS
 from actwise.evaluation.generation import share
 from actwise.evaluation.metrics import mean
@@ -17,13 +17,15 @@ from actwise.llm.base import LLM
 FAILED = "failed"  # the predicted tier of a run that hit the step budget
 
 
-def classify_scenarios(llm: LLM, search: Search, scenarios: list[Scenario]) -> list[dict[str, Any]]:
+def classify_scenarios(
+    llm: LLM, search: Search, read: Read, scenarios: list[Scenario]
+) -> list[dict[str, Any]]:
     """One row per scenario; a run that exhausts the step budget is a failure, not a crash."""
     rows = []
     for s in scenarios:
         row: dict[str, Any] = {"id": s.id, "lang": s.lang, "ambiguous": s.ambiguous, "gold": s.gold}
         try:
-            outcome = classify(llm, search, s.description)
+            outcome = classify(llm, search, read, s.description)
         except ClassificationError as exc:
             rows.append(row | {"predicted": FAILED, "error": str(exc)})
             continue
@@ -37,7 +39,7 @@ def classify_scenarios(llm: LLM, search: Search, scenarios: list[Scenario]) -> l
                     paragraph_id(c) in outcome.retrieved for c in result.citations
                 ),
                 "steps": outcome.steps,
-                "searches": outcome.searches,
+                "lookups": outcome.lookups,
             }
         )
     return rows
@@ -67,7 +69,7 @@ def summarise_classifications(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "failed": len(rows) - len(ran),
         "citations_retrieved": share([r["citations_retrieved"] for r in ran]),
         "steps": round(mean([r["steps"] for r in ran]), 2),
-        "searches": round(mean([r["searches"] for r in ran]), 2),
+        "lookups": round(mean([r["lookups"] for r in ran]), 2),
         "confusion": confusion,
         "by_lang": {
             lang: share([r["predicted"] == r["gold"] for r in clear if r["lang"] == lang])

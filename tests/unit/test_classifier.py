@@ -3,9 +3,11 @@ import json
 import pytest
 
 from actwise.agent.classifier import (
+    BUDGET_NUDGE,
     NUDGE,
     SUBMIT_TOOL,
     ClassificationError,
+    article_reader,
     classify,
     search_ai_act,
 )
@@ -26,6 +28,9 @@ SEARCH = ("search_ai_act", {"query": "social scoring"})
 def search(query, top_k):
     """Fake retriever: the same three passages, best first."""
     return HITS[:top_k]
+
+
+read = article_reader(HITS)
 
 
 def reply(*calls, text=""):
@@ -54,10 +59,10 @@ def test_happy_path():
     """Search then submit: the result is returned, and the search reached the model."""
     llm = ScriptedLLM(reply(SEARCH), reply(submit()))
 
-    outcome = classify(llm, search, "A city scores residents' trustworthiness.")
+    outcome = classify(llm, search, read, "A city scores residents' trustworthiness.")
 
     assert outcome.result.tier == "prohibited"
-    assert (outcome.steps, outcome.searches) == (2, 1)
+    assert (outcome.steps, outcome.lookups) == (2, 1)
     [found] = tool_messages(llm, 1)
     assert [p["id"] for p in json.loads(found)] == ["AIA-Art5-1", "AIA-Art50-1"]  # no GDPR
 
@@ -66,7 +71,7 @@ def test_rejects_invented_citation():
     """Citing an id never retrieved is refused with a message; the corrected call is accepted."""
     llm = ScriptedLLM(reply(SEARCH), reply(submit(citations=["AIA-Art5-3"])), reply(submit()))
 
-    outcome = classify(llm, search, "A city scores residents' trustworthiness.")
+    outcome = classify(llm, search, read, "A city scores residents' trustworthiness.")
 
     assert outcome.result.citations == ["AIA-Art5-1"]
     assert "Unknown: ['AIA-Art5-3']" in tool_messages(llm, 2)[-1]
@@ -77,7 +82,7 @@ def test_schema_errors_fed_back():
     llm = ScriptedLLM(reply(SEARCH), reply(submit(tier="banned", reasons=[], confidence=3)))
 
     with pytest.raises(ClassificationError):
-        classify(llm, search, "Something.", max_steps=3)
+        classify(llm, search, read, "Something.", max_steps=3)
 
     error = tool_messages(llm, 2)[-1]
     assert error.startswith("Invalid classification")
@@ -90,7 +95,7 @@ def test_plain_text_is_nudged():
         LLMResponse("It is prohibited.", [], 10, 5, "m"), reply(SEARCH), reply(submit())
     )
 
-    classify(llm, search, "A city scores residents' trustworthiness.")
+    classify(llm, search, read, "A city scores residents' trustworthiness.")
 
     assert llm.calls[1]["messages"][-1] == {"role": "user", "content": NUDGE}
 
@@ -111,7 +116,7 @@ def test_tier_must_cite_its_own_rule():
         reply(submit(tier="transparency_only", citations=["AIA-Art50-1"])),
     )
 
-    outcome = classify(llm, search, "A chatbot on a shop website.")
+    outcome = classify(llm, search, read, "A chatbot on a shop website.")
 
     assert outcome.result.tier == "transparency_only"
     assert "must cite AIA-Art6 or AIA-AnnexI or AIA-AnnexIII" in tool_messages(llm, 2)[-1]
@@ -124,7 +129,7 @@ def test_needs_more_info_must_ask_questions():
         reply(SEARCH), reply(vague), reply(submit(**vague[1], follow_up_questions=["What for?"]))
     )
 
-    outcome = classify(llm, search, "An AI model for a client.")
+    outcome = classify(llm, search, read, "An AI model for a client.")
 
     assert outcome.result.follow_up_questions == ["What for?"]
     assert "follow-up questions" in tool_messages(llm, 2)[-1]
@@ -134,7 +139,7 @@ def test_unknown_tool_gets_an_error():
     """A call to a tool that doesn't exist is answered with an error, and the run goes on."""
     llm = ScriptedLLM(reply(("delete_everything", {})), reply(SEARCH), reply(submit()))
 
-    classify(llm, search, "A city scores residents' trustworthiness.")
+    classify(llm, search, read, "A city scores residents' trustworthiness.")
 
     assert tool_messages(llm, 1) == ["Unknown tool 'delete_everything'."]
 
@@ -153,3 +158,36 @@ def test_search_tool_keeps_the_ai_act_and_clamps_top_k():
 
     assert [p["id"] for p in found] == ["AIA-Art5-1", "AIA-Art50-1"]
     assert asked == [16, 10]  # twice top_k (8 at most, 5 by default) before filtering
+
+
+def test_read_tool_returns_whole_paragraphs_that_count_as_retrieved():
+    """Reading AIA-Art5 shows its paragraphs (parts joined); citing them needs no search."""
+    llm = ScriptedLLM(reply(("read_ai_act_article", {"article": "AIA-Art5"})), reply(submit()))
+
+    outcome = classify(llm, search, read, "A city scores residents' trustworthiness.")
+
+    [shown] = tool_messages(llm, 1)
+    assert [p["id"] for p in json.loads(shown)] == ["AIA-Art5-1"]
+    assert outcome.retrieved == {"AIA-Art5-1"}
+
+
+def test_reading_an_unknown_article_says_so():
+    """An id that matches no article gets a hint, not an empty list."""
+    llm = ScriptedLLM(
+        reply(("read_ai_act_article", {"article": "Article 5"})), reply(SEARCH), reply(submit())
+    )
+
+    classify(llm, search, read, "A city scores residents' trustworthiness.")
+
+    assert tool_messages(llm, 1)[0].startswith("Nothing found")
+
+
+def test_an_agent_that_keeps_searching_is_told_to_conclude():
+    """Two steps before the budget runs out, the agent is told to submit with what it has."""
+    llm = ScriptedLLM(reply(SEARCH))  # searches forever
+
+    with pytest.raises(ClassificationError):
+        classify(llm, search, read, "Something.", max_steps=4)
+
+    assert llm.calls[2]["messages"][-1] == {"role": "user", "content": BUDGET_NUDGE}
+    assert all(BUDGET_NUDGE not in str(m) for m in llm.calls[1]["messages"])
