@@ -8,9 +8,9 @@ Each row answers the **dev** split: 71 in-scope questions (20 hand-written, 51 r
 |---|---|---|---|---|---|---|---|---|
 | v1 | `answer.v1` | 12 / 12 | 5 / 71 (7.0 %) | 0 (0) | 0.992 [0.98, 1.00] | 0.985 | 0.925 / 1.000 | [answer.v1](../evals/reports/hybrid-binding-dev-answer.v1.md) |
 | **v2** | `answer.v2` | 12 / 12 | **2 / 71 (2.8 %)** | 0 (0) | 0.971 [0.93, 1.00] | 0.942 | 0.899 / 0.944 | [answer.v2](../evals/reports/hybrid-binding-dev-answer.v2.md) |
-| baseline | `plain`, naive retrieval | pending | pending | | | | | Groq's daily tokens ran out; the 22-question run of 6a is in [baseline-dev-plain](../evals/reports/baseline-dev-plain.md): no refusals, faithfulness 0.989 |
+| baseline | `plain`, naive retrieval (Recall@5 0.775) | 0 / 12 | 0 / 71 | 0 (0) | 0.991 [0.98, 1.00] | 0.964 | n/a: no citations | [baseline-dev-plain](../evals/reports/baseline-dev-plain.md) |
 
-Both rows come from commit `c07703c`. Faithfulness is (score − 1) / 4 averaged over the answers given. Fully supported is the share of answers scored 5, with no unsupported claim at all; the judge and the human labels agree best on that one (kappa 0.952).
+The v1 and v2 rows come from commit `c07703c`, the baseline from `8dc2a89`. The baseline is just as faithful to its context, but it cites nothing and refuses none of the 12 out-of-scope questions: those are the gains of the cited pipeline. Faithfulness is (score − 1) / 4 averaged over the answers given. Fully supported is the share of answers scored 5, with no unsupported claim at all; the judge and the human labels agree best on that one (kappa 0.952).
 
 ## Hand-written and synthetic apart
 
