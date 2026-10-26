@@ -1,0 +1,1953 @@
+{
+  "name": "hybrid-binding-dev-answer.v2",
+  "created": "2026-10-24T02:35:40+00:00",
+  "git_commit": "9d5aefa",
+  "split": "dev",
+  "system": {
+    "name": "hybrid-binding",
+    "description": "E: as C, with articles and annexes ranked before recitals",
+    "embedder": {
+      "model": "BAAI/bge-m3",
+      "revision": "9a0624b896d81da7492a910ffa53731274b6cf3d",
+      "max_len": 512,
+      "prefix": {
+        "query": "",
+        "passage": ""
+      }
+    },
+    "passages": 3799,
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "fusion": {
+      "method": "rrf",
+      "k": 60,
+      "k_each": 30
+    },
+    "reranker": null,
+    "rerank_pool": null,
+    "binding_first": true
+  },
+  "inputs": {
+    "golden": "14c345cf25a1",
+    "splits": "fa7e857e8544"
+  },
+  "questions": {
+    "total": 22,
+    "scored": 20,
+    "skipped_no_gold": 2
+  },
+  "metrics": {
+    "n": 20,
+    "recall@1": 0.6,
+    "recall@5": 0.925,
+    "recall@10": 1.0,
+    "recall@20": 1.0,
+    "mrr@10": 0.8056,
+    "ndcg@10": 0.8422,
+    "ms_per_query": 152.5
+  },
+  "ci95": {
+    "recall@5": [
+      0.8,
+      1.0
+    ],
+    "mrr@10": [
+      0.6861,
+      0.925
+    ]
+  },
+  "by_lang": {
+    "en": {
+      "n": 13,
+      "recall@1": 0.5385,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.7692,
+      "ndcg@10": 0.8312
+    },
+    "fr": {
+      "n": 7,
+      "recall@1": 0.7143,
+      "recall@5": 0.7857,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.873,
+      "ndcg@10": 0.8626
+    }
+  },
+  "by_type": {
+    "cross_law": {
+      "n": 2,
+      "recall@1": 0.25,
+      "recall@5": 0.75,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.75,
+      "ndcg@10": 0.7342
+    },
+    "definition": {
+      "n": 1,
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309
+    },
+    "lookup": {
+      "n": 12,
+      "recall@1": 0.5417,
+      "recall@5": 0.9167,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.7593,
+      "ndcg@10": 0.812
+    },
+    "obligation": {
+      "n": 5,
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    }
+  },
+  "per_question": [
+    {
+      "id": "q001",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-AnnexII"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art5",
+        "AIA-AnnexII",
+        "AIA-Art61",
+        "AIA-Art60",
+        "AIA-Art27",
+        "AIA-Art26",
+        "AIA-Rec33",
+        "AIA-Rec38",
+        "AIA-Rec35",
+        "AIA-Rec32"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q002",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-AnnexV"
+      ],
+      "first_hit_rank": 9,
+      "top_articles": [
+        "AIA-Art47",
+        "AIA-Art16",
+        "AIA-AnnexVIII",
+        "AIA-Art42",
+        "AIA-Art23",
+        "AIA-Art24",
+        "AIA-Art22",
+        "AIA-Art43",
+        "AIA-AnnexV",
+        "AIA-Art25"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.1111111111111111,
+      "ndcg@10": 0.3010299956639812
+    },
+    {
+      "id": "q003",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "AIA-Art15"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art15",
+        "AIA-Art43",
+        "AIA-Art14",
+        "AIA-Art3",
+        "AIA-Art26",
+        "AIA-Art17",
+        "AIA-Art9",
+        "AIA-Art23",
+        "AIA-Art25",
+        "AIA-Art13"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q004",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art36",
+        "AIA-Art44",
+        "AIA-Art45",
+        "AIA-Art30",
+        "AIA-Art29",
+        "AIA-AnnexVII",
+        "GDPR-Art42",
+        "AIA-Art31",
+        "AIA-AnnexV",
+        "GDPR-Art43"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q005",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art37",
+        "AIA-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art36",
+        "AIA-Art44",
+        "AIA-Art37",
+        "AIA-Art35",
+        "AIA-Art29",
+        "AIA-AnnexVII",
+        "AIA-Art31",
+        "GDPR-Art52",
+        "AIA-Art3",
+        "AIA-Art28"
+      ],
+      "recall@1": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 0.9197207891481876
+    },
+    {
+      "id": "q006",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "AIA-Art49"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art49",
+        "AIA-Art26",
+        "AIA-Art71",
+        "AIA-Art14",
+        "AIA-Art27",
+        "AIA-AnnexVIII",
+        "AIA-Art16",
+        "AIA-Art60",
+        "AIA-Art82",
+        "AIA-Art6"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q007",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art56"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art56",
+        "AIA-Art53",
+        "AIA-Art55",
+        "AIA-Art50",
+        "AIA-Art111",
+        "AIA-Art89",
+        "AIA-AnnexXI",
+        "AIA-Art95",
+        "AIA-AnnexXII",
+        "AIA-Art101"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q008",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "AIA-Art68"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art68",
+        "AIA-Art90",
+        "AIA-Art69",
+        "AIA-Art65",
+        "AIA-Art92",
+        "AIA-Art66",
+        "AIA-Art64",
+        "AIA-Art62",
+        "AIA-Art91",
+        "AIA-Art60"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q009",
+      "lang": "en",
+      "type": "definition",
+      "gold": [
+        "AIA-Art83"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art48",
+        "AIA-Art83",
+        "AIA-Art24",
+        "AIA-Art80",
+        "AIA-Art79",
+        "AIA-Art16",
+        "AIA-Art8",
+        "AIA-Art6",
+        "AIA-Art23",
+        "AIA-Art15"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q010",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art3"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art2",
+        "GDPR-Art3",
+        "GDPR-Art47",
+        "AIA-Art2",
+        "GDPR-Art27",
+        "GDPR-Art64",
+        "AIA-Art5",
+        "GDPR-Art57",
+        "AIA-AnnexX",
+        "AIA-AnnexV"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q011",
+      "lang": "fr",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art14"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art14",
+        "GDPR-Art13",
+        "GDPR-Art12",
+        "GDPR-Art11",
+        "GDPR-Art34",
+        "GDPR-Art6",
+        "GDPR-Art17",
+        "GDPR-Art15",
+        "GDPR-Art33",
+        "GDPR-Art19"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q012",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art22"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art22",
+        "AIA-Art5",
+        "AIA-Art14",
+        "AIA-Art26",
+        "GDPR-Art14",
+        "AIA-Art60",
+        "GDPR-Art13",
+        "GDPR-Art48",
+        "AIA-Art78",
+        "AIA-Art46"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q013",
+      "lang": "fr",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art36"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art36",
+        "GDPR-Art56",
+        "GDPR-Art41",
+        "GDPR-Art60",
+        "GDPR-Art58",
+        "GDPR-Art62",
+        "GDPR-Art31",
+        "GDPR-Art30",
+        "GDPR-Art4",
+        "GDPR-Art78"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q014",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art49"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art45",
+        "GDPR-Art49",
+        "GDPR-Art48",
+        "GDPR-Art46",
+        "GDPR-Art44",
+        "GDPR-Art13",
+        "GDPR-Art14",
+        "GDPR-Art4",
+        "GDPR-Art15",
+        "GDPR-Rec112"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q015",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art66"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art66",
+        "GDPR-Art60",
+        "GDPR-Art50",
+        "AIA-Art79",
+        "GDPR-Art70",
+        "AIA-Art5",
+        "GDPR-Art45",
+        "GDPR-Art58",
+        "AIA-Art70",
+        "GDPR-Art37"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q016",
+      "lang": "en",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art78"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art12",
+        "GDPR-Art78",
+        "GDPR-Art77",
+        "GDPR-Art57",
+        "GDPR-Art11",
+        "GDPR-Art79",
+        "GDPR-Art80",
+        "GDPR-Art47",
+        "GDPR-Art33",
+        "GDPR-Art34"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q017",
+      "lang": "fr",
+      "type": "lookup",
+      "gold": [
+        "GDPR-Art79"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art79",
+        "GDPR-Art47",
+        "GDPR-Art78",
+        "GDPR-Art77",
+        "GDPR-Art2",
+        "GDPR-Art58",
+        "GDPR-Art26",
+        "GDPR-Art57",
+        "GDPR-Art36",
+        "AIA-Art101"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q018",
+      "lang": "en",
+      "type": "obligation",
+      "gold": [
+        "GDPR-Art82"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art82",
+        "GDPR-Art28",
+        "GDPR-Art32",
+        "GDPR-Art29",
+        "GDPR-Art38",
+        "GDPR-Art58",
+        "GDPR-Art83",
+        "GDPR-Art42",
+        "GDPR-Art30",
+        "GDPR-Art33"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q019",
+      "lang": "en",
+      "type": "cross_law",
+      "gold": [
+        "GDPR-Art30",
+        "AIA-Art49"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art71",
+        "AIA-Art49",
+        "AIA-AnnexV",
+        "GDPR-Art30",
+        "AIA-Art50",
+        "AIA-Art27",
+        "AIA-Art47",
+        "AIA-Art36",
+        "AIA-Art60",
+        "AIA-Art30"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6509209298071326
+    },
+    {
+      "id": "q020",
+      "lang": "fr",
+      "type": "cross_law",
+      "gold": [
+        "GDPR-Art80",
+        "AIA-Art77"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art77",
+        "AIA-AnnexVII",
+        "AIA-Art11",
+        "AIA-Art7",
+        "AIA-Art82",
+        "AIA-AnnexIII",
+        "GDPR-Art80",
+        "AIA-Art5",
+        "AIA-Art75",
+        "AIA-Art78"
+      ],
+      "recall@1": 0.5,
+      "recall@5": 0.5,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 0.8175295903539445
+    }
+  ],
+  "llm": {
+    "fallback": [
+      {
+        "provider": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      }
+    ]
+  },
+  "answers": {
+    "prompt": "answer.v2",
+    "judge": {
+      "fallback": [
+        {
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b"
+        }
+      ],
+      "prompt": "judge.v1"
+    },
+    "summary": {
+      "n": 22,
+      "in_scope": 20,
+      "out_of_scope": 2,
+      "refusal_rate": 1.0,
+      "false_refusal_rate": 0.0,
+      "refusal_reasons": {
+        "not_covered": 2
+      },
+      "invented_citations": 0,
+      "invented_shown": 0,
+      "citation_precision_strict": 0.8276,
+      "citation_precision_lenient": 0.8966,
+      "faithfulness": 0.9875,
+      "faithfulness_ci95": [
+        0.9625,
+        1.0
+      ],
+      "judged": 20,
+      "judge_failed": 0,
+      "uncited_sentences": 0.65,
+      "models": {
+        "gemini-3.5-flash-lite": 22
+      },
+      "input_tokens": 20739,
+      "output_tokens": 2475,
+      "cache_hits_misses": {
+        "answers": [
+          22,
+          0
+        ],
+        "judge": [
+          20,
+          0
+        ]
+      }
+    },
+    "per_question": [
+      {
+        "id": "q001",
+        "lang": "en",
+        "type": "lookup",
+        "question": "Is trafficking in human beings one of the crimes for which the police may be allowed to use real-time facial recognition in public spaces to locate a suspect?",
+        "gold": [
+          "AIA-AnnexII"
+        ],
+        "answer": "Yes, trafficking in human beings is listed as one of the criminal offences referred to in Article 5(1), first subparagraph, point (h)(iii), for which the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for law enforcement may be permitted, provided that such use is strictly necessary for that objective and complies with all required conditions and safeguards [AIA-Art5-1, AIA-AnnexII, AIA-Art5-2]. The provided sources do not cover whether trafficking in human beings is specifically included under point (h)(i) (targeted search for victims of trafficking), as they only mention it in the context of criminal offences under point (h)(iii).",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art5-1",
+          "AIA-AnnexII",
+          "AIA-Art5-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art5-1#5@en",
+            "id": "AIA-Art5-1",
+            "label": "AI Act, Art. 5(1)",
+            "text": "AI Act Article 5(1): Prohibited AI practices\nreasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on biometric data or categorizing of biometric data in the area of law enforcement; (h) the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, unless and in so far as such use is strictly necessary for one of the following objectives: (i) the targeted search for specific victims of abduction, trafficking in human beings or sexual exploitation of human beings, as well as the search for missing persons; (ii) the prevention"
+          },
+          {
+            "key": "AIA-AnnexII@en",
+            "id": "AIA-AnnexII",
+            "label": "AI Act, Annex II",
+            "text": "AI Act Annex II: List of criminal offences referred to in Article 5(1), first subparagraph, point (h)(iii)\nCriminal offences referred to in Article 5(1), first subparagraph, point (h)(iii): — terrorism, — trafficking in human beings, — sexual exploitation of children, and child pornography, — illicit trafficking in narcotic drugs or psychotropic substances, — illicit trafficking in weapons, munitions or explosives, — murder, grievous bodily injury, — illicit trade in human organs or tissue, — illicit trafficking in nuclear or radioactive materials, — kidnapping, illegal restraint or hostage-taking, — crimes within the jurisdiction of the International Criminal Court, — unlawful seizure of aircraft or ships, — rape, — environmental crime, — organised or armed robbery, — sabotage, — participation in a criminal organisation involved in one or more of the offences listed above."
+          },
+          {
+            "key": "AIA-Art5-1#4@en",
+            "id": "AIA-Art5-1",
+            "label": "AI Act, Art. 5(1)",
+            "text": "AI Act Article 5(1): Prohibited AI practices\nhuman assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity; (e) the placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage; (f) the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually"
+          },
+          {
+            "key": "AIA-Art5-2#1@en",
+            "id": "AIA-Art5-2",
+            "label": "AI Act, Art. 5(2)",
+            "text": "AI Act Article 5(2): Prohibited AI practices\nThe use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), shall be deployed for the purposes set out in that point only to confirm the identity of the specifically targeted individual, and it shall take into account the following elements: (a) the nature of the situation giving rise to the possible use, in particular the seriousness, probability and scale of the harm that would be caused if the system were not used; (b) the consequences of the use of the system for the rights and freedoms of all persons concerned, in particular the seriousness, probability and scale of those consequences. In addition, the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in"
+          },
+          {
+            "key": "AIA-Art5-2#2@en",
+            "id": "AIA-Art5-2",
+            "label": "AI Act, Art. 5(2)",
+            "text": "AI Act Article 5(2): Prohibited AI practices\nuse of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), of this Article shall comply with necessary and proportionate safeguards and conditions in relation to the use in accordance with the national law authorising the use thereof, in particular as regards the temporal, geographic and personal limitations. The use of the ‘real-time’ remote biometric identification system in publicly accessible spaces shall be authorised only if the law enforcement authority has completed a fundamental rights impact assessment as provided for in Article 27 and has registered the system in the EU database according to Article 49. However, in duly justified cases of urgency, the use of such systems may be commenced without the registration in the EU database, provided that such registration is completed without undue delay."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1197,
+        "output_tokens": 143,
+        "judge": {
+          "score": 4,
+          "reason": "Main claim is supported, but the statement that sources do not cover point (h)(i) is inaccurate.",
+          "unsupported": [
+            "AIA-Art5-1",
+            "AIA-AnnexII",
+            "AIA-Art5-2"
+          ]
+        }
+      },
+      {
+        "id": "q002",
+        "lang": "fr",
+        "type": "lookup",
+        "question": "Quelles mentions doit contenir la déclaration UE de conformité d'un système d'IA à haut risque ?",
+        "gold": [
+          "AIA-AnnexV"
+        ],
+        "answer": "La déclaration UE de conformité doit contenir toutes les informations nécessaires à l'identification de la législation d'harmonisation de l'Union à laquelle elle se rapporte [AIA-Art47-3]. Elle doit également contenir les informations qui figurent à l'annexe V [AIA-Art47-2]. \n\nLes sources ne précisent pas la liste détaillée de ces informations figurant à l'annexe V.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art47-3",
+          "AIA-Art47-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art47-3@fr",
+            "id": "AIA-Art47-3",
+            "label": "Règlement IA, Art. 47(3)",
+            "text": "Règlement IA Article 47(3): Déclaration UE de conformité\nSi des systèmes d’IA à haut risque sont soumis à d’autres actes législatifs d’harmonisation de l’Union qui exigent également une déclaration UE de conformité, une seule déclaration UE de conformité est établie au titre de tous les actes législatifs de l’Union applicables au système d’IA à haut risque. La déclaration contient toutes les informations nécessaires à l’identification de la législation d’harmonisation de l’Union à laquelle la déclaration se rapporte."
+          },
+          {
+            "key": "AIA-Art47-1@fr",
+            "id": "AIA-Art47-1",
+            "label": "Règlement IA, Art. 47(1)",
+            "text": "Règlement IA Article 47(1): Déclaration UE de conformité\nLe fournisseur établit une déclaration UE de conformité écrite, lisible par machine, signée à la main ou électroniquement concernant chaque système d’IA à haut risque et la tient à la disposition des autorités nationales compétentes pendant une durée de dix ans à partir du moment où le système d’IA à haut risque a été mis sur le marché ou mis en service. La déclaration UE de conformité identifie le système d’IA à haut risque pour lequel elle a été établie. Une copie de la déclaration UE de conformité est communiquée, sur demande, aux autorités nationales compétentes concernées."
+          },
+          {
+            "key": "AIA-Art47-2@fr",
+            "id": "AIA-Art47-2",
+            "label": "Règlement IA, Art. 47(2)",
+            "text": "Règlement IA Article 47(2): Déclaration UE de conformité\nLa déclaration UE de conformité atteste que le système d’IA à haut risque concerné satisfait aux exigences énoncées à la section 2. La déclaration UE de conformité contient les informations qui figurent à l’annexe V et est traduite dans une langue aisément compréhensible par les autorités nationales compétentes des États membres dans lesquels le système d’IA à haut risque est mis sur le marché ou mis à disposition."
+          },
+          {
+            "key": "AIA-Art16#2@fr",
+            "id": "AIA-Art16",
+            "label": "Règlement IA, Art. 16",
+            "text": "Règlement IA Article 16: Obligations incombant aux fournisseurs de systèmes d’IA à haut risque\nque le système d’IA à haut risque soit soumis à la procédure d’évaluation de la conformité applicable visée à l’article 43, avant sa mise sur le marché ou sa mise en service; g) élaborent une déclaration UE de conformité conformément à l’article 47; h) apposent le marquage CE sur le système d’IA à haut risque ou, lorsque cela n’est pas possible, sur son emballage ou dans la documentation l’accompagnant, selon le cas, afin d’indiquer la conformité avec le présent règlement, conformément à l’article 48; i) respectent les obligations en matière d’enregistrement prévues à l’article 49, paragraphe 1; j) prennent les mesures correctives nécessaires et fournissent les informations requises à l’article 20; k) à la demande motivée d’une autorité nationale compétente, prouvent la conformité du système d’IA à haut risque avec les exigences énoncées à la section 2; l) veillent à ce que le système d’IA à haut risque soit conforme"
+          },
+          {
+            "key": "AIA-AnnexVIII-a.11@fr",
+            "id": "AIA-AnnexVIII-a.11",
+            "label": "Règlement IA, Annexe VIII, Section A, point 11",
+            "text": "Règlement IA Annexe VIII(a.11): Informations à fournir lors de l'enregistrement d'un système d'IA à haut risque conformément à l'article 49\nune copie de la déclaration UE de conformité visée à l'article 47;"
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 949,
+        "output_tokens": 91,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited sources.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q003",
+        "lang": "en",
+        "type": "obligation",
+        "question": "How must a high-risk AI system that keeps learning after deployment be built so that its own biased outputs do not feed back into future decisions?",
+        "gold": [
+          "AIA-Art15"
+        ],
+        "answer": "High-risk AI systems that continue to learn after being placed on the market or put into service must be developed in such a way as to eliminate or reduce as far as possible the risk of possibly biased outputs influencing input for future operations (feedback loops), and to ensure that any such feedback loops are duly addressed with appropriate mitigation measures [AIA-Art15-4].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art15-4"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art15-4@en",
+            "id": "AIA-Art15-4",
+            "label": "AI Act, Art. 15(4)",
+            "text": "AI Act Article 15(4): Accuracy, robustness and cybersecurity\nHigh-risk AI systems shall be as resilient as possible regarding errors, faults or inconsistencies that may occur within the system or the environment in which the system operates, in particular due to their interaction with natural persons or other systems. Technical and organisational measures shall be taken in this regard. The robustness of high-risk AI systems may be achieved through technical redundancy solutions, which may include backup or fail-safe plans. High-risk AI systems that continue to learn after being placed on the market or put into service shall be developed in such a way as to eliminate or reduce as far as possible the risk of possibly biased outputs influencing input for future operations (feedback loops), and as to ensure that any such feedback loops are duly addressed with appropriate mitigation measures."
+          },
+          {
+            "key": "AIA-Art43-4@en",
+            "id": "AIA-Art43-4",
+            "label": "AI Act, Art. 43(4)",
+            "text": "AI Act Article 43(4): Conformity assessment\nHigh-risk AI systems that have already been subject to a conformity assessment procedure shall undergo a new conformity assessment procedure in the event of a substantial modification, regardless of whether the modified system is intended to be further distributed or continues to be used by the current deployer. For high-risk AI systems that continue to learn after being placed on the market or put into service, changes to the high-risk AI system and its performance that have been pre-determined by the provider at the moment of the initial conformity assessment and are part of the information contained in the technical documentation referred to in point 2(f) of Annex IV, shall not constitute a substantial modification."
+          },
+          {
+            "key": "AIA-Art14-4#1@en",
+            "id": "AIA-Art14-4",
+            "label": "AI Act, Art. 14(4)",
+            "text": "AI Act Article 14(4): Human oversight\nFor the purpose of implementing paragraphs 1, 2 and 3, the high-risk AI system shall be provided to the deployer in such a way that natural persons to whom human oversight is assigned are enabled, as appropriate and proportionate: (a) to properly understand the relevant capacities and limitations of the high-risk AI system and be able to duly monitor its operation, including in view of detecting and addressing anomalies, dysfunctions and unexpected performance; (b) to remain aware of the possible tendency of automatically relying or over-relying on the output produced by a high-risk AI system (automation bias), in particular for high-risk AI systems used to provide information or recommendations for decisions to be taken by natural persons; (c) to correctly interpret the high-risk AI system’s output, taking into account, for example, the interpretation tools and methods available; (d) to decide, in any particular situation, not to use the high-risk AI"
+          },
+          {
+            "key": "AIA-Art3-1@en",
+            "id": "AIA-Art3-1",
+            "label": "AI Act, Art. 3(1)",
+            "text": "AI Act Article 3(1): Definitions\n‘AI system’ means a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments;"
+          },
+          {
+            "key": "AIA-Art26-6@en",
+            "id": "AIA-Art26-6",
+            "label": "AI Act, Art. 26(6)",
+            "text": "AI Act Article 26(6): Obligations of deployers of high-risk AI systems\nDeployers of high-risk AI systems shall keep the logs automatically generated by that high-risk AI system to the extent such logs are under their control, for a period appropriate to the intended purpose of the high-risk AI system, of at least six months, unless provided otherwise in applicable Union or national law, in particular in Union law on the protection of personal data. Deployers that are financial institutions subject to requirements regarding their internal governance, arrangements or processes under Union financial services law shall maintain the logs as part of the documentation kept pursuant to the relevant Union financial service law."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1005,
+        "output_tokens": 75,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q004",
+        "lang": "en",
+        "type": "lookup",
+        "question": "If a notified body stops its conformity assessment activities, how long can the certificates it issued remain valid?",
+        "gold": [
+          "AIA-Art36"
+        ],
+        "answer": "If a notified body decides to cease its conformity assessment activities, its certificates may remain valid for a period of nine months after the cessation of its activities, provided that another notified body has confirmed in writing that it will assume responsibilities for the high-risk AI systems covered by those certificates [AIA-Art36-3].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art36-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art36-3@en",
+            "id": "AIA-Art36-3",
+            "label": "AI Act, Art. 36(3)",
+            "text": "AI Act Article 36(3): Changes to notifications\nWhere a notified body decides to cease its conformity assessment activities, it shall inform the notifying authority and the providers concerned as soon as possible and, in the case of a planned cessation, at least one year before ceasing its activities. The certificates of the notified body may remain valid for a period of nine months after cessation of the notified body’s activities, on condition that another notified body has confirmed in writing that it will assume responsibilities for the high-risk AI systems covered by those certificates. The latter notified body shall complete a full assessment of the high-risk AI systems affected by the end of that nine-month-period before issuing new certificates for those systems. Where the notified body has ceased its activity, the notifying authority shall withdraw the designation."
+          },
+          {
+            "key": "AIA-Art36-8#1@en",
+            "id": "AIA-Art36-8",
+            "label": "AI Act, Art. 36(8)",
+            "text": "AI Act Article 36(8): Changes to notifications\nWith the exception of certificates unduly issued, and where a designation has been suspended or restricted, the certificates shall remain valid in one of the following circumstances: (a) the notifying authority has confirmed, within one month of the suspension or restriction, that there is no risk to health, safety or fundamental rights in relation to certificates affected by the suspension or restriction, and the notifying authority has outlined a timeline for actions to remedy the suspension or restriction; or (b) the notifying authority has confirmed that no certificates relevant to the suspension will be issued, amended or re-issued during the course of the suspension or restriction, and states whether the notified body has the capability of continuing to monitor and remain responsible for existing certificates issued for the period of the suspension or restriction; in the event that the notifying authority determines that the notified body does not have the"
+          },
+          {
+            "key": "AIA-Art36-8#2@en",
+            "id": "AIA-Art36-8",
+            "label": "AI Act, Art. 36(8)",
+            "text": "AI Act Article 36(8): Changes to notifications\nissued for the period of the suspension or restriction; in the event that the notifying authority determines that the notified body does not have the capability to support existing certificates issued, the provider of the system covered by the certificate shall confirm in writing to the national competent authorities of the Member State in which it has its registered place of business, within three months of the suspension or restriction, that another qualified notified body is temporarily assuming the functions of the notified body to monitor and remain responsible for the certificates during the period of suspension or restriction."
+          },
+          {
+            "key": "AIA-Art36-9#1@en",
+            "id": "AIA-Art36-9",
+            "label": "AI Act, Art. 36(9)",
+            "text": "AI Act Article 36(9): Changes to notifications\nWith the exception of certificates unduly issued, and where a designation has been withdrawn, the certificates shall remain valid for a period of nine months under the following circumstances: (a) the national competent authority of the Member State in which the provider of the high-risk AI system covered by the certificate has its registered place of business has confirmed that there is no risk to health, safety or fundamental rights associated with the high-risk AI systems concerned; and (b) another notified body has confirmed in writing that it will assume immediate responsibility for those AI systems and completes its assessment within 12 months of the withdrawal of the designation. In the circumstances referred to in the first subparagraph, the national competent authority of the Member State in which the provider of the system covered by the certificate has its place of business may extend the provisional validity of the certificates"
+          },
+          {
+            "key": "AIA-Art44-3@en",
+            "id": "AIA-Art44-3",
+            "label": "AI Act, Art. 44(3)",
+            "text": "AI Act Article 44(3): Certificates\nWhere a notified body finds that an AI system no longer meets the requirements set out in Section 2, it shall, taking account of the principle of proportionality, suspend or withdraw the certificate issued or impose restrictions on it, unless compliance with those requirements is ensured by appropriate corrective action taken by the provider of the system within an appropriate deadline set by the notified body. The notified body shall give reasons for its decision. An appeal procedure against decisions of the notified bodies, including on conformity certificates issued, shall be available."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1018,
+        "output_tokens": 66,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited source.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q005",
+        "lang": "fr",
+        "type": "lookup",
+        "question": "Qui peut enquêter lorsqu'on doute qu'un organisme notifié soit encore compétent ?",
+        "gold": [
+          "AIA-Art37",
+          "AIA-Art36"
+        ],
+        "answer": "La Commission enquête, s’il y a lieu, sur tous les cas où il existe des raisons de douter de la compétence d’un organisme notifié ou du respect continu, par un organisme notifié, des exigences établies à l’article 31 et de ses responsabilités applicables [AIA-Art37-1]. Les sources ne couvrent pas l'éventualité où d'autres entités que la Commission mèneraient ce type d'enquête spécifique.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art37-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art36-4@fr",
+            "id": "AIA-Art36-4",
+            "label": "Règlement IA, Art. 36(4)",
+            "text": "Règlement IA Article 36(4): Modifications apportées aux notifications\nLorsqu’une autorité notifiante a des raisons suffisantes de considérer qu’un organisme notifié ne répond plus aux exigences définies à l’article 31, ou qu’il ne s’acquitte pas de ses obligations, l’autorité notifiante procède sans retard à une enquête avec la plus grande diligence. Dans ce contexte, elle informe l’organisme notifié concerné des objections soulevées et lui donne la possibilité de faire connaître son point de vue. Si l’autorité notifiante conclut que l’organisme notifié ne répond plus aux exigences définies à l’article 31, ou qu’il ne s’acquitte pas de ses obligations, elle soumet la désignation à des restrictions, la suspend ou la retire, selon le cas, en fonction de la gravité du manquement. Elle en informe immédiatement la Commission et les autres États membres."
+          },
+          {
+            "key": "AIA-Art36-3@fr",
+            "id": "AIA-Art36-3",
+            "label": "Règlement IA, Art. 36(3)",
+            "text": "Règlement IA Article 36(3): Modifications apportées aux notifications\nLorsqu’un organisme notifié décide de cesser ses activités d’évaluation de la conformité, il informe l’autorité notifiante et les fournisseurs concernés dès que possible et, dans le cas d’un arrêt prévu de ses activités, au moins un an avant de mettre un terme à ses activités. Les certificats de l’organisme notifié peuvent rester valables pendant une période de neuf mois après l’arrêt des activités de l’organisme notifié, à condition qu’un autre organisme notifié confirme par écrit qu’il assumera la responsabilité des systèmes d’IA à haut risque concernés par ces certificats. Cet autre organisme notifié procède à une évaluation complète des systèmes d’IA à haut risque concernés avant la fin de cette période de neuf mois, avant de délivrer de nouveaux certificats pour les systèmes en question. Lorsque l’organisme notifié a mis un terme à ses activités, l’autorité notifiante retire la désignation."
+          },
+          {
+            "key": "AIA-Art44-3@fr",
+            "id": "AIA-Art44-3",
+            "label": "Règlement IA, Art. 44(3)",
+            "text": "Règlement IA Article 44(3): Certificats\nLorsqu’un organisme notifié constate qu’un système d’IA ne répond plus aux exigences énoncées à la section 2, il suspend ou retire le certificat délivré ou l’assortit de restrictions, en tenant compte du principe de proportionnalité, sauf si le fournisseur applique, en vue du respect de ces exigences, des mesures correctives appropriées dans le délai imparti à cet effet par l’organisme notifié. L’organisme notifié motive sa décision. Une procédure de recours contre les décisions des organismes notifiés, y compris concernant des certificats de conformité délivrés, est disponible."
+          },
+          {
+            "key": "AIA-Art37-1@fr",
+            "id": "AIA-Art37-1",
+            "label": "Règlement IA, Art. 37(1)",
+            "text": "Règlement IA Article 37(1): Contestation de la compétence des organismes notifiés\nLa Commission enquête, s’il y a lieu, sur tous les cas où il existe des raisons de douter de la compétence d’un organisme notifié ou du respect continu, par un organisme notifié, des exigences établies à l’article 31 et de ses responsabilités applicables."
+          },
+          {
+            "key": "AIA-Art37-4@fr",
+            "id": "AIA-Art37-4",
+            "label": "Règlement IA, Art. 37(4)",
+            "text": "Règlement IA Article 37(4): Contestation de la compétence des organismes notifiés\nLorsque la Commission établit qu’un organisme notifié ne répond pas ou ne répond plus aux exigences relatives à sa notification, elle informe l’État membre notifiant en conséquence et lui demande de prendre les mesures correctives qui s’imposent, y compris la suspension ou le retrait de la notification si nécessaire. Si l’État membre ne prend pas les mesures correctives qui s’imposent, la Commission peut, au moyen d’un acte d’exécution, suspendre, restreindre ou retirer la désignation. Cet acte d’exécution est adopté en conformité avec la procédure d’examen visée à l’article 98, paragraphe 2."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1066,
+        "output_tokens": 102,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source and the interpretation about lack of coverage is consistent with the sources.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q006",
+        "lang": "en",
+        "type": "obligation",
+        "question": "Does a public authority that starts using a high-risk AI system to decide who receives social benefits have to register that use in an EU database?",
+        "gold": [
+          "AIA-Art49"
+        ],
+        "answer": "Before putting into service or using a high-risk AI system listed in Annex III—with the exception of those listed in point 2 of Annex III—deployers that are public authorities must register themselves, select the system, and register its use in the EU database referred to in Article 71 [AIA-Art26-8, AIA-Art49-3]. However, the provided sources do not cover whether decision-making regarding the recipients of social benefits falls under point 2 of Annex III or another specific provision that might alter this registration obligation.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art26-8",
+          "AIA-Art49-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art49-3@en",
+            "id": "AIA-Art49-3",
+            "label": "AI Act, Art. 49(3)",
+            "text": "AI Act Article 49(3): Registration\nBefore putting into service or using a high-risk AI system listed in Annex III, with the exception of high-risk AI systems listed in point 2 of Annex III, deployers that are public authorities, Union institutions, bodies, offices or agencies or persons acting on their behalf shall register themselves, select the system and register its use in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art26-8@en",
+            "id": "AIA-Art26-8",
+            "label": "AI Act, Art. 26(8)",
+            "text": "AI Act Article 26(8): Obligations of deployers of high-risk AI systems\nDeployers of high-risk AI systems that are public authorities, or Union institutions, bodies, offices or agencies shall comply with the registration obligations referred to in Article 49. When such deployers find that the high-risk AI system that they envisage using has not been registered in the EU database referred to in Article 71, they shall not use that system and shall inform the provider or the distributor."
+          },
+          {
+            "key": "AIA-Art71-5@en",
+            "id": "AIA-Art71-5",
+            "label": "AI Act, Art. 71(5)",
+            "text": "AI Act Article 71(5): EU database for high-risk AI systems listed in Annex III\nThe EU database shall contain personal data only in so far as necessary for collecting and processing information in accordance with this Regulation. That information shall include the names and contact details of natural persons who are responsible for registering the system and have the legal authority to represent the provider or the deployer, as applicable."
+          },
+          {
+            "key": "AIA-Art49-2@en",
+            "id": "AIA-Art49-2",
+            "label": "AI Act, Art. 49(2)",
+            "text": "AI Act Article 49(2): Registration\nBefore placing on the market or putting into service an AI system for which the provider has concluded that it is not high-risk according to Article 6(3), that provider or, where applicable, the authorised representative shall register themselves and that system in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art49-1@en",
+            "id": "AIA-Art49-1",
+            "label": "AI Act, Art. 49(1)",
+            "text": "AI Act Article 49(1): Registration\nBefore placing on the market or putting into service a high-risk AI system listed in Annex III, with the exception of high-risk AI systems referred to in point 2 of Annex III, the provider or, where applicable, the authorised representative shall register themselves and their system in the EU database referred to in Article 71."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 698,
+        "output_tokens": 115,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited articles, and the note about lack of coverage is accurate.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q007",
+        "lang": "en",
+        "type": "lookup",
+        "question": "Who facilitates the drawing up of codes of practice for general-purpose AI models, and by when were they supposed to be ready?",
+        "gold": [
+          "AIA-Art56"
+        ],
+        "answer": "The AI Office may invite all providers of general-purpose AI models, as well as relevant national competent authorities, to participate in the drawing-up of codes of practice [AIA-Art56-3]. \nThe provided sources do not cover by when the codes of practice were supposed to be ready.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art56-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art56-3@en",
+            "id": "AIA-Art56-3",
+            "label": "AI Act, Art. 56(3)",
+            "text": "AI Act Article 56(3): Codes of practice\nThe AI Office may invite all providers of general-purpose AI models, as well as relevant national competent authorities, to participate in the drawing-up of codes of practice. Civil society organisations, industry, academia and other relevant stakeholders, such as downstream providers and independent experts, may support the process."
+          },
+          {
+            "key": "AIA-Art56-7@en",
+            "id": "AIA-Art56-7",
+            "label": "AI Act, Art. 56(7)",
+            "text": "AI Act Article 56(7): Codes of practice\nThe AI Office may invite all providers of general-purpose AI models to adhere to the codes of practice. For providers of general-purpose AI models not presenting systemic risks this adherence may be limited to the obligations provided for in Article 53, unless they declare explicitly their interest to join the full code."
+          },
+          {
+            "key": "AIA-Art53-4@en",
+            "id": "AIA-Art53-4",
+            "label": "AI Act, Art. 53(4)",
+            "text": "AI Act Article 53(4): Obligations for providers of general-purpose AI models\nProviders of general-purpose AI models may rely on codes of practice within the meaning of Article 56 to demonstrate compliance with the obligations set out in paragraph 1 of this Article, until a harmonised standard is published. Compliance with European harmonised standards grants providers the presumption of conformity to the extent that those standards cover those obligations. Providers of general-purpose AI models who do not adhere to an approved code of practice or do not comply with a European harmonised standard shall demonstrate alternative adequate means of compliance for assessment by the Commission."
+          },
+          {
+            "key": "AIA-Art55-2@en",
+            "id": "AIA-Art55-2",
+            "label": "AI Act, Art. 55(2)",
+            "text": "AI Act Article 55(2): Obligations of providers of general-purpose AI models with systemic risk\nProviders of general-purpose AI models with systemic risk may rely on codes of practice within the meaning of Article 56 to demonstrate compliance with the obligations set out in paragraph 1 of this Article, until a harmonised standard is published. Compliance with European harmonised standards grants providers the presumption of conformity to the extent that those standards cover those obligations. Providers of general-purpose AI models with systemic risks who do not adhere to an approved code of practice or do not comply with a European harmonised standard shall demonstrate alternative adequate means of compliance for assessment by the Commission."
+          },
+          {
+            "key": "AIA-Art53-1#1@en",
+            "id": "AIA-Art53-1",
+            "label": "AI Act, Art. 53(1)",
+            "text": "AI Act Article 53(1): Obligations for providers of general-purpose AI models\nProviders of general-purpose AI models shall: (a) draw up and keep up-to-date the technical documentation of the model, including its training and testing process and the results of its evaluation, which shall contain, at a minimum, the information set out in Annex XI for the purpose of providing it, upon request, to the AI Office and the national competent authorities; (b) draw up, keep up-to-date and make available information and documentation to providers of AI systems who intend to integrate the general-purpose AI model into their AI systems. Without prejudice to the need to observe and protect intellectual property rights and confidential business information or trade secrets in accordance with Union and national law, the information and documentation shall: (i) enable providers of AI systems to have a good understanding of the capabilities and limitations of the general-purpose AI model and to comply with their obligations pursuant to this Regulation;"
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 879,
+        "output_tokens": 63,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are supported by the cited source and no deadline is mentioned in the sources.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q008",
+        "lang": "fr",
+        "type": "lookup",
+        "question": "Quelles conditions doivent remplir les experts du groupe scientifique qui conseille le Bureau de l'IA ?",
+        "gold": [
+          "AIA-Art68"
+        ],
+        "answer": "Les experts du groupe scientifique doivent être sélectionnés par la Commission en fonction de leur expertise à la pointe des connaissances scientifiques ou techniques dans le domaine de l'IA, nécessaire pour s'acquitter des tâches prévues [AIA-Art68-2]. De plus, ils doivent être en mesure de démontrer qu'ils remplissent les conditions suivantes :\na) disposer d'une expertise et d'une compétence particulières ainsi que d'une expertise scientifique ou technique dans le domaine de l'IA [AIA-Art68-2];\nb) être indépendants vis-à-vis de tout fournisseur de systèmes d'IA ou de modèles d'IA à usage général [AIA-Art68-2];\nc) être capables de mener des activités avec diligence, précision et objectivité [AIA-Art68-2].\n\nLes sources ne couvrent pas la rémunération ou d'autres conditions administratives non mentionnées dans les articles fournis.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art68-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art68-3#1@fr",
+            "id": "AIA-Art68-3",
+            "label": "Règlement IA, Art. 68(3)",
+            "text": "Règlement IA Article 68(3): Groupe scientifique d’experts indépendants\nLe groupe scientifique conseille et soutient le Bureau de l’IA, notamment en ce qui concerne les tâches suivantes: a) soutenir la mise en œuvre et le contrôle de l’application du présent règlement en ce qui concerne les modèles et systèmes d’IA à usage général, en particulier: i) en alertant le Bureau de l’IA au sujet d’éventuels risques systémiques posés au niveau de l’Union par des modèles d’IA à usage général, conformément à l’article 90; ii) en contribuant à la mise au point d’outils et de méthodologies destinés à évaluer les capacités des modèles et systèmes d’IA à usage général, y compris au moyen de critères de référence; iii) en fournissant des conseils quant à la classification des modèles d’IA à usage général présentant un risque systémique; iv) en fournissant des conseils quant à la classification de différents modèles et systèmes d’IA à usage général; v) en contribuant à la mise"
+          },
+          {
+            "key": "AIA-Art68-4@fr",
+            "id": "AIA-Art68-4",
+            "label": "Règlement IA, Art. 68(4)",
+            "text": "Règlement IA Article 68(4): Groupe scientifique d’experts indépendants\nLes experts du groupe scientifique s’acquittent de leurs tâches avec impartialité et objectivité, et garantissent la confidentialité des informations et des données obtenues dans l’exercice de leurs tâches et activités. Ils ne sollicitent ni n’acceptent d’instructions de quiconque dans l’exercice des tâches qui leur incombent en vertu du paragraphe 3. Chaque expert établit une déclaration d’intérêts qui est rendue publique. Le Bureau de l’IA met en place des systèmes et des procédures visant à prévenir et gérer efficacement les conflits d’intérêts potentiels."
+          },
+          {
+            "key": "AIA-Art68-2@fr",
+            "id": "AIA-Art68-2",
+            "label": "Règlement IA, Art. 68(2)",
+            "text": "Règlement IA Article 68(2): Groupe scientifique d’experts indépendants\nLe groupe scientifique est composé d’experts sélectionnés par la Commission en fonction de leur expertise à la pointe des connaissances scientifiques ou techniques dans le domaine de l’IA, nécessaire pour s’acquitter des tâches énoncées au paragraphe 3, et est en mesure de démontrer qu’ils remplissent toutes les conditions suivantes: a) disposer d’une expertise et d’une compétence particulières ainsi que d’une expertise scientifique ou technique dans le domaine de l’IA; b) être indépendant vis-à-vis de tout fournisseur de systèmes d’IA ou de modèles d’IA à usage général; c) être capable de mener des activités avec diligence, précision et objectivité. La Commission, en consultation avec le Comité IA, détermine le nombre d’experts au sein du groupe scientifique en fonction des besoins et veille à une représentation équitable entre les hommes et les femmes ainsi que sur le plan géographique."
+          },
+          {
+            "key": "AIA-Art68-5@fr",
+            "id": "AIA-Art68-5",
+            "label": "Règlement IA, Art. 68(5)",
+            "text": "Règlement IA Article 68(5): Groupe scientifique d’experts indépendants\nL’acte d’exécution visé au paragraphe 1 comprend des dispositions sur les conditions, les procédures et les modalités détaillées permettant au groupe scientifique et à ses membres d’émettre des alertes et de demander l’assistance du Bureau de l’IA pour l’exécution des tâches du groupe scientifique."
+          },
+          {
+            "key": "AIA-Art68-3#2@fr",
+            "id": "AIA-Art68-3",
+            "label": "Règlement IA, Art. 68(3)",
+            "text": "Règlement IA Article 68(3): Groupe scientifique d’experts indépendants\nsystémique; iv) en fournissant des conseils quant à la classification de différents modèles et systèmes d’IA à usage général; v) en contribuant à la mise au point d’outils et de modèles; b) soutenir, à leur demande, les autorités de surveillance du marché dans leur travail; c) soutenir les activités transfrontières de surveillance du marché visées à l’article 74, paragraphe 11, sans préjudice des pouvoirs des autorités de surveillance du marché; d) soutenir le Bureau de l’IA dans l’exercice de ses fonctions dans le cadre de la procédure de sauvegarde de l’Union prévue à l’article 81."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1071,
+        "output_tokens": 200,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited article AIA-Art68-2.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q009",
+        "lang": "en",
+        "type": "definition",
+        "question": "Which situations count as formal non-compliance of a high-risk AI system, such as a missing CE marking?",
+        "gold": [
+          "AIA-Art83"
+        ],
+        "answer": "According to the provided sources, the following findings by the market surveillance authority of a Member State count as formal non-compliance:\n- the CE marking has been affixed in violation of Article 48 [AIA-Art83-1];\n- the CE marking has not been affixed [AIA-Art83-1];\n- the EU declaration of conformity referred to in Article 47 has not been drawn up [AIA-Art83-1];\n- the EU declaration of conformity referred to in Article 47 has not been drawn up correctly [AIA-Art83-1];\n- the registration in the EU database referred to in Article 71 has not been carried out [AIA-Art83-1];\n- where applicable, no authorised representative has been appointed [AIA-Art83-1];\n- technical documentation is not available [AIA-Art83-1].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art83-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art48-5@en",
+            "id": "AIA-Art48-5",
+            "label": "AI Act, Art. 48(5)",
+            "text": "AI Act Article 48(5): CE marking\nWhere high-risk AI systems are subject to other Union law which also provides for the affixing of the CE marking, the CE marking shall indicate that the high-risk AI system also fulfil the requirements of that other law."
+          },
+          {
+            "key": "AIA-Art48-3@en",
+            "id": "AIA-Art48-3",
+            "label": "AI Act, Art. 48(3)",
+            "text": "AI Act Article 48(3): CE marking\nThe CE marking shall be affixed visibly, legibly and indelibly for high-risk AI systems. Where that is not possible or not warranted on account of the nature of the high-risk AI system, it shall be affixed to the packaging or to the accompanying documentation, as appropriate."
+          },
+          {
+            "key": "AIA-Art83-1@en",
+            "id": "AIA-Art83-1",
+            "label": "AI Act, Art. 83(1)",
+            "text": "AI Act Article 83(1): Formal non-compliance\nWhere the market surveillance authority of a Member State makes one of the following findings, it shall require the relevant provider to put an end to the non-compliance concerned, within a period it may prescribe: (a) the CE marking has been affixed in violation of Article 48; (b) the CE marking has not been affixed; (c) the EU declaration of conformity referred to in Article 47 has not been drawn up; (d) the EU declaration of conformity referred to in Article 47 has not been drawn up correctly; (e) the registration in the EU database referred to in Article 71 has not been carried out; (f) where applicable, no authorised representative has been appointed; (g) technical documentation is not available."
+          },
+          {
+            "key": "AIA-Art83-2@en",
+            "id": "AIA-Art83-2",
+            "label": "AI Act, Art. 83(2)",
+            "text": "AI Act Article 83(2): Formal non-compliance\nWhere the non-compliance referred to in paragraph 1 persists, the market surveillance authority of the Member State concerned shall take appropriate and proportionate measures to restrict or prohibit the high-risk AI system being made available on the market or to ensure that it is recalled or withdrawn from the market without delay."
+          },
+          {
+            "key": "AIA-Art48-2@en",
+            "id": "AIA-Art48-2",
+            "label": "AI Act, Art. 48(2)",
+            "text": "AI Act Article 48(2): CE marking\nFor high-risk AI systems provided digitally, a digital CE marking shall be used, only if it can easily be accessed via the interface from which that system is accessed or via an easily accessible machine-readable code or other electronic means."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 694,
+        "output_tokens": 196,
+        "judge": {
+          "score": 5,
+          "reason": "All listed situations are directly stated in Article 83(1) of the AI Act.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q010",
+        "lang": "en",
+        "type": "lookup",
+        "question": "Does the GDPR apply to a company based outside the EU that tracks the online behaviour of people in the EU?",
+        "gold": [
+          "GDPR-Art3"
+        ],
+        "answer": "Yes, the GDPR applies to the processing of personal data of data subjects who are in the Union by a controller or processor not established in the Union, where the processing activities are related to the monitoring of their behaviour as far as their behaviour takes place within the Union [GDPR-Art3-2].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art3-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art2-2@en",
+            "id": "GDPR-Art2-2",
+            "label": "GDPR, Art. 2(2)",
+            "text": "GDPR Article 2(2): Material scope\nThis Regulation does not apply to the processing of personal data: (a) in the course of an activity which falls outside the scope of Union law; (b) by the Member States when carrying out activities which fall within the scope of Chapter 2 of Title V of the TEU; (c) by a natural person in the course of a purely personal or household activity; (d) by competent authorities for the purposes of the prevention, investigation, detection or prosecution of criminal offences or the execution of criminal penalties, including the safeguarding against and the prevention of threats to public security."
+          },
+          {
+            "key": "GDPR-Art3-2@en",
+            "id": "GDPR-Art3-2",
+            "label": "GDPR, Art. 3(2)",
+            "text": "GDPR Article 3(2): Territorial scope\nThis Regulation applies to the processing of personal data of data subjects who are in the Union by a controller or processor not established in the Union, where the processing activities are related to: (a) the offering of goods or services, irrespective of whether a payment of the data subject is required, to such data subjects in the Union; or (b) the monitoring of their behaviour as far as their behaviour takes place within the Union."
+          },
+          {
+            "key": "GDPR-Art3-3@en",
+            "id": "GDPR-Art3-3",
+            "label": "GDPR, Art. 3(3)",
+            "text": "GDPR Article 3(3): Territorial scope\nThis Regulation applies to the processing of personal data by a controller not established in the Union, but in a place where Member State law applies by virtue of public international law."
+          },
+          {
+            "key": "GDPR-Art3-1@en",
+            "id": "GDPR-Art3-1",
+            "label": "GDPR, Art. 3(1)",
+            "text": "GDPR Article 3(1): Territorial scope\nThis Regulation applies to the processing of personal data in the context of the activities of an establishment of a controller or a processor in the Union, regardless of whether the processing takes place in the Union or not."
+          },
+          {
+            "key": "GDPR-Art47-2#2@en",
+            "id": "GDPR-Art47-2",
+            "label": "GDPR, Art. 47(2)",
+            "text": "GDPR Article 47(2): Binding corporate rules\nmeasures to ensure data security, and the requirements in respect of onward transfers to bodies not bound by the binding corporate rules; (e) the rights of data subjects in regard to processing and the means to exercise those rights, including the right not to be subject to decisions based solely on automated processing, including profiling in accordance with Article 22, the right to lodge a complaint with the competent supervisory authority and before the competent courts of the Member States in accordance with Article 79, and to obtain redress and, where appropriate, compensation for a breach of the binding corporate rules; (f) the acceptance by the controller or processor established on the territory of a Member State of liability for any breaches of the binding corporate rules by any member concerned not established in the Union; the controller or the processor shall be exempt from that liability, in whole or"
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 766,
+        "output_tokens": 61,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is fully supported by GDPR Article 3(2).",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q011",
+        "lang": "fr",
+        "type": "obligation",
+        "question": "Lorsque des données personnelles n'ont pas été collectées auprès de la personne concernée, dans quel délai le responsable du traitement doit-il l'informer ?",
+        "gold": [
+          "GDPR-Art14"
+        ],
+        "answer": "Le responsable du traitement fournit les informations dans un délai raisonnable après avoir obtenu les données à caractère personnel, mais ne dépassant pas un mois, eu égard aux circonstances particulières dans lesquelles les données sont traitées [GDPR-Art14-3]. \n\nCependant, des délais spécifiques s'appliquent si les données doivent être utilisées aux fins de la communication avec la personne concernée (au plus tard au moment de la première communication) ou s'il est envisagé de communiquer les informations à un autre destinataire (au plus tard lorsque les données sont communiquées pour la première fois) [GDPR-Art14-3]. Les sources ne couvrent pas les autres exceptions ou conditions particulières dans lesquelles ces délais ne s'appliquent pas, hormis les exceptions générales de non-application de l'article 14 [GDPR-Art14-5].\n\nVous donnez des informations juridiques et non des conseils juridiques.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art14-3",
+          "GDPR-Art14-5"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art14-1#1@fr",
+            "id": "GDPR-Art14-1",
+            "label": "RGPD, Art. 14(1)",
+            "text": "RGPD Article 14(1): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée, le responsable du traitement fournit à celle-ci toutes les informations suivantes: a) l'identité et les coordonnées du responsable du traitement et, le cas échéant, du représentant du responsable du traitement; b) le cas échéant, les coordonnées du délégué à la protection des données; c) les finalités du traitement auquel sont destinées les données à caractère personnel ainsi que la base juridique du traitement; d) les catégories de données à caractère personnel concernées; e) le cas échéant, les destinataires ou les catégories de destinataires des données à caractère personnel; f) le cas échéant, le fait que le responsable du traitement a l'intention d'effectuer un transfert de données à caractère personnel à un destinataire dans un pays tiers ou une organisation internationale, et l'existence ou l'absence d'une décision d'adéquation rendue par la Commission ou, dans le cas"
+          },
+          {
+            "key": "GDPR-Art14-3@fr",
+            "id": "GDPR-Art14-3",
+            "label": "RGPD, Art. 14(3)",
+            "text": "RGPD Article 14(3): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLe responsable du traitement fournit les informations visées aux paragraphes 1 et 2: a) dans un délai raisonnable après avoir obtenu les données à caractère personnel, mais ne dépassant pas un mois, eu égard aux circonstances particulières dans lesquelles les données à caractère personnel sont traitées; b) si les données à caractère personnel doivent être utilisées aux fins de la communication avec la personne concernée, au plus tard au moment de la première communication à ladite personne; ou c) s'il est envisagé de communiquer les informations à un autre destinataire, au plus tard lorsque les données à caractère personnel sont communiquées pour la première fois."
+          },
+          {
+            "key": "GDPR-Art14-2#1@fr",
+            "id": "GDPR-Art14-2",
+            "label": "RGPD, Art. 14(2)",
+            "text": "RGPD Article 14(2): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nEn plus des informations visées au paragraphe 1, le responsable du traitement fournit à la personne concernée les informations suivantes nécessaires pour garantir un traitement équitable et transparent à l'égard de la personne concernée: a) la durée pendant laquelle les données à caractère personnel seront conservées ou, lorsque ce n'est pas possible, les critères utilisés pour déterminer cette durée; b) lorsque le traitement est fondé sur l'article 6, paragraphe 1, point f), les intérêts légitimes poursuivis par le responsable du traitement ou par un tiers; c) l'existence du droit de demander au responsable du traitement l'accès aux données à caractère personnel, la rectification ou l'effacement de celles-ci, ou une limitation du traitement relatif à la personne concernée, ainsi que du droit de s'opposer au traitement et du droit à la portabilité des données; d) lorsque le traitement est fondé sur l'article 6, paragraphe 1, point a), ou sur l'article 9,"
+          },
+          {
+            "key": "GDPR-Art14-4@fr",
+            "id": "GDPR-Art14-4",
+            "label": "RGPD, Art. 14(4)",
+            "text": "RGPD Article 14(4): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLorsqu'il a l'intention d'effectuer un traitement ultérieur des données à caractère personnel pour une finalité autre que celle pour laquelle les données à caractère personnel ont été obtenues, le responsable du traitement fournit au préalable à la personne concernée des informations au sujet de cette autre finalité et toute autre information pertinente visée au paragraphe 2."
+          },
+          {
+            "key": "GDPR-Art14-5#1@fr",
+            "id": "GDPR-Art14-5",
+            "label": "RGPD, Art. 14(5)",
+            "text": "RGPD Article 14(5): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLes paragraphes 1 à 4 ne s'appliquent pas lorsque et dans la mesure où: a) la personne concernée dispose déjà de ces informations; b) la fourniture de telles informations se révèle impossible ou exigerait des efforts disproportionnés, en particulier pour le traitement à des fins archivistiques dans l'intérêt public, à des fins de recherche scientifique ou historique ou à des fins statistiques sous réserve des conditions et garanties visées à l'article 89, paragraphe 1, ou dans la mesure où l'obligation visée au paragraphe 1 du présent article est susceptible de rendre impossible ou de compromettre gravement la réalisation des objectifs dudit traitement. En pareils cas, le responsable du traitement prend des mesures appropriées pour protéger les droits et libertés ainsi que les intérêts légitimes de la personne concernée, y compris en rendant les informations publiquement disponibles; c) l'obtention ou la communication des informations sont expressément prévues par le droit de"
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1259,
+        "output_tokens": 195,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q012",
+        "lang": "en",
+        "type": "lookup",
+        "question": "Can a bank reject my loan application based only on an automated decision, with no human involved?",
+        "gold": [
+          "GDPR-Art22"
+        ],
+        "answer": "The data subject has the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning them or similarly significantly affects them [GDPR-Art22-1]. However, this right does not apply if the decision is necessary for entering into, or performance of, a contract between the data subject and a data controller, is authorised by Union or Member State law with suitable safeguard measures, or is based on the data subject's explicit consent [GDPR-Art22-2]. \n\nThe provided sources do not cover whether the specific scenario of a bank rejecting a loan application falls under these exceptions or how financial institutions apply these rules.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art22-1",
+          "GDPR-Art22-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art22-1@en",
+            "id": "GDPR-Art22-1",
+            "label": "GDPR, Art. 22(1)",
+            "text": "GDPR Article 22(1): Automated individual decision-making, including profiling\nThe data subject shall have the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning him or her or similarly significantly affects him or her."
+          },
+          {
+            "key": "AIA-Art5-3#3@en",
+            "id": "AIA-Art5-3",
+            "label": "AI Act, Art. 5(3)",
+            "text": "AI Act Article 5(3): Prohibited AI practices\nauthority shall take into account the elements referred to in paragraph 2. No decision that produces an adverse legal effect on a person may be taken based solely on the output of the ‘real-time’ remote biometric identification system."
+          },
+          {
+            "key": "GDPR-Art22-2@en",
+            "id": "GDPR-Art22-2",
+            "label": "GDPR, Art. 22(2)",
+            "text": "GDPR Article 22(2): Automated individual decision-making, including profiling\nParagraph 1 shall not apply if the decision: (a) is necessary for entering into, or performance of, a contract between the data subject and a data controller; (b) is authorised by Union or Member State law to which the controller is subject and which also lays down suitable measures to safeguard the data subject's rights and freedoms and legitimate interests; or (c) is based on the data subject's explicit consent."
+          },
+          {
+            "key": "AIA-Art5-3#2@en",
+            "id": "AIA-Art5-3",
+            "label": "AI Act, Art. 5(3)",
+            "text": "AI Act Article 5(3): Prohibited AI practices\nuse shall be stopped with immediate effect and all the data, as well as the results and outputs of that use shall be immediately discarded and deleted. The competent judicial authority or an independent administrative authority whose decision is binding shall grant the authorisation only where it is satisfied, on the basis of objective evidence or clear indications presented to it, that the use of the ‘real-time’ remote biometric identification system concerned is necessary for, and proportionate to, achieving one of the objectives specified in paragraph 1, first subparagraph, point (h), as identified in the request and, in particular, remains limited to what is strictly necessary concerning the period of time as well as the geographic and personal scope. In deciding on the request, that authority shall take into account the elements referred to in paragraph 2. No decision that produces an adverse legal effect on a person may be"
+          },
+          {
+            "key": "AIA-Art14-5@en",
+            "id": "AIA-Art14-5",
+            "label": "AI Act, Art. 14(5)",
+            "text": "AI Act Article 14(5): Human oversight\nFor high-risk AI systems referred to in point 1(a) of Annex III, the measures referred to in paragraph 3 of this Article shall be such as to ensure that, in addition, no action or decision is taken by the deployer on the basis of the identification resulting from the system unless that identification has been separately verified and confirmed by at least two natural persons with the necessary competence, training and authority. The requirement for a separate verification by at least two natural persons shall not apply to high-risk AI systems used for the purposes of law enforcement, migration, border control or asylum, where Union or national law considers the application of this requirement to be disproportionate."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 814,
+        "output_tokens": 139,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles, and the comment about sources not covering the specific scenario is accurate.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q013",
+        "lang": "fr",
+        "type": "obligation",
+        "question": "Dans quel cas le responsable du traitement doit-il consulter l'autorité de contrôle avant de commencer un traitement ?",
+        "gold": [
+          "GDPR-Art36"
+        ],
+        "answer": "Le responsable du traitement consulte l'autorité de contrôle préalablement au traitement lorsqu'une analyse d'impact relative à la protection des données effectuée au titre de l'article 35 indique que le traitement présenterait un risque élevé si le responsable du traitement ne prenait pas de mesures pour atténuer le risque [GDPR-Art36-1]. De plus, nonobstant ce cas, le droit des États membres peut exiger que les responsables du traitement consultent l'autorité de contrôle et obtiennent son autorisation préalable en ce qui concerne le traitement effectué par un responsable du traitement dans le cadre d'une mission d'intérêt public exercée par celui-ci, y compris le traitement dans le cadre de la protection sociale et de la santé publique [GDPR-Art36-5].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art36-1",
+          "GDPR-Art36-5"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art36-2#1@fr",
+            "id": "GDPR-Art36-2",
+            "label": "RGPD, Art. 36(2)",
+            "text": "RGPD Article 36(2): Consultation préalable\nLorsque l'autorité de contrôle est d'avis que le traitement envisagé visé au paragraphe 1, constituerait une violation du présent règlement, en particulier lorsque le responsable du traitement n'a pas suffisamment identifié ou atténué le risque, l'autorité de contrôle fournit par écrit, dans un délai maximum de huit semaines à compter de la réception de la demande de consultation, un avis écrit au responsable du traitement et, le cas échéant, au sous-traitant, et peut faire usage des pouvoirs visés à l'article 58. Ce délai peut être prolongé de six semaines, en fonction de la complexité du traitement envisagé. L'autorité de contrôle informe le responsable du traitement et, le cas échéant, le sous-traitant de la prolongation du délai ainsi que des motifs du retard, dans un délai d'un mois à compter de la réception de la demande de consultation. Ces délais peuvent être suspendus jusqu'à ce que l'autorité de contrôle ait obtenu"
+          },
+          {
+            "key": "GDPR-Art36-3@fr",
+            "id": "GDPR-Art36-3",
+            "label": "RGPD, Art. 36(3)",
+            "text": "RGPD Article 36(3): Consultation préalable\nLorsque le responsable du traitement consulte l'autorité de contrôle en application du paragraphe 1, il lui communique: a) le cas échéant, les responsabilités respectives du responsable du traitement, des responsables conjoints et des sous-traitants participant au traitement, en particulier pour le traitement au sein d'un groupe d'entreprises; b) les finalités et les moyens du traitement envisagé; c) les mesures et les garanties prévues afin de protéger les droits et libertés des personnes concernées en vertu du présent règlement; d) le cas échéant, les coordonnées du délégué à la protection des données; e) l'analyse d'impact relative à la protection des données prévue à l'article 35; et f) toute autre information que l'autorité de contrôle demande."
+          },
+          {
+            "key": "GDPR-Art56-3@fr",
+            "id": "GDPR-Art56-3",
+            "label": "RGPD, Art. 56(3)",
+            "text": "RGPD Article 56(3): Compétence de l'autorité de contrôle chef de file\nDans les cas visés au paragraphe 2 du présent article, l'autorité de contrôle informe sans tarder l'autorité de contrôle chef de file de la question. Dans un délai de trois semaines suivant le moment où elle a été informée, l'autorité de contrôle chef de file décide si elle traitera ou non le cas conformément à la procédure prévue à l'article 60 , en considérant s'il existe ou non un établissement du responsable du traitement ou du sous-traitant dans l'État membre de l'autorité de contrôle qui l'a informée."
+          },
+          {
+            "key": "GDPR-Art36-1@fr",
+            "id": "GDPR-Art36-1",
+            "label": "RGPD, Art. 36(1)",
+            "text": "RGPD Article 36(1): Consultation préalable\nLe responsable du traitement consulte l'autorité de contrôle préalablement au traitement lorsqu'une analyse d'impact relative à la protection des données effectuée au titre de l'article 35 indique que le traitement présenterait un risque élevé si le responsable du traitement ne prenait pas de mesures pour atténuer le risque."
+          },
+          {
+            "key": "GDPR-Art36-5@fr",
+            "id": "GDPR-Art36-5",
+            "label": "RGPD, Art. 36(5)",
+            "text": "RGPD Article 36(5): Consultation préalable\nNonobstant le paragraphe 1, le droit des États membres peut exiger que les responsables du traitement consultent l'autorité de contrôle et obtiennent son autorisation préalable en ce qui concerne le traitement effectué par un responsable du traitement dans le cadre d'une mission d'intérêt public exercée par celui-ci, y compris le traitement dans le cadre de la protection sociale et de la santé publique."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 967,
+        "output_tokens": 164,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q014",
+        "lang": "en",
+        "type": "lookup",
+        "question": "Can personal data be sent to a country without an adequacy decision if the person explicitly agrees to the transfer?",
+        "gold": [
+          "GDPR-Art49"
+        ],
+        "answer": "Yes, a transfer of personal data to a third country or international organisation in the absence of an adequacy decision or appropriate safeguards may take place if the data subject has explicitly consented to the proposed transfer, after having been informed of the possible risks of such transfers for the data subject due to the absence of an adequacy decision and appropriate safeguards [GDPR-Art49-1].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art49-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art45-1@en",
+            "id": "GDPR-Art45-1",
+            "label": "GDPR, Art. 45(1)",
+            "text": "GDPR Article 45(1): Transfers on the basis of an adequacy decision\nA transfer of personal data to a third country or an international organisation may take place where the Commission has decided that the third country, a territory or one or more specified sectors within that third country, or the international organisation in question ensures an adequate level of protection. Such a transfer shall not require any specific authorisation."
+          },
+          {
+            "key": "GDPR-Art49-1#1@en",
+            "id": "GDPR-Art49-1",
+            "label": "GDPR, Art. 49(1)",
+            "text": "GDPR Article 49(1): Derogations for specific situations\nIn the absence of an adequacy decision pursuant to Article 45(3), or of appropriate safeguards pursuant to Article 46, including binding corporate rules, a transfer or a set of transfers of personal data to a third country or an international organisation shall take place only on one of the following conditions: (a) the data subject has explicitly consented to the proposed transfer, after having been informed of the possible risks of such transfers for the data subject due to the absence of an adequacy decision and appropriate safeguards; (b) the transfer is necessary for the performance of a contract between the data subject and the controller or the implementation of pre-contractual measures taken at the data subject's request; (c) the transfer is necessary for the conclusion or performance of a contract concluded in the interest of the data subject between the controller and another natural or legal person; (d) the"
+          },
+          {
+            "key": "GDPR-Art45-7@en",
+            "id": "GDPR-Art45-7",
+            "label": "GDPR, Art. 45(7)",
+            "text": "GDPR Article 45(7): Transfers on the basis of an adequacy decision\nA decision pursuant to paragraph 5 of this Article is without prejudice to transfers of personal data to the third country, a territory or one or more specified sectors within that third country, or the international organisation in question pursuant to Articles 46 to 49."
+          },
+          {
+            "key": "GDPR-Art49-5@en",
+            "id": "GDPR-Art49-5",
+            "label": "GDPR, Art. 49(5)",
+            "text": "GDPR Article 49(5): Derogations for specific situations\nIn the absence of an adequacy decision, Union or Member State law may, for important reasons of public interest, expressly set limits to the transfer of specific categories of personal data to a third country or an international organisation. Member States shall notify such provisions to the Commission."
+          },
+          {
+            "key": "GDPR-Art48@en",
+            "id": "GDPR-Art48",
+            "label": "GDPR, Art. 48",
+            "text": "GDPR Article 48: Transfers or disclosures not authorised by Union law\nAny judgment of a court or tribunal and any decision of an administrative authority of a third country requiring a controller or processor to transfer or disclose personal data may only be recognised or enforceable in any manner if based on an international agreement, such as a mutual legal assistance treaty, in force between the requesting third country and the Union or a Member State, without prejudice to other grounds for transfer pursuant to this Chapter."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 772,
+        "output_tokens": 75,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by GDPR Article 49(1).",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q015",
+        "lang": "en",
+        "type": "lookup",
+        "question": "In an emergency, can a national data protection authority act on its own without going through the cooperation procedure with other authorities, and for how long?",
+        "gold": [
+          "GDPR-Art66"
+        ],
+        "answer": "In exceptional circumstances where a supervisory authority concerned considers that there is an urgent need to act to protect the rights and freedoms of data subjects, it may immediately adopt provisional measures intended to produce legal effects on its own territory by way of derogation from the consistency mechanism or the cooperation procedure [GDPR-Art66-1]. The specified period of validity for these measures shall not exceed three months [GDPR-Art66-1].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art66-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art66-1@en",
+            "id": "GDPR-Art66-1",
+            "label": "GDPR, Art. 66(1)",
+            "text": "GDPR Article 66(1): Urgency procedure\nIn exceptional circumstances, where a supervisory authority concerned considers that there is an urgent need to act in order to protect the rights and freedoms of data subjects, it may, by way of derogation from the consistency mechanism referred to in Articles 63, 64 and 65 or the procedure referred to in Article 60, immediately adopt provisional measures intended to produce legal effects on its own territory with a specified period of validity which shall not exceed three months. The supervisory authority shall, without delay, communicate those measures and the reasons for adopting them to the other supervisory authorities concerned, to the Board and to the Commission."
+          },
+          {
+            "key": "GDPR-Art60-11@en",
+            "id": "GDPR-Art60-11",
+            "label": "GDPR, Art. 60(11)",
+            "text": "GDPR Article 60(11): Cooperation between the lead supervisory authority and the other supervisory authorities concerned\nWhere, in exceptional circumstances, a supervisory authority concerned has reasons to consider that there is an urgent need to act in order to protect the interests of data subjects, the urgency procedure referred to in Article 66 shall apply."
+          },
+          {
+            "key": "GDPR-Art50@en",
+            "id": "GDPR-Art50",
+            "label": "GDPR, Art. 50",
+            "text": "GDPR Article 50: International cooperation for the protection of personal data\nIn relation to third countries and international organisations, the Commission and supervisory authorities shall take appropriate steps to: (a) develop international cooperation mechanisms to facilitate the effective enforcement of legislation for the protection of personal data; (b) provide international mutual assistance in the enforcement of legislation for the protection of personal data, including through notification, complaint referral, investigative assistance and information exchange, subject to appropriate safeguards for the protection of personal data and other fundamental rights and freedoms; (c) engage relevant stakeholders in discussion and activities aimed at furthering international cooperation in the enforcement of legislation for the protection of personal data; (d) promote the exchange and documentation of personal data protection legislation and practice, including on jurisdictional conflicts with third countries."
+          },
+          {
+            "key": "AIA-Art79-2#1@en",
+            "id": "AIA-Art79-2",
+            "label": "AI Act, Art. 79(2)",
+            "text": "AI Act Article 79(2): Procedure at national level for dealing with AI systems presenting a risk\nWhere the market surveillance authority of a Member State has sufficient reason to consider an AI system to present a risk as referred to in paragraph 1 of this Article, it shall carry out an evaluation of the AI system concerned in respect of its compliance with all the requirements and obligations laid down in this Regulation. Particular attention shall be given to AI systems presenting a risk to vulnerable groups. Where risks to fundamental rights are identified, the market surveillance authority shall also inform and fully cooperate with the relevant national public authorities or bodies referred to in Article 77(1). The relevant operators shall cooperate as necessary with the market surveillance authority and with the other national public authorities or bodies referred to in Article 77(1). Where, in the course of that evaluation, the market surveillance authority or, where applicable the market surveillance authority in cooperation with the national"
+          },
+          {
+            "key": "GDPR-Art66-1@fr",
+            "id": "GDPR-Art66-1",
+            "label": "GDPR, Art. 66(1)",
+            "text": "RGPD Article 66(1): Procédure d'urgence\nDans des circonstances exceptionnelles, lorsqu'une autorité de contrôle concernée considère qu'il est urgent d'intervenir pour protéger les droits et libertés des personnes concernées, elle peut, par dérogation au mécanisme de contrôle de la cohérence visé aux articles 63, 64 et 65 ou à la procédure visée à l'article 60, adopter immédiatement des mesures provisoires visant à produire des effets juridiques sur son propre territoire et ayant une durée de validité déterminée qui n'excède pas trois mois. L'autorité de contrôle communique sans tarder ces mesures et les raisons de leur adoption aux autres autorités de contrôle concernées, au comité et à la Commission."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 989,
+        "output_tokens": 88,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by GDPR Article 66(1).",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q016",
+        "lang": "en",
+        "type": "lookup",
+        "question": "What can I do if the data protection authority does not deal with my complaint?",
+        "gold": [
+          "GDPR-Art78"
+        ],
+        "answer": "Without prejudice to any other administrative or non-judicial remedy, you have the right to an effective judicial remedy if the competent supervisory authority does not handle your complaint or does not inform you within three months on the progress or outcome of the complaint lodged pursuant to Article 77 [GDPR-Art78-2]. \n\nThe sources provided do not cover what other specific steps or actions you can take outside of seeking this effective judicial remedy.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art78-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art12-4@en",
+            "id": "GDPR-Art12-4",
+            "label": "GDPR, Art. 12(4)",
+            "text": "GDPR Article 12(4): Transparent information, communication and modalities for the exercise of the rights of the data subject\nIf the controller does not take action on the request of the data subject, the controller shall inform the data subject without delay and at the latest within one month of receipt of the request of the reasons for not taking action and on the possibility of lodging a complaint with a supervisory authority and seeking a judicial remedy."
+          },
+          {
+            "key": "GDPR-Art78-2@en",
+            "id": "GDPR-Art78-2",
+            "label": "GDPR, Art. 78(2)",
+            "text": "GDPR Article 78(2): Right to an effective judicial remedy against a supervisory authority\nWithout prejudice to any other administrative or non-judicial remedy, each data subject shall have the right to a an effective judicial remedy where the supervisory authority which is competent pursuant to Articles 55 and 56 does not handle a complaint or does not inform the data subject within three months on the progress or outcome of the complaint lodged pursuant to Article 77."
+          },
+          {
+            "key": "GDPR-Art77-1@en",
+            "id": "GDPR-Art77-1",
+            "label": "GDPR, Art. 77(1)",
+            "text": "GDPR Article 77(1): Right to lodge a complaint with a supervisory authority\nWithout prejudice to any other administrative or judicial remedy, every data subject shall have the right to lodge a complaint with a supervisory authority, in particular in the Member State of his or her habitual residence, place of work or place of the alleged infringement if the data subject considers that the processing of personal data relating to him or her infringes this Regulation."
+          },
+          {
+            "key": "GDPR-Art57-1#2@en",
+            "id": "GDPR-Art57-1",
+            "label": "GDPR, Art. 57(1)",
+            "text": "GDPR Article 57(1): Tasks\nwith the supervisory authorities in other Member States to that end; (f) handle complaints lodged by a data subject, or by a body, organisation or association in accordance with Article 80, and investigate, to the extent appropriate, the subject matter of the complaint and inform the complainant of the progress and the outcome of the investigation within a reasonable period, in particular if further investigation or coordination with another supervisory authority is necessary; (g) cooperate with, including sharing information and provide mutual assistance to, other supervisory authorities with a view to ensuring the consistency of application and enforcement of this Regulation; (h) conduct investigations on the application of this Regulation, including on the basis of information received from another supervisory authority or other public authority; (i) monitor relevant developments, insofar as they have an impact on the protection of personal data, in particular the development of information and communication technologies"
+          },
+          {
+            "key": "GDPR-Art77-2@en",
+            "id": "GDPR-Art77-2",
+            "label": "GDPR, Art. 77(2)",
+            "text": "GDPR Article 77(2): Right to lodge a complaint with a supervisory authority\nThe supervisory authority with which the complaint has been lodged shall inform the complainant on the progress and the outcome of the complaint including the possibility of a judicial remedy pursuant to Article 78."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 770,
+        "output_tokens": 89,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR article and the summary about source coverage is accurate.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q017",
+        "lang": "fr",
+        "type": "lookup",
+        "question": "Devant quels tribunaux puis-je agir contre une entreprise qui a violé mes droits au titre du RGPD ?",
+        "gold": [
+          "GDPR-Art79"
+        ],
+        "answer": "Toute action contre un responsable du traitement ou un sous-traitant est intentée devant les juridictions de l'État membre dans lequel le responsable du traitement ou le sous-traitant dispose d'un établissement [GDPR-Art79-2]. Une telle action peut aussi être intentée devant les juridictions de l'État membre dans lequel la personne concernée a sa résidence habituelle, sauf si le responsable du traitement ou le sous-traitant est une autorité publique d'un État membre agissant dans l'exercice de ses prérogatives de puissance publique [GDPR-Art79-2].\n\nLes sources fournies ne traitent pas des actions intentées contre des entreprises qui ne seraient ni un responsable du traitement ni un sous-traitant.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art79-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art79-1@fr",
+            "id": "GDPR-Art79-1",
+            "label": "RGPD, Art. 79(1)",
+            "text": "RGPD Article 79(1): Droit à un recours juridictionnel effectif contre un responsable du traitement ou un sous-traitant\nSans préjudice de tout recours administratif ou extrajudiciaire qui lui est ouvert, y compris le droit d'introduire une réclamation auprès d'une autorité de contrôle au titre de l'article 77, chaque personne concernée a droit à un recours juridictionnel effectif si elle considère que les droits que lui confère le présent règlement ont été violés du fait d'un traitement de ses données à caractère personnel effectué en violation du présent règlement."
+          },
+          {
+            "key": "GDPR-Art79-2@fr",
+            "id": "GDPR-Art79-2",
+            "label": "RGPD, Art. 79(2)",
+            "text": "RGPD Article 79(2): Droit à un recours juridictionnel effectif contre un responsable du traitement ou un sous-traitant\nToute action contre un responsable du traitement ou un sous-traitant est intentée devant les juridictions de l'État membre dans lequel le responsable du traitement ou le sous-traitant dispose d'un établissement. Une telle action peut aussi être intentée devant les juridictions de l'État membre dans lequel la personne concernée a sa résidence habituelle, sauf si le responsable du traitement ou le sous-traitant est une autorité publique d'un État membre agissant dans l'exercice de ses prérogatives de puissance publique."
+          },
+          {
+            "key": "GDPR-Art47-2#2@fr",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "RGPD Article 47(2): Règles d'entreprise contraignantes\net la protection des données par défaut, la base juridique du traitement, le traitement de catégories particulières de données à caractère personnel, les mesures visant à garantir la sécurité des données, ainsi que les exigences en matière de transferts ultérieurs à des organismes qui ne sont pas liés par les règles d'entreprise contraignantes; e) les droits des personnes concernées à l'égard du traitement et les moyens d'exercer ces droits y compris le droit de ne pas faire l'objet de décisions fondées exclusivement sur un traitement automatisé, y compris le profilage, conformément à l'article 22, le droit d'introduire une réclamation auprès de l'autorité de contrôle compétente et devant les juridictions compétentes des États membres conformément à l'article 79 et d'obtenir réparation et, le cas échéant, une indemnisation pour violation des règles d'entreprise contraignantes; f) l'acceptation, par le responsable du traitement ou le sous-traitant établi sur le territoire d'un État membre, de"
+          },
+          {
+            "key": "GDPR-Art47-2#4@fr",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "RGPD Article 47(2): Règles d'entreprise contraignantes\nde tout délégué à la protection des données, désigné conformément à l'article 37, ou de toute autre personne ou entité chargée de la surveillance du respect des règles d'entreprise contraignantes au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, ainsi que le suivi de la formation et le traitement des réclamations; i) les procédures de réclamation; j) les mécanismes mis en place au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe pour garantir que le contrôle du respect des règles d'entreprise contraignantes. Ces mécanismes prévoient des audits sur la protection des données et des méthodes assurant que des mesures correctrices seront prises pour protéger les droits de la personne concernée. Les résultats de ce contrôle devraient être communiqués à la personne ou à l'entité visée au point h) et au conseil d'administration de l'entreprise qui exerce le contrôle"
+          },
+          {
+            "key": "GDPR-Art78-3@fr",
+            "id": "GDPR-Art78-3",
+            "label": "RGPD, Art. 78(3)",
+            "text": "RGPD Article 78(3): Droit à un recours juridictionnel effectif contre une autorité de contrôle\nToute action contre une autorité de contrôle est intentée devant les juridictions de l'État membre sur le territoire duquel l'autorité de contrôle est établie."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1057,
+        "output_tokens": 160,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by GDPR Article 79(2) and the meta‑statement about the sources is accurate.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q018",
+        "lang": "en",
+        "type": "obligation",
+        "question": "If a processor ignores the controller's instructions and this causes damage to someone, does the processor have to pay compensation?",
+        "gold": [
+          "GDPR-Art82"
+        ],
+        "answer": "Any controller involved in processing shall be liable for the damage caused by processing which infringes the GDPR [GDPR-Art82-2]. A processor shall be liable for the damage caused by processing where it has acted outside or contrary to lawful instructions of the controller [GDPR-Art82-2]. Any person who has suffered material or non-material damage as a result of an infringement of the regulation has the right to receive compensation from the controller or processor for the damage suffered [GDPR-Art82-1].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art82-2",
+          "GDPR-Art82-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art82-2@en",
+            "id": "GDPR-Art82-2",
+            "label": "GDPR, Art. 82(2)",
+            "text": "GDPR Article 82(2): Right to compensation and liability\nAny controller involved in processing shall be liable for the damage caused by processing which infringes this Regulation. A processor shall be liable for the damage caused by processing only where it has not complied with obligations of this Regulation specifically directed to processors or where it has acted outside or contrary to lawful instructions of the controller."
+          },
+          {
+            "key": "GDPR-Art82-4@en",
+            "id": "GDPR-Art82-4",
+            "label": "GDPR, Art. 82(4)",
+            "text": "GDPR Article 82(4): Right to compensation and liability\nWhere more than one controller or processor, or both a controller and a processor, are involved in the same processing and where they are, under paragraphs 2 and 3, responsible for any damage caused by processing, each controller or processor shall be held liable for the entire damage in order to ensure effective compensation of the data subject."
+          },
+          {
+            "key": "GDPR-Art82-1@en",
+            "id": "GDPR-Art82-1",
+            "label": "GDPR, Art. 82(1)",
+            "text": "GDPR Article 82(1): Right to compensation and liability\nAny person who has suffered material or non-material damage as a result of an infringement of this Regulation shall have the right to receive compensation from the controller or processor for the damage suffered."
+          },
+          {
+            "key": "GDPR-Art82-5@en",
+            "id": "GDPR-Art82-5",
+            "label": "GDPR, Art. 82(5)",
+            "text": "GDPR Article 82(5): Right to compensation and liability\nWhere a controller or processor has, in accordance with paragraph 4, paid full compensation for the damage suffered, that controller or processor shall be entitled to claim back from the other controllers or processors involved in the same processing that part of the compensation corresponding to their part of responsibility for the damage, in accordance with the conditions set out in paragraph 2."
+          },
+          {
+            "key": "GDPR-Art82-3@en",
+            "id": "GDPR-Art82-3",
+            "label": "GDPR, Art. 82(3)",
+            "text": "GDPR Article 82(3): Right to compensation and liability\nA controller or processor shall be exempt from liability under paragraph 2 if it proves that it is not in any way responsible for the event giving rise to the damage."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 610,
+        "output_tokens": 108,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q019",
+        "lang": "en",
+        "type": "cross_law",
+        "question": "We provide an AI tool that screens job applicants. What must our GDPR record of processing activities contain, and does the AI Act also require us to register the tool in an EU database?",
+        "gold": [
+          "GDPR-Art30",
+          "AIA-Art49"
+        ],
+        "answer": "The sources do not contain any information regarding what a GDPR record of processing activities must contain. \n\nRegarding your obligation to register the tool in an EU database under the AI Act, the sources state the following:\nBefore placing on the market or putting into service a high-risk AI system listed in Annex III (with the exception of high-risk AI systems listed in point 2 of Annex III), the provider or, where applicable, the authorised representative must register themselves and their system in the EU database referred to in Article 71 [AIA-Art49-1]. Alternatively, if the provider has concluded that the AI system is not high-risk according to Article 6(3), that provider or authorised representative must register themselves and that system in the EU database before placing it on the market or putting it into service [AIA-Art49-2]. \n\n(Note: You are given legal information, not legal advice.)",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art49-1",
+          "AIA-Art49-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art71-5@en",
+            "id": "AIA-Art71-5",
+            "label": "AI Act, Art. 71(5)",
+            "text": "AI Act Article 71(5): EU database for high-risk AI systems listed in Annex III\nThe EU database shall contain personal data only in so far as necessary for collecting and processing information in accordance with this Regulation. That information shall include the names and contact details of natural persons who are responsible for registering the system and have the legal authority to represent the provider or the deployer, as applicable."
+          },
+          {
+            "key": "AIA-Art49-2@en",
+            "id": "AIA-Art49-2",
+            "label": "AI Act, Art. 49(2)",
+            "text": "AI Act Article 49(2): Registration\nBefore placing on the market or putting into service an AI system for which the provider has concluded that it is not high-risk according to Article 6(3), that provider or, where applicable, the authorised representative shall register themselves and that system in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art71-1@en",
+            "id": "AIA-Art71-1",
+            "label": "AI Act, Art. 71(1)",
+            "text": "AI Act Article 71(1): EU database for high-risk AI systems listed in Annex III\nThe Commission shall, in collaboration with the Member States, set up and maintain an EU database containing information referred to in paragraphs 2 and 3 of this Article concerning high-risk AI systems referred to in Article 6(2) which are registered in accordance with Articles 49 and 60 and AI systems that are not considered as high-risk pursuant to Article 6(3) and which are registered in accordance with Article 6(4) and Article 49. When setting the functional specifications of such database, the Commission shall consult the relevant experts, and when updating the functional specifications of such database, the Commission shall consult the Board."
+          },
+          {
+            "key": "AIA-Art49-3@en",
+            "id": "AIA-Art49-3",
+            "label": "AI Act, Art. 49(3)",
+            "text": "AI Act Article 49(3): Registration\nBefore putting into service or using a high-risk AI system listed in Annex III, with the exception of high-risk AI systems listed in point 2 of Annex III, deployers that are public authorities, Union institutions, bodies, offices or agencies or persons acting on their behalf shall register themselves, select the system and register its use in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art49-1@en",
+            "id": "AIA-Art49-1",
+            "label": "AI Act, Art. 49(1)",
+            "text": "AI Act Article 49(1): Registration\nBefore placing on the market or putting into service a high-risk AI system listed in Annex III, with the exception of high-risk AI systems referred to in point 2 of Annex III, the provider or, where applicable, the authorised representative shall register themselves and their system in the EU database referred to in Article 71."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 758,
+        "output_tokens": 193,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited sources.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q020",
+        "lang": "fr",
+        "type": "cross_law",
+        "question": "Une association de défense des droits peut-elle agir au nom de personnes discriminées par un système d'IA, et quelles autorités peuvent exiger la documentation de ce système ?",
+        "gold": [
+          "GDPR-Art80",
+          "AIA-Art77"
+        ],
+        "answer": "Les autorités ou organismes publics nationaux qui supervisent ou font respecter les obligations au titre du droit de l'Union visant à protéger les droits fondamentaux (y compris le droit à la non-discrimination) en ce qui concerne l'utilisation des systèmes d'IA à haut risque visés à l'annexe III sont habilités à demander toute documentation créée ou conservée en vertu du règlement et à y avoir accès, lorsque cela est nécessaire à l'accomplissement effectif de leur mandat [AIA-Art77-1]. Les sources fournies ne traitent pas de la question de savoir si une association de défense des droits peut agir au nom de personnes discriminées par un système d'IA.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art77-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art77-3@fr",
+            "id": "AIA-Art77-3",
+            "label": "Règlement IA, Art. 77(3)",
+            "text": "Règlement IA Article 77(3): Pouvoirs des autorités de protection des droits fondamentaux\nLorsque la documentation visée au paragraphe 1 ne suffit pas pour déterminer s’il y a eu violation des obligations au titre du droit de l’Union protégeant les droits fondamentaux, l’autorité ou l’organisme public visé au paragraphe 1 peut présenter à l’autorité de surveillance du marché une demande motivée visant à organiser des tests du système d’IA à haut risque par des moyens techniques. L’autorité de surveillance du marché organise les tests avec la participation étroite de l’autorité ou organisme public ayant présenté la demande dans un délai raisonnable après celle-ci."
+          },
+          {
+            "key": "AIA-Art77-1@fr",
+            "id": "AIA-Art77-1",
+            "label": "Règlement IA, Art. 77(1)",
+            "text": "Règlement IA Article 77(1): Pouvoirs des autorités de protection des droits fondamentaux\nLes autorités ou organismes publics nationaux qui supervisent ou font respecter les obligations au titre du droit de l’Union visant à protéger les droits fondamentaux, y compris le droit à la non-discrimination, en ce qui concerne l’utilisation des systèmes d’IA à haut risque visés à l’annexe III sont habilités à demander toute documentation créée ou conservée en vertu du présent règlement et à y avoir accès dans une langue et un format accessibles lorsque l’accès à cette documentation est nécessaire à l’accomplissement effectif de leur mandat dans les limites de leurs compétences. L’autorité ou l’organisme public concerné informe l’autorité de surveillance du marché de l’État membre concerné de toute demande de ce type."
+          },
+          {
+            "key": "AIA-AnnexVII-3#1@fr",
+            "id": "AIA-AnnexVII-3",
+            "label": "Règlement IA, Annexe VII, point 3",
+            "text": "Règlement IA Annexe VII(3): Conformité fondée sur une évaluation du système de gestion de la qualité et une évaluation de la documentation technique\nSystème de gestion de la qualité 3.1. La demande du fournisseur comprend: a) le nom et l'adresse du fournisseur, ainsi que le nom et l'adresse d'un mandataire si la demande est introduite par celui-ci; b) la liste des systèmes d'IA couverts par le même système de gestion de la qualité; c) la documentation technique de chaque système d'IA couvert par le même système de gestion de la qualité; d) la documentation relative au système de gestion de la qualité qui couvre tous les aspects énumérés à l'article 17; e) une description des procédures en place pour garantir que le système de gestion de la qualité reste adéquat et efficace; f) une déclaration écrite certifiant que la même demande n'a pas été introduite auprès d'un autre organisme notifié. 3.2. Le système de gestion de la qualité est évalué par l'organisme notifié, qui détermine s'il satisfait aux exigences visées à l'article 17."
+          },
+          {
+            "key": "AIA-Art11-1#1@fr",
+            "id": "AIA-Art11-1",
+            "label": "Règlement IA, Art. 11(1)",
+            "text": "Règlement IA Article 11(1): Documentation technique\nLa documentation technique relative à un système d’IA à haut risque est établie avant que ce système ne soit mis sur le marché ou mis en service et est tenue à jour. La documentation technique est établie de manière à démontrer que le système d’IA à haut risque satisfait aux exigences énoncées dans la présente section et à fournir aux autorités nationales compétentes et aux organismes notifiés les informations nécessaires sous une forme claire et intelligible pour évaluer la conformité du système d’IA avec ces exigences. Elle contient, au minimum, les éléments énoncés à l’annexe IV. Les PME, y compris les jeunes pousses, peuvent fournir des éléments de la documentation technique spécifiée à l’annexe IV d’une manière simplifiée. À cette fin, la Commission établit un formulaire de documentation technique simplifié ciblant les besoins des petites entreprises et des microentreprises. Lorsqu’une PME, y compris une jeune pousse, choisit de fournir les"
+          },
+          {
+            "key": "AIA-Art77-1@en",
+            "id": "AIA-Art77-1",
+            "label": "Règlement IA, Art. 77(1)",
+            "text": "AI Act Article 77(1): Powers of authorities protecting fundamental rights\nNational public authorities or bodies which supervise or enforce the respect of obligations under Union law protecting fundamental rights, including the right to non-discrimination, in relation to the use of high-risk AI systems referred to in Annex III shall have the power to request and access any documentation created or maintained under this Regulation in accessible language and format when access to that documentation is necessary for effectively fulfilling their mandates within the limits of their jurisdiction. The relevant public authority or body shall inform the market surveillance authority of the Member State concerned of any such request."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1170,
+        "output_tokens": 144,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source and correctly note the lack of coverage on associations.",
+          "unsupported": []
+        }
+      },
+      {
+        "id": "q021",
+        "lang": "en",
+        "type": "not_covered",
+        "question": "What fines can the European Commission impose on gatekeepers that breach the Digital Markets Act?",
+        "gold": [],
+        "answer": "I can't answer this from the text of the AI Act or the GDPR that I have. Please rephrase the question, or ask a lawyer.",
+        "refused": true,
+        "reason": "not_covered",
+        "citations": [],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art100-7@en",
+            "id": "AIA-Art100-7",
+            "label": "AI Act, Art. 100(7)",
+            "text": "AI Act Article 100(7): Administrative fines on Union institutions, bodies, offices and agencies\nThe European Data Protection Supervisor shall, on an annual basis, notify the Commission of the administrative fines it has imposed pursuant to this Article and of any litigation or judicial proceedings it has initiated."
+          },
+          {
+            "key": "AIA-Art100-1#1@en",
+            "id": "AIA-Art100-1",
+            "label": "AI Act, Art. 100(1)",
+            "text": "AI Act Article 100(1): Administrative fines on Union institutions, bodies, offices and agencies\nThe European Data Protection Supervisor may impose administrative fines on Union institutions, bodies, offices and agencies falling within the scope of this Regulation. When deciding whether to impose an administrative fine and when deciding on the amount of the administrative fine in each individual case, all relevant circumstances of the specific situation shall be taken into account and due regard shall be given to the following: (a) the nature, gravity and duration of the infringement and of its consequences, taking into account the purpose of the AI system concerned, as well as, where appropriate, the number of affected persons and the level of damage suffered by them; (b) the degree of responsibility of the Union institution, body, office or agency, taking into account technical and organisational measures implemented by them; (c) any action taken by the Union institution, body, office or agency to mitigate the damage suffered by affected persons;"
+          },
+          {
+            "key": "AIA-Art101-1#1@en",
+            "id": "AIA-Art101-1",
+            "label": "AI Act, Art. 101(1)",
+            "text": "AI Act Article 101(1): Fines for providers of general-purpose AI models\nThe Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the provider intentionally or negligently: (a) infringed the relevant provisions of this Regulation; (b) failed to comply with a request for a document or for information pursuant to Article 91, or supplied incorrect, incomplete or misleading information; (c) failed to comply with a measure requested under Article 93; (d) failed to make available to the Commission access to the general-purpose AI model or general-purpose AI model with systemic risk with a view to conducting an evaluation pursuant to Article 92. In fixing the amount of the fine or periodic penalty payment, regard shall be had to the nature, gravity and duration of the infringement, taking due account of the principles of"
+          },
+          {
+            "key": "AIA-Art100-1#2@en",
+            "id": "AIA-Art100-1",
+            "label": "AI Act, Art. 100(1)",
+            "text": "AI Act Article 100(1): Administrative fines on Union institutions, bodies, offices and agencies\norganisational measures implemented by them; (c) any action taken by the Union institution, body, office or agency to mitigate the damage suffered by affected persons; (d) the degree of cooperation with the European Data Protection Supervisor in order to remedy the infringement and mitigate the possible adverse effects of the infringement, including compliance with any of the measures previously ordered by the European Data Protection Supervisor against the Union institution, body, office or agency concerned with regard to the same subject matter; (e) any similar previous infringements by the Union institution, body, office or agency; (f) the manner in which the infringement became known to the European Data Protection Supervisor, in particular whether, and if so to what extent, the Union institution, body, office or agency notified the infringement; (g) the annual budget of the Union institution, body, office or agency."
+          },
+          {
+            "key": "AIA-Art100-4@en",
+            "id": "AIA-Art100-4",
+            "label": "AI Act, Art. 100(4)",
+            "text": "AI Act Article 100(4): Administrative fines on Union institutions, bodies, offices and agencies\nBefore taking decisions pursuant to this Article, the European Data Protection Supervisor shall give the Union institution, body, office or agency which is the subject of the proceedings conducted by the European Data Protection Supervisor the opportunity of being heard on the matter regarding the possible infringement. The European Data Protection Supervisor shall base his or her decisions only on elements and circumstances on which the parties concerned have been able to comment. Complainants, if any, shall be associated closely with the proceedings."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1044,
+        "output_tokens": 4
+      },
+      {
+        "id": "q022",
+        "lang": "fr",
+        "type": "not_covered",
+        "question": "Quelles obligations le règlement sur les données (Data Act) impose-t-il aux fabricants d'objets connectés ?",
+        "gold": [],
+        "answer": "Je ne peux pas répondre à partir du texte du règlement sur l'IA ou du RGPD dont je dispose. Reformulez la question, ou consultez un juriste.",
+        "refused": true,
+        "reason": "not_covered",
+        "citations": [],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art47-2#2@en",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "GDPR Article 47(2): Binding corporate rules\nmeasures to ensure data security, and the requirements in respect of onward transfers to bodies not bound by the binding corporate rules; (e) the rights of data subjects in regard to processing and the means to exercise those rights, including the right not to be subject to decisions based solely on automated processing, including profiling in accordance with Article 22, the right to lodge a complaint with the competent supervisory authority and before the competent courts of the Member States in accordance with Article 79, and to obtain redress and, where appropriate, compensation for a breach of the binding corporate rules; (f) the acceptance by the controller or processor established on the territory of a Member State of liability for any breaches of the binding corporate rules by any member concerned not established in the Union; the controller or the processor shall be exempt from that liability, in whole or"
+          },
+          {
+            "key": "GDPR-Art47-2#4@fr",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "RGPD Article 47(2): Règles d'entreprise contraignantes\nde tout délégué à la protection des données, désigné conformément à l'article 37, ou de toute autre personne ou entité chargée de la surveillance du respect des règles d'entreprise contraignantes au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, ainsi que le suivi de la formation et le traitement des réclamations; i) les procédures de réclamation; j) les mécanismes mis en place au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe pour garantir que le contrôle du respect des règles d'entreprise contraignantes. Ces mécanismes prévoient des audits sur la protection des données et des méthodes assurant que des mesures correctrices seront prises pour protéger les droits de la personne concernée. Les résultats de ce contrôle devraient être communiqués à la personne ou à l'entité visée au point h) et au conseil d'administration de l'entreprise qui exerce le contrôle"
+          },
+          {
+            "key": "GDPR-Art47-2#3@en",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "GDPR Article 47(2): Binding corporate rules\ncorporate rules by any member concerned not established in the Union; the controller or the processor shall be exempt from that liability, in whole or in part, only if it proves that that member is not responsible for the event giving rise to the damage; (g) how the information on the binding corporate rules, in particular on the provisions referred to in points (d), (e) and (f) of this paragraph is provided to the data subjects in addition to Articles 13 and 14; (h) the tasks of any data protection officer designated in accordance with Article 37 or any other person or entity in charge of the monitoring compliance with the binding corporate rules within the group of undertakings, or group of enterprises engaged in a joint economic activity, as well as monitoring training and complaint-handling; (i) the complaint procedures; (j) the mechanisms within the group of undertakings, or group"
+          },
+          {
+            "key": "GDPR-Art95@fr",
+            "id": "GDPR-Art95",
+            "label": "RGPD, Art. 95",
+            "text": "RGPD Article 95: Relation avec la directive 2002/58/CE\nLe présent règlement n'impose pas d'obligations supplémentaires aux personnes physiques ou morales quant au traitement dans le cadre de la fourniture de services de communications électroniques accessibles au public sur les réseaux publics de communications dans l'Union en ce qui concerne les aspects pour lesquels elles sont soumises à des obligations spécifiques ayant le même objectif énoncées dans la directive 2002/58/CE."
+          },
+          {
+            "key": "AIA-Art16#2@en",
+            "id": "AIA-Art16",
+            "label": "Règlement IA, Art. 16",
+            "text": "AI Act Article 16: Obligations of providers of high-risk AI systems\nto its being placed on the market or put into service; (g) draw up an EU declaration of conformity in accordance with Article 47; (h) affix the CE marking to the high-risk AI system or, where that is not possible, on its packaging or its accompanying documentation, to indicate conformity with this Regulation, in accordance with Article 48; (i) comply with the registration obligations referred to in Article 49(1); (j) take the necessary corrective actions and provide information as required in Article 20; (k) upon a reasoned request of a national competent authority, demonstrate the conformity of the high-risk AI system with the requirements set out in Section 2; (l) ensure that the high-risk AI system complies with accessibility requirements in accordance with Directives (EU) 2016/2102 and (EU) 2019/882."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1186,
+        "output_tokens": 4
+      }
+    ]
+  }
+}

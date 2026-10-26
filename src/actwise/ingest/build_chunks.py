@@ -39,6 +39,12 @@ def write_jsonl(chunks: list[Chunk], path: Path = OUT_FILE) -> None:
             f.write(json.dumps(chunk.to_json(), ensure_ascii=False) + "\n")
 
 
+def load_chunks(path: Path = OUT_FILE) -> list[Chunk]:
+    """Read back the chunks that `write_jsonl()` wrote."""
+    with path.open(encoding="utf-8") as f:
+        return [Chunk(**json.loads(line)) for line in f]
+
+
 def summary(chunks: list[Chunk]) -> str:
     """One line per source: units of each kind and number of chunks."""
     lines = []

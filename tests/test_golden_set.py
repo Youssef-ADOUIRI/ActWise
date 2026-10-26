@@ -1,19 +1,15 @@
 """Checks on data/eval/golden.jsonl: an evaluation is only as good as its labels."""
 
-import re
 from collections import Counter
 from pathlib import Path
 
 import pytest
 
-from actwise.evaluation.golden import TYPES, load_golden, question_split
+from actwise.evaluation.golden import NAMES_AN_ARTICLE, TYPES, load_golden, question_split
 from actwise.evaluation.splits import load_splits, split_of
 from actwise.ids import article_id
 
 EVAL = Path(__file__).parents[1] / "data" / "eval"
-NAMES_AN_ARTICLE = re.compile(
-    r"\b(?:Article|article|Annex|ANNEX|Annexe|annexe|Recital|considérant)\s+[0-9IVXL]+"
-)
 
 
 @pytest.fixture(scope="module")
@@ -84,5 +80,4 @@ def test_dev_and_test_have_enough_scored_questions(questions, article_split):
 
 def test_questions_do_not_name_the_article(questions):
     """No question names an article, annex or recital by its number."""
-    # "What does Article 6 say?" would make retrieval trivially easy.
     assert not [q.id for q in questions if NAMES_AN_ARTICLE.search(q.question)]
