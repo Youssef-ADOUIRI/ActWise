@@ -169,7 +169,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Re-run the Step 4 ablations on the grown dev set; hand-written and synthetic reported separately (`docs/ablations.md`: E and F still lead)
 - [x] Confirm the A/B winner on the grown dev set: **v2** (2.8 % false refusals against 7.0 %, faithfulness 0.971 against 0.992)
 - [x] Hit the dev targets with v2: 0 invented · faithfulness 0.971 · citation precision 0.944 lenient · refusals 12/12 · kappa 0.739
-- [ ] Plain baseline on the grown dev set: answers cached, the judge calls wait for Groq's daily tokens
+- [x] Plain baseline on the grown dev set: refuses 0/12 out of scope, faithfulness 0.991, no citations
 - [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev)
 - [ ] Optional: `answer.v3` against v2's wrong "not covered" sentences (q061, q085)
 

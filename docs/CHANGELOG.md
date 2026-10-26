@@ -27,7 +27,7 @@ Add a section for every step you commit.
 - **Every M3 target is met with v2.**
 - **Checks:** 188 tests pass, coverage is 96 %, and ruff and mypy are clean.
 
-**Pending:** the plain baseline on the grown set. Its answers are cached; the judge calls wait for Groq's daily tokens (200K a day, about 130 verdicts).
+**Plain baseline on the grown set (added after merge):** it refuses 0 of 12 out-of-scope questions; faithfulness 0.991 and fully supported 0.964, but no citations.
 
 ---
 
