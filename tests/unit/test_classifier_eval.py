@@ -13,7 +13,6 @@ def row(gold, predicted, ambiguous=False, lang="en"):
         "ambiguous": ambiguous,
         "gold": gold,
         "predicted": predicted,
-        "citations_retrieved": True,
         "steps": 2,
         "lookups": 1,
     }
@@ -60,8 +59,9 @@ def test_classify_scenarios_records_failures_and_results():
         "s01", "dev", "en", False, "prohibited", "AIA-Art5-1", "", "Scoring.", "yes"
     )
 
-    [ok] = classify_scenarios(good, lambda q, k: [passage], lambda a: [], [scenario])
-    [failed] = classify_scenarios(stuck, lambda q, k: [passage], lambda a: [], [scenario])
+    [ok] = classify_scenarios(good, lambda q, k: [passage], {}, [scenario])
+    [failed] = classify_scenarios(stuck, lambda q, k: [passage], {}, [scenario])
 
-    assert (ok["predicted"], ok["citations_retrieved"], ok["steps"]) == ("prohibited", True, 2)
+    assert (ok["predicted"], ok["citations"], ok["steps"]) == ("prohibited", ["AIA-Art5-1"], 2)
+    assert "tier" not in ok  # stored once, as `predicted`
     assert failed["predicted"] == FAILED and "step" in failed["error"]

@@ -6,8 +6,8 @@ import pytest
 
 from actwise.agent.schemas import TIER_ARTICLES, TIERS
 from actwise.evaluation.scenarios import load_scenarios
-from actwise.ids import article_id, paragraph_id
-from actwise.ingest.build_chunks import load_chunks
+from actwise.ids import article_id
+from actwise.retrieval.passages import paragraph_passages
 
 
 @pytest.fixture(scope="module")
@@ -18,12 +18,8 @@ def scenarios():
 
 @pytest.fixture(scope="module")
 def paragraphs():
-    """English paragraph id -> its text (the parts of a long paragraph joined)."""
-    found: dict[str, list[str]] = {}
-    for chunk in load_chunks():
-        if chunk.lang == "en":
-            found.setdefault(paragraph_id(chunk.id), []).append(chunk.text)
-    return {pid: " ".join(parts) for pid, parts in found.items()}
+    """English paragraph id -> its text, exactly as the classifier reads it."""
+    return {p.id: p.text for p in paragraph_passages() if p.lang == "en"}
 
 
 def test_size_split_and_languages(scenarios):

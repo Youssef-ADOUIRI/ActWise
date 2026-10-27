@@ -8,36 +8,35 @@ rule (Art. 5, Art. 6 / Annex I / Annex III, or Art. 50).
 
 from __future__ import annotations
 
-import json
 from collections import defaultdict
-from collections.abc import Callable, Sequence
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict, dataclass
+from typing import Any
 
 from pydantic import ValidationError
 
 from actwise.agent.schemas import TIER_ARTICLES, Classification, tool_schema
 from actwise.generation.prompts import load_prompt
-from actwise.generation.rag import Search
+from actwise.generation.rag import Search, format_sources
 from actwise.ids import article_id, paragraph_id
 from actwise.llm.base import LLM, Message
 from actwise.retrieval.passages import Passage
 
 CLASSIFY_PROMPT = "classify.v1"
-NUDGE = "Call submit_classification now."
+MAX_STEPS = 8  # model calls per run
 BUDGET_STEPS = 3  # left when the agent is told to conclude: room to fix a refused submission
+NUDGE = "Call submit_classification now."
 BUDGET_NUDGE = f"{BUDGET_STEPS} steps left: submit your classification now, with the ids you have."
+NOTHING_FOUND = "Nothing found."
+SHOWN = "(shown above)"
 DEFAULT_TOP_K, MAX_TOP_K = 5, 8
+RULE_ARTICLES = sorted({a for articles in TIER_ARTICLES.values() for a in articles})
 READ_TOOL = {
     "name": "read_ai_act_article",
-    "description": "Read every paragraph of one AI Act article or annex, with the ids to cite.",
+    "description": "Read every paragraph of one AI Act article or annex that decides a tier.",
     "parameters": {
         "type": "object",
-        "properties": {
-            "article": {
-                "type": "string",
-                "description": "An id: AIA-Art5, AIA-Art6, AIA-Art50, AIA-AnnexI, AIA-AnnexIII",
-            }
-        },
+        "properties": {"article": {"type": "string", "enum": RULE_ARTICLES}},
         "required": ["article"],
     },
 }
@@ -48,7 +47,10 @@ SEARCH_TOOL = {
         "type": "object",
         "properties": {
             "query": {"type": "string"},
-            "top_k": {"type": "integer", "description": f"1 to {MAX_TOP_K}, default 5"},
+            "top_k": {
+                "type": "integer",
+                "description": f"1 to {MAX_TOP_K}, default {DEFAULT_TOP_K}",
+            },
         },
         "required": ["query"],
     },
@@ -60,7 +62,7 @@ SUBMIT_TOOL = {
 }
 TOOLS = [READ_TOOL, SEARCH_TOOL, SUBMIT_TOOL]
 
-Read = Callable[[str], list[dict[str, str]]]  # article id -> its paragraphs as {id, text}
+Articles = Mapping[str, list[dict[str, str]]]  # article id -> its paragraphs as {id, text}
 
 
 class ClassificationError(RuntimeError):
@@ -74,50 +76,56 @@ class ClassifyOutcome:
     result: Classification
     steps: int  # model calls
     lookups: int  # articles read and searches made
-    retrieved: frozenset[str]  # every paragraph id the agent was shown
 
 
-def article_reader(passages: Sequence[Passage]) -> Read:
-    """`read_ai_act_article` over these passages: English AI Act text, paragraph parts joined."""
-    by_article: dict[str, dict[str, list[str]]] = defaultdict(lambda: defaultdict(list))
+def ai_act_articles(passages: Sequence[Passage]) -> dict[str, list[dict[str, str]]]:
+    """English AI Act paragraphs grouped by article: what `read_ai_act_article` returns."""
+    articles: dict[str, list[dict[str, str]]] = defaultdict(list)
     for p in passages:
         if p.lang == "en" and p.id.startswith("AIA-"):
-            by_article[article_id(p.id)][paragraph_id(p.id)].append(p.text)
-
-    def read(article: str) -> list[dict[str, str]]:
-        """Every paragraph of the article, or nothing for an unknown id."""
-        paragraphs = by_article.get(article.strip(), {})
-        return [{"id": pid, "text": "\n".join(parts)} for pid, parts in paragraphs.items()]
-
-    return read
+            articles[article_id(p.id)].append({"id": paragraph_id(p.id), "text": p.text})
+    return dict(articles)
 
 
 def search_ai_act(search: Search, query: str, top_k: object) -> list[dict[str, str]]:
-    """AI Act passages only, as {id, text}: classifying a system is an AI Act question."""
+    """AI Act passages only, one per paragraph: classifying a system is an AI Act question."""
     try:
         k = max(1, min(int(str(top_k)), MAX_TOP_K))
     except ValueError:
         k = DEFAULT_TOP_K
-    hits = [h for h in search(query, 2 * k) if h.id.startswith("AIA-")][:k]
-    return [{"id": paragraph_id(h.id), "text": h.text} for h in hits]
+    found: dict[str, str] = {}
+    for hit in search(query, 2 * k):
+        if hit.id.startswith("AIA-"):
+            found.setdefault(paragraph_id(hit.id), hit.text)
+    return [{"id": pid, "text": text} for pid, text in list(found.items())[:k]]
 
 
-def check(result: Classification, retrieved: set[str]) -> str | None:
-    """Why a valid classification can't be accepted yet, or None if it can."""
+def accept(arguments: dict[str, Any], retrieved: set[str]) -> Classification | str:
+    """The classification if it is valid and grounded, else what to tell the model."""
+    try:
+        result = Classification.model_validate(arguments)
+    except ValidationError as exc:
+        return f"Invalid classification: {exc.errors(include_url=False)}"
     if unknown := [c for c in result.citations if paragraph_id(c) not in retrieved]:
         return f"Cite only ids that you read or searched. Unknown: {unknown}"
     needed = TIER_ARTICLES.get(result.tier)
-    if needed and not any(article_id(paragraph_id(c)) in needed for c in result.citations):
+    if needed and not any(article_id(c) in needed for c in result.citations):
         return f"A {result.tier} classification must cite {' or '.join(needed)}."
     if result.tier == "needs_more_info" and not result.follow_up_questions:
         return "needs_more_info must list the follow-up questions to ask."
-    return None
+    return result
 
 
 def classify(
-    llm: LLM, search: Search, read: Read, description: str, max_steps: int = 8
+    llm: LLM, search: Search, articles: Articles, description: str, max_steps: int = MAX_STEPS
 ) -> ClassifyOutcome:
     """Run the agent until it submits an acceptable classification; errors go back to it."""
+    lookup = {
+        READ_TOOL["name"]: lambda args: articles.get(str(args.get("article", "")).strip(), []),
+        SEARCH_TOOL["name"]: lambda args: search_ai_act(
+            search, str(args.get("query", "")), args.get("top_k")
+        ),
+    }
     messages: list[Message] = [
         {"role": "system", "content": load_prompt(CLASSIFY_PROMPT)},
         {"role": "user", "content": f"AI system description:\n{description}"},
@@ -135,29 +143,17 @@ def classify(
         calls = [asdict(call) for call in reply.tool_calls]
         messages.append({"role": "assistant", "content": reply.text, "tool_calls": calls})
         for call in reply.tool_calls:
-            args = call.arguments
-            if call.name in (READ_TOOL["name"], SEARCH_TOOL["name"]):
-                if call.name == READ_TOOL["name"]:
-                    found = read(str(args.get("article", "")))
-                else:
-                    found = search_ai_act(search, str(args.get("query", "")), args.get("top_k"))
-                retrieved.update(passage["id"] for passage in found)
+            if call.name in lookup:
+                found = lookup[call.name](call.arguments)
                 lookups += 1
-                content = (
-                    json.dumps(found, ensure_ascii=False)
-                    if found
-                    else ("Nothing found. Article ids look like AIA-Art6 or AIA-AnnexIII.")
-                )
+                shown = [p | {"text": SHOWN} if p["id"] in retrieved else p for p in found]
+                retrieved.update(p["id"] for p in found)
+                content = format_sources(shown) if found else NOTHING_FOUND
             elif call.name == SUBMIT_TOOL["name"]:
-                try:
-                    result = Classification.model_validate(args)
-                except ValidationError as exc:
-                    content = f"Invalid classification: {exc.errors(include_url=False)}"
-                else:
-                    problem = check(result, retrieved)
-                    if problem is None:
-                        return ClassifyOutcome(result, step, lookups, frozenset(retrieved))
-                    content = problem
+                verdict = accept(call.arguments, retrieved)
+                if isinstance(verdict, Classification):
+                    return ClassifyOutcome(verdict, step, lookups)
+                content = verdict
             else:
                 content = f"Unknown tool {call.name!r}."
             messages.append({"role": "tool", "tool_call_id": call.id, "content": content})

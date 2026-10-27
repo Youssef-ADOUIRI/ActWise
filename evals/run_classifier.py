@@ -9,21 +9,19 @@ The agent searches with system E (hybrid-binding) and answers with the LLM chain
 from __future__ import annotations
 
 import argparse
-import json
 import logging
 import os
 from datetime import UTC, datetime
-from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
-from run_eval import REPORTS, SYSTEMS, fingerprint, git_commit
+from run_eval import SYSTEMS, fingerprint, git_commit, write_report
 
-from actwise.agent.classifier import CLASSIFY_PROMPT, article_reader
+from actwise.agent.classifier import CLASSIFY_PROMPT, ai_act_articles
 from actwise.evaluation.classifier_eval import classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import SCENARIOS_FILE, load_scenarios
 from actwise.llm.factory import OFFLINE, build_llm
-from actwise.retrieval.passages import chunk_passages
+from actwise.retrieval.passages import paragraph_passages
 
 SYSTEM = "hybrid-binding"
 
@@ -44,8 +42,8 @@ def to_markdown(report: dict[str, Any]) -> str:
         f"| Prohibited labelled minimal risk | {s['prohibited_as_minimal']} |",
         f"| Prohibited or high risk labelled minimal risk | {s['dangerous_downgrades']} |",
         f"| Runs that hit the step budget | {s['failed']} |",
-        f"| Results citing only retrieved ids | {s['citations_retrieved']} |",
         f"| Steps / lookups (reads and searches) per run | {s['steps']} / {s['lookups']} |",
+        f"| Accuracy by language (clear) | {s['by_lang']} |",
         "",
         "## Confusion (clear scenarios: gold → predicted)",
         "",
@@ -75,8 +73,8 @@ def main() -> None:
 
     scenarios = [s for s in load_scenarios() if s.split == args.split]
     retriever = SYSTEMS[SYSTEM].build()
-    read = article_reader(chunk_passages())
-    rows = classify_scenarios(llm, retriever.search, read, scenarios)
+    articles = ai_act_articles(paragraph_passages())
+    rows = classify_scenarios(llm, retriever.search, articles, scenarios)
     report = {
         "name": f"classifier-{args.split}",
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -89,11 +87,7 @@ def main() -> None:
         "summary": summarise_classifications(rows) | {"cache_hits_misses": [llm.hits, llm.misses]},
         "per_scenario": rows,
     }
-    REPORTS.mkdir(parents=True, exist_ok=True)
-    out = REPORTS / report["name"]
-    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
-    Path(f"{out}.md").write_text(to_markdown(report), encoding="utf-8", newline="\n")
+    out = write_report(report, to_markdown(report))
     s = report["summary"]
     print(
         f"{report['name']}: accuracy {s['accuracy']} (clear), {s['accuracy_ambiguous']} "
