@@ -179,15 +179,17 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 7: Risk classifier agent
 
-- [ ] `[test]` `test_happy_path`
-- [ ] `[test]` `test_rejects_invented_citation`
-- [ ] `[test]` `test_schema_errors_fed_back`
-- [ ] `[test]` `test_plain_text_is_nudged`
-- [ ] `[test]` `test_schema_has_no_titles`
-- [ ] `agent/schemas.py`, `agent/classifier.py`
-- [ ] 40 scenarios in `data/eval/risk_scenarios.jsonl`, each gold label checked against the article text; mark ambiguous ones
-- [ ] Classifier eval: **≥ 85 %** non-ambiguous, **0** prohibited labelled minimal risk
-- [ ] Note the AI Omnibus date (Reg. 2026/1744) for the model card
+- [x] `[test]` `test_happy_path`
+- [x] `[test]` `test_rejects_invented_citation`
+- [x] `[test]` `test_schema_errors_fed_back`
+- [x] `[test]` `test_plain_text_is_nudged`
+- [x] `[test]` `test_schema_has_no_titles`
+- [x] `agent/schemas.py`, `agent/classifier.py` (tools: read an article by id, search, submit; guards: schema, retrieved citations, the tier cites its own rule, follow-ups for needs_more_info, a budget warning)
+- [x] 40 scenarios in `data/eval/risk_scenarios.csv` (20 dev / 20 test, 12 in French, 6 ambiguous), each gold label quoted from the article text and verified by a person
+- [x] Classifier eval (dev): **17/17** clear, 3/3 ambiguous, **0** prohibited labelled minimal risk, 0 failed runs (`evals/reports/classifier-dev.md`, decision 008)
+- [x] Note the AI Omnibus date (Reg. 2026/1744) for the model card (`docs/model_card.md`)
+- [x] `[fix]` Gemini 3 thought signatures: `ToolCall.extra`, sent back to its own provider only
+- [ ] Later: send "Article N" queries in the RAG pipeline to the article lookup (`docs/failure_cases.md`, step 7)
 
 ### Step 8: API and UI
 
