@@ -50,3 +50,11 @@ Effect: MRR@10 0.629 → 0.806 (C → E) and Recall@5 0.900 → 0.925, at the sa
 | q020 | GDPR Art. 80 stays outside the top 5 | Retrieve once per law (`where={"law": ...}`) when a question names both laws, then interleave |
 
 Each idea fixes one or two of 20 questions, so they wait for the 150-question set of step 6, where a gain can be told apart from noise.
+
+## Found in step 7: queries that name an article
+
+The classifier agent searched for "Article 6(1) safety component third party conformity assessment", "Article 6 paragraph 1 AI Act" and five similar queries. None of them returned AIA-Art6-1. The searches found Art. 6(2), Annex I's list of legislation, Art. 43 and Art. 2(2) instead. Hybrid retrieval ranks a paragraph by its words, and "Article 6" plus a number matches many paragraphs that *cite* Article 6, not the article itself.
+
+The golden set never names its article (`tests/test_golden_set.py`), so the retrieval metrics don't measure this case.
+
+**Fix for the agent:** a `read_ai_act_article` tool returns an article or annex by id (decision 008). Routing "Article N" queries to the same lookup in the RAG pipeline is left for later.

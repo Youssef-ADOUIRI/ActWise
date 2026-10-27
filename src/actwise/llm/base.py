@@ -7,8 +7,8 @@ Provider-neutral messages are plain dicts:
     {"role": "tool", "tool_call_id": str, "content": str}
 
 Tools are {"name": str, "description": str, "parameters": <JSON schema>}. A tool call's
-`extra` holds provider data that must go back unchanged on the next turn, such as the
-thought signature Gemini 3 attaches to every function call.
+`extra` holds provider data that must go back unchanged on the next turn, keyed by
+provider, such as the thought signature Gemini 3 attaches to every function call.
 
 `deadline` is a `time.monotonic()` value by which a call must return: retries,
 fallbacks and HTTP timeouts all fit inside it, so one call can't outlive its time

@@ -5,48 +5,41 @@ from __future__ import annotations
 from collections import Counter
 from typing import Any
 
-from actwise.agent.classifier import ClassificationError, Read, classify
+from actwise.agent.classifier import Articles, ClassificationError, classify
 from actwise.agent.schemas import TIERS
 from actwise.evaluation.generation import share
 from actwise.evaluation.metrics import mean
 from actwise.evaluation.scenarios import Scenario
 from actwise.generation.rag import Search
-from actwise.ids import paragraph_id
 from actwise.llm.base import LLM
 
 FAILED = "failed"  # the predicted tier of a run that hit the step budget
 
 
 def classify_scenarios(
-    llm: LLM, search: Search, read: Read, scenarios: list[Scenario]
+    llm: LLM, search: Search, articles: Articles, scenarios: list[Scenario]
 ) -> list[dict[str, Any]]:
     """One row per scenario; a run that exhausts the step budget is a failure, not a crash."""
     rows = []
     for s in scenarios:
         row: dict[str, Any] = {"id": s.id, "lang": s.lang, "ambiguous": s.ambiguous, "gold": s.gold}
         try:
-            outcome = classify(llm, search, read, s.description)
+            outcome = classify(llm, search, articles, s.description)
         except ClassificationError as exc:
-            rows.append(row | {"predicted": FAILED, "error": str(exc)})
-            continue
-        result = outcome.result
-        rows.append(
-            row
-            | result.model_dump()
-            | {
-                "predicted": result.tier,
-                "citations_retrieved": all(
-                    paragraph_id(c) in outcome.retrieved for c in result.citations
-                ),
-                "steps": outcome.steps,
-                "lookups": outcome.lookups,
-            }
-        )
+            row |= {"predicted": FAILED, "error": str(exc)}
+        else:
+            row |= {"predicted": outcome.result.tier, "steps": outcome.steps}
+            row |= {"lookups": outcome.lookups} | outcome.result.model_dump(exclude={"tier"})
+        rows.append(row)
     return rows
 
 
 def summarise_classifications(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Accuracy on clear and ambiguous scenarios apart, the confusion matrix and the downgrades."""
+    """Accuracy on clear and ambiguous scenarios apart, the confusion matrix and the downgrades.
+
+    Every accepted result cites only ids the agent read or retrieved: the guard in
+    `agent.classifier.accept` refuses anything else, so there is nothing to measure.
+    """
     clear = [r for r in rows if not r["ambiguous"]]
     ran = [r for r in rows if r["predicted"] != FAILED]
     confusion = {
@@ -67,7 +60,6 @@ def summarise_classifications(rows: list[dict[str, Any]]) -> dict[str, Any]:
             for r in rows
         ),
         "failed": len(rows) - len(ran),
-        "citations_retrieved": share([r["citations_retrieved"] for r in ran]),
         "steps": round(mean([r["steps"] for r in ran]), 2),
         "lookups": round(mean([r["lookups"] for r in ran]), 2),
         "confusion": confusion,

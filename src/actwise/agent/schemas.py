@@ -23,7 +23,7 @@ class Classification(BaseModel):
     tier: Tier
     reasons: list[str] = Field(min_length=1, description="Short reasons, one per rule checked")
     citations: list[str] = Field(
-        min_length=1, description="Ids returned by search_ai_act, such as AIA-Art6-2"
+        min_length=1, description="Ids that read_ai_act_article or search_ai_act returned"
     )
     confidence: float = Field(ge=0, le=1)
     follow_up_questions: list[str] = Field(
