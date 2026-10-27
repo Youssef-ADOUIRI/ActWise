@@ -159,17 +159,19 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 **Your hand-off**
 
-- [ ] Score the 58 answers in `data/eval/human_labels.csv` (read them in `human_labels.md`)
-- [ ] Confirm or override the keep / drop / fix marks in `data/eval/candidates.csv` (passages in `candidates.md`)
+- [x] Score the 58 answers in `data/eval/human_labels.csv` (read them in `human_labels.md`); re-checked at the 3/4 boundary with one written rule
+- [x] Confirm or override the keep / drop / fix marks in `data/eval/candidates.csv` (all 129 confirmed)
 
 **6b (PR: calibrated judge, 150+ questions)**
 
-- [ ] Kappa between the judge and the human labels → **kappa ≥ 0.6** (else `judge.v2`)
-- [ ] Merge the kept candidates into `golden.jsonl` (`source: hand | synthetic`) → 150+ questions, 10+ refusal questions in dev and in test
-- [ ] Re-run the Step 4 ablations on the grown dev set; report hand-written and synthetic separately
-- [ ] Confirm the A/B winner on the grown dev set
+- [x] Kappa between the judge and the human labels: **0.739** at faithful = 4–5 (0.952 at 5 only); `judge.v1` unchanged (decision 007)
+- [x] Merge the kept candidates into `golden.jsonl` (`source: hand | synthetic`): 179 questions; dev 71 scored + 12 out of scope, test 78 + 12 (`evals/merge_candidates.py`)
+- [x] Re-run the Step 4 ablations on the grown dev set; hand-written and synthetic reported separately (`docs/ablations.md`: E and F still lead)
+- [x] Confirm the A/B winner on the grown dev set: **v2** (2.8 % false refusals against 7.0 %, faithfulness 0.971 against 0.992)
+- [x] Hit the dev targets with v2: 0 invented · faithfulness 0.971 · citation precision 0.944 lenient · refusals 12/12 · kappa 0.739
+- [x] Plain baseline on the grown dev set: refuses 0/12 out of scope, faithfulness 0.991, no citations
 - [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev)
-- [ ] Hit the dev targets: 0 invented · faithfulness ≥ 0.85 · citation precision ≥ 0.90 · refusals ≥ 95 %
+- [ ] Optional: `answer.v3` against v2's wrong "not covered" sentences (q061, q085)
 
 ---
 
