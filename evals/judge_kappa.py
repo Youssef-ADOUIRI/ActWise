@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from dotenv import load_dotenv
+from run_eval import write_report
 from sklearn.metrics import cohen_kappa_score
 
 from actwise.evaluation.judge import JUDGE_PROMPT, judge_answer
@@ -24,7 +25,6 @@ from actwise.llm.factory import build_judge
 
 LABELS = Path("data/eval/human_labels.csv")
 KEY = Path("data/eval/human_labels_key.json")
-OUT = Path("evals/reports/judge-calibration")
 TARGET = 0.6
 
 
@@ -93,6 +93,7 @@ def main() -> None:
     scored = [r for r in items if r["judge"] is not None]
     planted = [r for r in scored if r["kind"] == "perturbed"]
     report = {
+        "name": "judge-calibration",
         "judge": judge.config | {"prompt": JUDGE_PROMPT},
         "n": len(items),
         "perturbed": sum(r["kind"] == "perturbed" for r in items),
@@ -117,10 +118,7 @@ def main() -> None:
         "cache_hits_misses": [judge.hits, judge.misses],
         "items": items,
     }
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    Path(f"{OUT}.json").write_text(json_text, encoding="utf-8", newline="\n")
-    Path(f"{OUT}.md").write_text(to_markdown(report), encoding="utf-8", newline="\n")
+    write_report(report, to_markdown(report))
     print(
         f"kappa at 4: {report['kappa_at_4']} (target {TARGET}), at 5: {report['kappa_at_5']}, "
         f"weighted: {report['kappa_weighted']}; planted caught {report['planted_caught']}; "

@@ -1,0 +1,23 @@
+# 008: Risk classifier: a guarded tool-calling agent that reads the law by id
+
+- **Options:**
+  - **Tools:** one search tool only (the guide), or a reader that fetches an article by id plus search.
+  - **Guards:** check the output's shape only, or also check that every citation was retrieved and that the tier cites its own rule.
+  - **Model:** `gemini-3.5-flash-lite` or `gpt-oss-120b` on Groq.
+- **Measured:** 40 scenarios written by Claude, each label verified by a person against the quoted article text. Dev has 17 clear and 3 ambiguous scenarios:
+  - **Search only:** 15/17. It missed s17 (an AI medical device): seven searches never returned Art. 6(1), because queries that name an article miss it, and the agent ran out of steps.
+  - **Plus `read_ai_act_article`:** 16/17. It missed s29: the agent found the Art. 6(3) exception, then kept searching for confirming recitals.
+  - **Plus a warning three steps before the budget ends:** 17/17 clear and 3/3 ambiguous. That leaves 0 prohibited or high-risk systems labelled minimal risk, 0 runs out of steps, and 3.55 model calls per run (commit `f3670f9`).
+  - **Live, Gemini 3 needs its thought signature** sent back with each function call. Without it, the second turn fails with a 400.
+- **Chosen:**
+  - **Tools:** `read_ai_act_article` (an enum of Art. 5, 6, 50 and Annexes I and III), `search_ai_act` (AI Act passages only, one per paragraph) and `submit_classification` (its schema comes from the `Classification` model).
+  - **Guards:** feed schema errors back to the model; accept only citations the agent read or retrieved; make the tier cite its own rule (`TIER_ARTICLES`); require follow-up questions for `needs_more_info`; nudge plain text; warn about the budget, then stop at 8 steps.
+  - **Model:** `gemini-3.5-flash-lite`, with `ToolCall.extra` carrying the signature back to its own provider.
+- **Why:**
+  - A classifier knows which articles decide a tier. Reading them by id is reliable where ranked search is not, and every read id still counts for the citation guard.
+  - The guards make an ungrounded or inconsistent answer impossible to return, not just unlikely.
+  - Flash-Lite reached the target, so Groq's daily tokens stay free for the judge.
+- **Revisit if:**
+  - The test split (reported once, at the end) falls well below dev. 17 clear scenarios is a small sample, and the agent was tuned on them.
+  - Step 8's `/classify` needs a deadline per request (R5): 3.55 calls per run at about 1–2 s each fits Cloud Run's 60 s.
+  - A larger corpus makes whole-article reads too long. Art. 5 alone is about 2,000 words.

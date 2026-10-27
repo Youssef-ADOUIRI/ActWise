@@ -1,4 +1,5 @@
 {
+  "name": "judge-calibration",
   "judge": {
     "fallback": [
       {
