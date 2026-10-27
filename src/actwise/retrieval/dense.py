@@ -10,7 +10,7 @@ from typing import Any
 
 import numpy as np
 
-from actwise.retrieval.embedders import BGE_M3, Embedder, SentenceTransformerEmbedder
+from actwise.retrieval.embedders import Embedder
 from actwise.retrieval.passages import Hit, Passage, to_hit
 from actwise.retrieval.stores import NumpyStore, Store, Where
 
@@ -105,9 +105,3 @@ class DenseRetriever:
         vector = self.embedder.encode([query], kind="query")[0]
         results = self.store.search(vector, top_k, where)
         return [to_hit(self.passages[key], score) for key, score in results]
-
-
-def bge_m3_retriever(passages: list[Passage]) -> DenseRetriever:
-    """Cosine search with the pinned BGE-M3 over cached passage vectors."""
-    embedder = SentenceTransformerEmbedder(*BGE_M3)
-    return DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE_DIR))

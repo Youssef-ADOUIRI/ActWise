@@ -11,7 +11,7 @@ from typing import Annotated, Any, Literal, Protocol
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, Request, UploadFile
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from actwise.agent.classifier import ClassificationError, ClassifyOutcome
 from actwise.agent.schemas import DISCLAIMER, Classification
@@ -23,6 +23,7 @@ from actwise.llm.wrappers import LLMUnavailable
 log = logging.getLogger(__name__)
 
 REQUEST_BUDGET = 50.0  # seconds for every model call of one request, under Cloud Run's 60 s (R5)
+DAILY_CAP = 200  # requests that reach a model, per instance (decision 009)
 MIN_DESCRIPTION, MAX_DESCRIPTION = 20, 8_000  # characters, for /classify and /upload alike
 MAX_UPLOAD = 2_000_000  # bytes
 MAX_TOP_K, SNIPPET = 10, 500  # /search: passages, and characters of each
@@ -42,6 +43,7 @@ class Register(Protocol):
 class AskIn(BaseModel):
     """A question on the AI Act or the GDPR, and the language of the answer."""
 
+    model_config = ConfigDict(str_strip_whitespace=True)  # blank input fails min_length
     question: str = Field(min_length=3, max_length=1000)
     lang: Literal["en", "fr"] = "en"
 
@@ -49,6 +51,7 @@ class AskIn(BaseModel):
 class ClassifyIn(BaseModel):
     """The description of the AI system to classify."""
 
+    model_config = ConfigDict(str_strip_whitespace=True)
     description: str = Field(min_length=MIN_DESCRIPTION, max_length=MAX_DESCRIPTION)
 
 
@@ -58,7 +61,7 @@ def create_app(
     search: Search,
     register: Register | None = None,
     api_key: str | None = None,
-    daily_cap: int = 200,
+    daily_cap: int = DAILY_CAP,
 ) -> FastAPI:
     """The API around these pipelines. With `api_key`, every route but /health needs X-API-Key."""
     app = FastAPI(title="ActWise", version=os.environ.get("APP_VERSION", "dev"))
@@ -101,10 +104,11 @@ def create_app(
 
     @app.get("/search", dependencies=keyed)
     def search_passages(
-        q: Annotated[str, Query(min_length=1, max_length=1000)], top_k: int = 5
+        q: Annotated[str, Query(min_length=1, max_length=1000)],
+        top_k: Annotated[int, Query(ge=1, le=MAX_TOP_K)] = 5,
     ) -> list[dict[str, Any]]:
         """The best passages and their scores: no model call, so no daily cap."""
-        hits = search(q, max(1, min(top_k, MAX_TOP_K)))
+        hits = search(q, top_k)
         return [
             source | {"text": source["text"][:SNIPPET], "score": hit.score}
             for source, hit in zip(sources_of(hits, "en"), hits, strict=True)

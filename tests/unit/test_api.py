@@ -5,13 +5,15 @@ from fastapi.testclient import TestClient
 
 from actwise.agent.classifier import ClassificationError, ClassifyOutcome
 from actwise.agent.schemas import DISCLAIMER, Classification
-from actwise.api.main import MAX_UPLOAD, REQUEST_BUDGET, create_app
-from actwise.generation.rag import AskResult, sources_of
+from actwise.api.main import MAX_TOP_K, MAX_UPLOAD, REQUEST_BUDGET, create_app
+from actwise.generation.rag import RagPipeline
 from actwise.llm.base import LLMResponse
 from actwise.llm.wrappers import LLMUnavailable
 from actwise.retrieval.passages import Passage, to_hit
+from tests.unit.toys import ScriptedLLM
 
 HITS = [to_hit(Passage("AIA-Art5-1#2", "en", "AI Act Article 5(1)\nThe following..."), 0.8)]
+REPLY = LLMResponse("Banned [AIA-Art5-1].", [], 10, 5, "gemini-test")
 QUESTION = {"question": "Is social scoring banned?", "lang": "en"}
 DESCRIPTION = "A city scores its residents' trustworthiness from their behaviour."
 RESULT = Classification(
@@ -19,38 +21,30 @@ RESULT = Classification(
 )
 
 
-class Pipelines:
-    """Fake pipelines: canned results (or `error`), and the deadline of every call."""
+def search(query, top_k):
+    """Fake retriever: HITS, best first."""
+    return HITS[:top_k]
+
+
+class FakeClassifier:
+    """Returns RESULT, or raises `error`; records each (description, deadline)."""
 
     def __init__(self, error=None):
-        """Answer every call, or raise `error`."""
-        self.error, self.deadlines, self.descriptions = error, [], []
+        """Classify every description, or raise `error`."""
+        self.error, self.calls = error, []
 
-    def ask(self, question, lang, deadline):
-        """A cited answer from HITS."""
-        self.deadlines.append(deadline)
-        if self.error:
-            raise self.error
-        reply = LLMResponse("Banned [AIA-Art5-1].", [], 10, 5, "gemini-test")
-        return AskResult(reply.text, "", ["AIA-Art5-1"], [], sources_of(HITS, lang), reply)
-
-    def classify(self, description, deadline):
+    def __call__(self, description, deadline):
         """The prohibited RESULT."""
-        self.deadlines.append(deadline)
-        self.descriptions.append(description)
+        self.calls.append((description, deadline))
         if self.error:
             raise self.error
         return ClassifyOutcome(RESULT, steps=2, lookups=1)
 
-    def search(self, query, top_k):
-        """HITS, best first."""
-        return HITS[:top_k]
 
-
-def client(pipelines=None, **options):
-    """A test client for the API around `pipelines`."""
-    p = pipelines or Pipelines()
-    return TestClient(create_app(p.ask, p.classify, p.search, **options))
+def client(classifier=None, llm=None, **options):
+    """The API around the real RagPipeline on a scripted model, and a fake classifier."""
+    rag = RagPipeline(llm or ScriptedLLM(REPLY), search, "Answer from the sources.")
+    return TestClient(create_app(rag.ask, classifier or FakeClassifier(), search, **options))
 
 
 def test_api_contract():
@@ -61,15 +55,20 @@ def test_api_contract():
     assert api.get("/health").json()["status"] == "ok"  # the one route without a key
     assert api.get("/search", params={"q": "ban"}).status_code == 401
     assert api.post("/ask", json=QUESTION, headers={"X-API-Key": "wrong"}).status_code == 401
-    assert api.post("/ask", json=QUESTION | {"lang": "de"}, headers=key).status_code == 422
-    assert api.post("/classify", json={"description": "Too short."}, headers=key).status_code == 422
+    invalid = [
+        api.post("/ask", json=QUESTION | {"lang": "de"}, headers=key),
+        api.post("/ask", json=QUESTION | {"question": "      "}, headers=key),
+        api.post("/classify", json={"description": "Too short."}, headers=key),
+        api.get("/search", params={"q": "ban", "top_k": MAX_TOP_K + 1}, headers=key),
+    ]
     exe = api.post("/upload", files={"file": ("setup.exe", b"MZ")}, headers=key)
-    assert exe.status_code == 415
     [hit] = api.get("/search", params={"q": "ban"}, headers=key).json()
     answer = api.post("/ask", json=QUESTION, headers=key).json()
     tier = api.post("/classify", json={"description": DESCRIPTION}, headers=key).json()
     over = api.post("/classify", json={"description": DESCRIPTION}, headers=key)
 
+    assert [response.status_code for response in invalid] == [422] * 4
+    assert exe.status_code == 415
     assert (hit["id"], hit["label"], hit["score"]) == ("AIA-Art5-1", "AI Act, Art. 5(1)", 0.8)
     assert answer["citations"] == ["AIA-Art5-1"] and answer["model"] == "gemini-test"
     assert tier["tier"] == "prohibited" and tier["citations"] == ["AIA-Art5-1"]
@@ -89,36 +88,42 @@ def test_api_contract():
 )
 def test_upload(name, data, status):
     """A readable file under 2 MB is classified from its text; anything else is refused."""
-    pipelines = Pipelines()
+    classifier = FakeClassifier()
 
-    response = client(pipelines).post("/upload", files={"file": (name, data)})
+    response = client(classifier).post("/upload", files={"file": (name, data)})
 
     assert response.status_code == status
-    assert pipelines.descriptions == ([DESCRIPTION] if status == 200 else [])
+    assert [description for description, _ in classifier.calls] == (
+        [DESCRIPTION] if status == 200 else []
+    )
 
 
-@pytest.mark.parametrize("error", [LLMUnavailable("no LLM"), ClassificationError("8 steps")])
-def test_model_failures_return_503(error):
+@pytest.mark.parametrize(
+    ("route", "body", "error"),
+    [
+        ("/ask", QUESTION, LLMUnavailable("no LLM provider answered")),
+        ("/classify", {"description": DESCRIPTION}, ClassificationError("no valid classification")),
+    ],
+    ids=["ask", "classify"],
+)
+def test_model_failures_return_503(route, body, error):
     """No model answered in time, or no valid classification: 503 with the reason."""
-    response = client(Pipelines(error)).post("/classify", json={"description": DESCRIPTION})
+    response = client(FakeClassifier(error), ScriptedLLM(error)).post(route, json=body)
 
     assert (response.status_code, response.json()["detail"]) == (503, str(error))
 
 
 def test_one_deadline_per_request():
-    """Each request gets one deadline, REQUEST_BUDGET from its start, for all its calls (R5)."""
-    pipelines = Pipelines()
-    api = client(pipelines)
+    """Each request gets one deadline, REQUEST_BUDGET after it starts, for all its calls (R5)."""
+    llm, classifier = ScriptedLLM(REPLY), FakeClassifier()
+    api = client(classifier, llm)
 
     start = time.monotonic()
     api.post("/ask", json=QUESTION)
     api.post("/classify", json={"description": DESCRIPTION})
+    deadlines = [llm.calls[0]["deadline"], classifier.calls[0][1]]
 
-    assert all(
-        start + REQUEST_BUDGET <= d <= time.monotonic() + REQUEST_BUDGET
-        for d in pipelines.deadlines
-    )
-    assert len(pipelines.deadlines) == 2
+    assert all(start + REQUEST_BUDGET <= d <= time.monotonic() + REQUEST_BUDGET for d in deadlines)
 
 
 def test_register_failure_is_ignored():

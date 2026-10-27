@@ -170,7 +170,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Confirm the A/B winner on the grown dev set: **v2** (2.8 % false refusals against 7.0 %, faithfulness 0.971 against 0.992)
 - [x] Hit the dev targets with v2: 0 invented · faithfulness 0.971 · citation precision 0.944 lenient · refusals 12/12 · kappa 0.739
 - [x] Plain baseline on the grown dev set: refuses 0/12 out of scope, faithfulness 0.991, no citations
-- [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev)
+- [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev); the UI's source list shows them twice too
 - [ ] Optional: `answer.v3` against v2's wrong "not covered" sentences (q061, q085)
 
 ---
@@ -199,7 +199,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] `[test]` `test_register_failure_is_ignored`
 - [x] `api/guards.py`, `api/main.py`, `ingest/files.py`
 - [x] `[fix]` One deadline per API request (50 s), passed to every `chat()` of `/ask` and `/classify` (R5, API side)
-- [x] Skip a provider whose quota is spent while serving (`_blocked_until` next to the throttle; from the step 6a review)
+- [x] Skip a provider whose quota is spent while serving (`_blocked_until` next to the throttle; from the step 6a review); serving also skips any Retry-After over 5 s (`Profile.max_wait`)
 - [x] `[fix]` Decide on the per-instance cap: kept in memory and documented, one instance in step 13 (R6, decision 009)
 - [x] `api/app.py` wiring (the local profile; the cloud profile comes in step 13)
 - [x] `make serve` + curl examples (README)

@@ -10,7 +10,7 @@ from pathlib import Path
 from actwise.llm.anthropic_adapter import AnthropicLLM
 from actwise.llm.base import LLM
 from actwise.llm.openai_compat import OpenAICompatLLM
-from actwise.llm.wrappers import CachedLLM, FallbackLLM, RetryingLLM
+from actwise.llm.wrappers import MAX_RETRY_AFTER, CachedLLM, FallbackLLM, RetryingLLM
 
 log = logging.getLogger(__name__)
 
@@ -49,10 +49,13 @@ class Profile:
     timeout: float  # seconds for one HTTP call
     budget: float | None  # seconds for one chat(), retries and fallbacks included
     fallback: bool  # move on to the next provider; evals don't, so one run is one model
+    max_wait: float  # the longest Retry-After worth sleeping through; above it, skip the provider
 
 
-OFFLINE = Profile(4, 2.0, throttle=True, timeout=60.0, budget=None, fallback=False)
-SERVING = Profile(2, 1.0, throttle=False, timeout=15.0, budget=25.0, fallback=True)
+OFFLINE = Profile(
+    4, 2.0, throttle=True, timeout=60.0, budget=None, fallback=False, max_wait=MAX_RETRY_AFTER
+)
+SERVING = Profile(2, 1.0, throttle=False, timeout=15.0, budget=25.0, fallback=True, max_wait=5.0)
 
 
 def build_provider(name: str, env: Mapping[str, str], profile: Profile) -> RetryingLLM | None:
@@ -69,7 +72,7 @@ def build_provider(name: str, env: Mapping[str, str], profile: Profile) -> Retry
     else:
         adapter = OpenAICompatLLM(model, key, spec.base_url, name, profile.timeout)
     interval = spec.min_interval if profile.throttle else 0.0
-    return RetryingLLM(adapter, profile.max_tries, profile.base_delay, interval)
+    return RetryingLLM(adapter, profile.max_tries, profile.base_delay, interval, profile.max_wait)
 
 
 def build_llm(env: Mapping[str, str], profile: Profile) -> CachedLLM:

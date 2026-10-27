@@ -65,8 +65,9 @@ serve:
 	uv run --extra local uvicorn actwise.api.app:app --port 8000
 
 # The Streamlit UI; it calls the API at ACTWISE_API_URL, so start `make serve` first.
+# Uploads stop at 2 MB, the API's limit, before they are sent.
 ui:
-	uv run --extra ui streamlit run ui/app.py
+	uv run --extra ui streamlit run ui/app.py --server.maxUploadSize 2
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"
