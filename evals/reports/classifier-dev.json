@@ -1,0 +1,463 @@
+{
+  "name": "classifier-dev",
+  "created": "2026-10-27T02:38:07+00:00",
+  "git_commit": "f3670f9",
+  "split": "dev",
+  "prompt": "classify.v1",
+  "system": {
+    "embedder": {
+      "model": "BAAI/bge-m3",
+      "revision": "9a0624b896d81da7492a910ffa53731274b6cf3d",
+      "max_len": 512,
+      "prefix": {
+        "query": "",
+        "passage": ""
+      }
+    },
+    "passages": 3799,
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "fusion": {
+      "method": "rrf",
+      "k": 60,
+      "k_each": 30
+    },
+    "reranker": null,
+    "rerank_pool": null,
+    "binding_first": true
+  },
+  "llm": {
+    "fallback": [
+      {
+        "provider": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      }
+    ]
+  },
+  "inputs": {
+    "scenarios": "85ae86bb0c56"
+  },
+  "summary": {
+    "n": 20,
+    "clear": 17,
+    "accuracy": 1.0,
+    "accuracy_ambiguous": 1.0,
+    "prohibited_as_minimal": 0,
+    "dangerous_downgrades": 0,
+    "failed": 0,
+    "steps": 3.55,
+    "lookups": 3.05,
+    "confusion": {
+      "prohibited": {
+        "prohibited": 4
+      },
+      "high_risk": {
+        "high_risk": 5
+      },
+      "transparency_only": {
+        "transparency_only": 3
+      },
+      "minimal_risk": {
+        "minimal_risk": 3
+      },
+      "needs_more_info": {
+        "needs_more_info": 2
+      }
+    },
+    "by_lang": {
+      "en": 1.0,
+      "fr": 1.0
+    },
+    "cache_hits_misses": [
+      0,
+      71
+    ]
+  },
+  "per_scenario": [
+    {
+      "id": "s01",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "prohibited",
+      "predicted": "prohibited",
+      "steps": 2,
+      "lookups": 1,
+      "reasons": [
+        "The AI system uses subliminal techniques beyond a person's consciousness with the objective or effect of materially distorting their behavior and causing significant harm (debt), which is prohibited under Article 5(1)(a)."
+      ],
+      "citations": [
+        "AIA-Art5-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s03",
+      "lang": "fr",
+      "ambiguous": false,
+      "gold": "prohibited",
+      "predicted": "prohibited",
+      "steps": 3,
+      "lookups": 3,
+      "reasons": [
+        "Le système attribue une note sociale basée sur le comportement social et personnel des individus conduisant à un traitement défavorable ou disproportionné (perte de priorité pour un logement social) dans des contextes sans rapport, ce qui constitue une pratique interdite par l'article 5(1)(c) de l'AI Act."
+      ],
+      "citations": [
+        "AIA-Art5-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s05",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "prohibited",
+      "predicted": "prohibited",
+      "steps": 2,
+      "lookups": 1,
+      "reasons": [
+        "Article 5(1)(e) prohibits the placing on the market, putting into service, or use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage."
+      ],
+      "citations": [
+        "AIA-Art5-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s07",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "prohibited",
+      "predicted": "prohibited",
+      "steps": 2,
+      "lookups": 1,
+      "reasons": [
+        "The AI system uses biometric categorization to infer political opinions and sexual orientation from store camera footage, which is explicitly prohibited under Article 5(1)(g) of the EU AI Act."
+      ],
+      "citations": [
+        "AIA-Art5-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s09",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 6,
+      "lookups": 6,
+      "reasons": [
+        "The AI system is a remote biometric identification system falling under Annex III, point 1.",
+        "Systems listed in Annex III are classified as high-risk pursuant to Article 6(2)."
+      ],
+      "citations": [
+        "AIA-AnnexIII-1",
+        "AIA-Art6-2"
+      ],
+      "confidence": 0.95,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s11",
+      "lang": "fr",
+      "ambiguous": false,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 6,
+      "lookups": 5,
+      "reasons": [
+        "Le système d'IA est répertorié à l'annexe III, point 3(a), en tant que système d'IA destiné à être utilisé pour déterminer l'accès ou l'admission à des établissements d'enseignement et de formation professionnelle.",
+        "L'exception de l'article 6, paragraphe 3, ne s'applique pas car le système décide de l'admission (il ne réalise pas une simple tâche procédurale étroite ou préparatoire sans influence significative)."
+      ],
+      "citations": [
+        "AIA-AnnexIII-3",
+        "AIA-Art6-3"
+      ],
+      "confidence": 0.95,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s13",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 2,
+      "lookups": 2,
+      "reasons": [
+        "The AI system is used for recruitment and selection, specifically to filter job applications and evaluate candidates, which falls squarely under Annex III, point 4(a).",
+        "Under Article 6(2), AI systems listed in Annex III are classified as high-risk."
+      ],
+      "citations": [
+        "AIA-AnnexIII-4",
+        "AIA-Art6-2"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s15",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 3,
+      "lookups": 2,
+      "reasons": [
+        "The AI system is used for risk assessment and pricing in relation to natural persons in the case of life insurance, which falls under Annex III, point 5(c).",
+        "Systems listed in Annex III that are used for risk assessment and pricing in life and health insurance constitute high-risk AI systems under Article 6(2)."
+      ],
+      "citations": [
+        "AIA-AnnexIII-5",
+        "AIA-Art6-2",
+        "AIA-Art6-3"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s17",
+      "lang": "fr",
+      "ambiguous": false,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 2,
+      "lookups": 3,
+      "reasons": [
+        "Le système d'IA est lui-même un produit couvert par la législation d'harmonisation de l'Union figurant à l'annexe I (Règlement (UE) 2017/745 relatif aux dispositifs médicaux) et est soumis à une évaluation de la conformité par un tiers."
+      ],
+      "citations": [
+        "AIA-Art6-1",
+        "AIA-AnnexI-a.11"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s19",
+      "lang": "fr",
+      "ambiguous": false,
+      "gold": "transparency_only",
+      "predicted": "transparency_only",
+      "steps": 6,
+      "lookups": 5,
+      "reasons": [
+        "Le système n'est pas concerné par les pratiques interdites de l'article 5.",
+        "Il ne s'agit pas d'un système à haut risque au sens de l'article 6 et de l'annexe III.",
+        "Le chatbot interagit directement avec des personnes physiques et relève donc des obligations de transparence de l'article 50, paragraphe 1."
+      ],
+      "citations": [
+        "AIA-Art5-1",
+        "AIA-Art6-2",
+        "AIA-Art50-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s21",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "transparency_only",
+      "predicted": "transparency_only",
+      "steps": 6,
+      "lookups": 5,
+      "reasons": [
+        "The AI system generates synthetic product photos and advertising images from text prompts, falling under the transparency obligations of Article 50(2) for systems generating synthetic images.",
+        "The system is not prohibited under Article 5.",
+        "The system is not a high-risk system under Article 6 (not listed in Annex I or Annex III)."
+      ],
+      "citations": [
+        "AIA-Art50-2"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s23",
+      "lang": "fr",
+      "ambiguous": false,
+      "gold": "transparency_only",
+      "predicted": "transparency_only",
+      "steps": 2,
+      "lookups": 1,
+      "reasons": [
+        "Le système génère ou manipule une image ou une vidéo constituant un deep fake (la voix et le visage d'un acteur célèbre générés par IA pour une publicité), ce qui relève des obligations de transparence de l'article 50(4) de l'AI Act."
+      ],
+      "citations": [
+        "AIA-Art50-4"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s25",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "minimal_risk",
+      "predicted": "minimal_risk",
+      "steps": 5,
+      "lookups": 4,
+      "reasons": [
+        "The system is not among the prohibited practices under Article 5.",
+        "The system is not a safety component of a product covered by Annex I, nor is it listed as a high-risk use case in Annex III.",
+        "The system does not interact directly with natural persons as an AI agent in a way that triggers direct interaction transparency under Article 50(1), nor does it generate deep fakes or synthetic content covered by Article 50(2)."
+      ],
+      "citations": [
+        "AIA-Art5-1",
+        "AIA-AnnexIII-4",
+        "AIA-Art50-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s27",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "minimal_risk",
+      "predicted": "minimal_risk",
+      "steps": 2,
+      "lookups": 4,
+      "reasons": [
+        "The AI system is not among the prohibited practices under Article 5.",
+        "The AI system is not a safety component of a product, nor is it a product, covered by the Union harmonization legislation listed in Annex I.",
+        "The AI system's use case of forecasting weekly demand for retail restocking is not listed in any of the high-risk areas of Annex III.",
+        "The system does not interact directly with natural persons, nor does it generate synthetic audio, images, video, text, or deep fakes, so transparency duties under Article 50 do not apply.",
+        "The system is classified as minimal risk."
+      ],
+      "citations": [
+        "AIA-Art5-1",
+        "AIA-Art6-1",
+        "AIA-Art6-2",
+        "AIA-AnnexIII-0",
+        "AIA-Art50-1"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s29",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "minimal_risk",
+      "predicted": "minimal_risk",
+      "steps": 3,
+      "lookups": 3,
+      "reasons": [
+        "The AI system is used in recruitment and selection, falling under Annex III, point 4(a).",
+        "Under Article 6(3), an AI system referred to in Annex III is not considered high-risk if it performs a narrow procedural task or a preparatory task to an assessment without materially influencing decision-making.",
+        "The tool merely converts CVs into a standard structured form without ranking, scoring, or profiling candidates, thus qualifying for the Article 6(3) exemption as minimal/non-high-risk."
+      ],
+      "citations": [
+        "AIA-Art6-3",
+        "AIA-AnnexIII-4"
+      ],
+      "confidence": 0.95,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s31",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "needs_more_info",
+      "predicted": "needs_more_info",
+      "steps": 3,
+      "lookups": 2,
+      "reasons": [
+        "The description is too vague to determine whether the image analysis falls under any high-risk use case in Annex III, is a safety component under Annex I, or triggers transparency obligations."
+      ],
+      "citations": [
+        "AIA-AnnexIII-0"
+      ],
+      "confidence": 0.8,
+      "follow_up_questions": [
+        "What is the specific intended purpose and domain of the image analysis (e.g., medical, biometric identification, employment, critical infrastructure, law enforcement)?",
+        "Does the AI system generate synthetic content or deep fakes, or interact directly with individuals?"
+      ]
+    },
+    {
+      "id": "s33",
+      "lang": "en",
+      "ambiguous": false,
+      "gold": "needs_more_info",
+      "predicted": "needs_more_info",
+      "steps": 4,
+      "lookups": 3,
+      "reasons": [
+        "The description mentions a facial recognition system in a building, which typically involves biometric identification or verification. If it performs remote biometric identification (1-to-many), it falls under Annex III, point 1(a). If it is strictly for biometric verification (1-to-1 authentication for building access), it is excluded from high risk under Annex III, point 1(a). More information is needed to determine the exact use case and architecture."
+      ],
+      "citations": [
+        "AIA-AnnexIII-1"
+      ],
+      "confidence": 0.8,
+      "follow_up_questions": [
+        "Is this system used purely for biometric verification (such as granting access to specific employees whose identity is already known and being authenticated, i.e., 1-to-1 verification), or does it perform remote biometric identification (1-to-many matching against a database)?",
+        "Is the building a publicly accessible space or used for law enforcement purposes?"
+      ]
+    },
+    {
+      "id": "s35",
+      "lang": "en",
+      "ambiguous": true,
+      "gold": "minimal_risk",
+      "predicted": "minimal_risk",
+      "steps": 3,
+      "lookups": 3,
+      "reasons": [
+        "The system generates text summarising internal support tickets, which is an assistive function for standard editing/processing of text used internally within a team and does not publish public-interest text or deep fakes.",
+        "The system does not fall under prohibited practices (Article 5), nor is it a high-risk system under Annex I or Annex III.",
+        "Therefore, it is classified as minimal risk (or standard software not triggering transparency/high-risk/prohibited obligations)."
+      ],
+      "citations": [
+        "AIA-Art50-2"
+      ],
+      "confidence": 0.95,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s37",
+      "lang": "en",
+      "ambiguous": true,
+      "gold": "high_risk",
+      "predicted": "high_risk",
+      "steps": 3,
+      "lookups": 2,
+      "reasons": [
+        "The AI system allocates tasks to workers based on individual behaviour and past productivity scores, which falls directly under Annex III, point 4(b) (Employment, workers' management and access to self-employment)."
+      ],
+      "citations": [
+        "AIA-AnnexIII-4",
+        "AIA-Art6-2"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    },
+    {
+      "id": "s39",
+      "lang": "en",
+      "ambiguous": true,
+      "gold": "minimal_risk",
+      "predicted": "minimal_risk",
+      "steps": 6,
+      "lookups": 5,
+      "reasons": [
+        "The system does not engage in prohibited practices under Article 5.",
+        "The system is neither a safety component of a high-risk product under Annex I nor listed as a high-risk use case in Annex III.",
+        "Although it manipulates image content, Article 50(2) explicitly exempts AI systems that perform an assistive function for standard editing or do not substantially alter the input data or semantics thereof.",
+        "Therefore, the system falls under minimal risk."
+      ],
+      "citations": [
+        "AIA-Art50-2"
+      ],
+      "confidence": 1.0,
+      "follow_up_questions": []
+    }
+  ]
+}
