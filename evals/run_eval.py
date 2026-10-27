@@ -39,12 +39,10 @@ from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
 from actwise.retrieval.bm25 import BM25
-from actwise.retrieval.dense import CACHE_DIR, DenseRetriever, build_store
-from actwise.retrieval.embedders import BGE_M3, SentenceTransformerEmbedder
-from actwise.retrieval.hybrid import HybridRetriever
+from actwise.retrieval.dense import bge_m3_retriever
+from actwise.retrieval.hybrid import HybridRetriever, build_hybrid
 from actwise.retrieval.naive import MAX_WORDS, OVERLAP, naive_passages
-from actwise.retrieval.passages import Hit, Passage, chunk_passages
-from actwise.retrieval.rerank import BGE_RERANKER, CrossEncoderReranker
+from actwise.retrieval.passages import Hit, chunk_passages
 
 REPORTS = Path("evals/reports")
 
@@ -55,19 +53,6 @@ class Retriever(Protocol):
     def search(self, query: str, top_k: int = 5) -> list[Hit]:
         """The `top_k` best passages for the query, best first."""
         ...
-
-
-def dense(passages: list[Passage]) -> DenseRetriever:
-    """Cosine search with the pinned BGE-M3 over cached passage vectors."""
-    embedder = SentenceTransformerEmbedder(*BGE_M3)
-    return DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE_DIR))
-
-
-def hybrid(rerank: bool = False, binding_first: bool = False) -> HybridRetriever:
-    """Dense and BM25 over the structure-aware chunks, fused with RRF."""
-    passages = chunk_passages()
-    reranker = CrossEncoderReranker(*BGE_RERANKER) if rerank else None
-    return HybridRetriever(dense(passages), BM25(passages), reranker, binding_first=binding_first)
 
 
 @dataclass(frozen=True)
@@ -81,22 +66,24 @@ SYSTEMS = {
     "baseline": System(
         f"Baseline: fixed {MAX_WORDS}-word windows ({OVERLAP} shared) ignoring "
         "structure, dense BGE-M3, cosine similarity, no rerank",
-        lambda: dense(naive_passages()),
+        lambda: bge_m3_retriever(naive_passages()),
     ),
-    "dense": System(f"A: {CHUNKS}, dense BGE-M3, no rerank", lambda: dense(chunk_passages())),
+    "dense": System(
+        f"A: {CHUNKS}, dense BGE-M3, no rerank", lambda: bge_m3_retriever(chunk_passages())
+    ),
     "bm25": System(f"B: {CHUNKS}, BM25 only, no rerank", lambda: BM25(chunk_passages())),
-    "hybrid": System(f"C: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, no rerank", hybrid),
+    "hybrid": System(f"C: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, no rerank", build_hybrid),
     "hybrid-rerank": System(
         f"D: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, top 20 reranked by bge-reranker-v2-m3",
-        lambda: hybrid(rerank=True),
+        lambda: build_hybrid(rerank=True),
     ),
     "hybrid-binding": System(
         "E: as C, with articles and annexes ranked before recitals",
-        lambda: hybrid(binding_first=True),
+        lambda: build_hybrid(binding_first=True),
     ),
     "hybrid-rerank-binding": System(
         "F: as D, with articles and annexes ranked before recitals",
-        lambda: hybrid(rerank=True, binding_first=True),
+        lambda: build_hybrid(rerank=True, binding_first=True),
     ),
 }
 

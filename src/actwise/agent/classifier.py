@@ -117,9 +117,17 @@ def accept(arguments: dict[str, Any], retrieved: set[str]) -> Classification | s
 
 
 def classify(
-    llm: LLM, search: Search, articles: Articles, description: str, max_steps: int = MAX_STEPS
+    llm: LLM,
+    search: Search,
+    articles: Articles,
+    description: str,
+    max_steps: int = MAX_STEPS,
+    deadline: float | None = None,
 ) -> ClassifyOutcome:
-    """Run the agent until it submits an acceptable classification; errors go back to it."""
+    """Run the agent until it submits an acceptable classification; errors go back to it.
+
+    Every model call shares `deadline` (`time.monotonic()` seconds): one budget per run.
+    """
     lookup = {
         READ_TOOL["name"]: lambda args: articles.get(str(args.get("article", "")).strip(), []),
         SEARCH_TOOL["name"]: lambda args: search_ai_act(
@@ -133,7 +141,7 @@ def classify(
     retrieved: set[str] = set()
     lookups = 0
     for step in range(1, max_steps + 1):
-        reply = llm.chat(messages, tools=TOOLS, temperature=0)
+        reply = llm.chat(messages, tools=TOOLS, temperature=0, deadline=deadline)
         if not reply.tool_calls:
             messages += [
                 {"role": "assistant", "content": reply.text},

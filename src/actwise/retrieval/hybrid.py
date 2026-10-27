@@ -4,10 +4,10 @@ from __future__ import annotations
 
 from actwise.ids import is_recital
 from actwise.retrieval.bm25 import BM25
-from actwise.retrieval.dense import DenseRetriever
+from actwise.retrieval.dense import DenseRetriever, bge_m3_retriever
 from actwise.retrieval.fusion import rrf
-from actwise.retrieval.passages import Hit, to_hit
-from actwise.retrieval.rerank import Reranker
+from actwise.retrieval.passages import Hit, chunk_passages, to_hit
+from actwise.retrieval.rerank import BGE_RERANKER, CrossEncoderReranker, Reranker
 
 
 class HybridRetriever:
@@ -62,3 +62,11 @@ class HybridRetriever:
         """The `top_k` best passages: both stages, one after the other."""
         ranked = self.reranked(query, self.fused(query))
         return [to_hit(self.dense.passages[key], score) for key, score in ranked[:top_k]]
+
+
+def build_hybrid(rerank: bool = False, binding_first: bool = False) -> HybridRetriever:
+    """Dense BGE-M3 and BM25 over the structure-aware chunks; system E is `binding_first`."""
+    passages = chunk_passages()
+    reranker = CrossEncoderReranker(*BGE_RERANKER) if rerank else None
+    dense = bge_m3_retriever(passages)
+    return HybridRetriever(dense, BM25(passages), reranker, binding_first=binding_first)
