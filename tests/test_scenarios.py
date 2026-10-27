@@ -52,3 +52,8 @@ def test_clear_tiers_cite_their_own_rule(scenarios):
     for s in scenarios:
         if not s.ambiguous and s.gold in TIER_ARTICLES:
             assert article_id(s.rule) in TIER_ARTICLES[s.gold], s.id
+
+
+def test_every_label_was_verified_by_a_person(scenarios):
+    """The guide's rule: never trust a gold tier that nobody checked against the article text."""
+    assert [s.id for s in scenarios if s.verified != "yes"] == []
