@@ -13,6 +13,8 @@ import httpx
 import streamlit as st
 from dotenv import load_dotenv
 
+from actwise.ingest.files import READERS
+
 load_dotenv()  # .env fills in what the environment doesn't set
 API_URL = os.environ.get("ACTWISE_API_URL") or "http://localhost:8000"
 HEADERS = {"X-API-Key": key} if (key := os.environ.get("ACTWISE_API_KEY")) else {}
@@ -81,7 +83,7 @@ with ask_tab:
 with classify_tab:
     with st.form("classify"):
         description = st.text_area("Describe the AI system", height=160)
-        upload = st.file_uploader("Or upload a description", type=["txt", "md", "pdf", "docx"])
+        upload = st.file_uploader("Or upload a description", type=[s[1:] for s in READERS])
         submitted = st.form_submit_button("Classify")
     if submitted:
         if upload:

@@ -151,12 +151,24 @@ def test_a_spent_quota_is_skipped_until_it_resets():
 
     llm.chat(MESSAGES)  # the 429: the backup answers
     llm.chat(MESSAGES)  # the spent provider is not asked
-    with pytest.raises(LLMUnavailable, match="quota"):
+    with pytest.raises(LLMUnavailable, match="no call"):
         retrying.chat(MESSAGES)
     clock.now += 3600
     llm.chat(MESSAGES)  # the quota is back
 
     assert len(spent.calls) == 2 and len(backup.calls) == 2
+
+
+def test_serving_fails_over_instead_of_waiting():
+    """With max_wait=5, a 429 asking for 30 s goes to the next provider at once (R5)."""
+    clock = FakeClock()
+    busy = ScriptedLLM(sdk_error(openai.RateLimitError, 429, retry_after="30"))
+    backup = ScriptedLLM(ANSWER)
+    retrying = RetryingLLM(busy, 2, 1, max_wait=5, sleep=clock.sleep, clock=clock)
+
+    answer = FallbackLLM([retrying, backup], clock=clock).chat(MESSAGES, deadline=50.0)
+
+    assert answer == ANSWER and clock.sleeps == [] and len(busy.calls) == 1
 
 
 def test_gemini_retry_delay_in_the_body_counts_as_retry_after():
