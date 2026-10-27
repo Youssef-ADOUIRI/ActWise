@@ -6,7 +6,7 @@ import openai
 import pytest
 
 from actwise.llm.base import LLMResponse, ToolCall
-from actwise.llm.wrappers import CachedLLM, FallbackLLM, RetryingLLM
+from actwise.llm.wrappers import CachedLLM, FallbackLLM, LLMUnavailable, RetryingLLM
 from tests.unit.toys import ScriptedLLM
 
 MESSAGES = [{"role": "user", "content": "Which AI practices are banned?"}]
@@ -141,6 +141,24 @@ def test_a_long_retry_after_means_a_spent_quota():
     assert len(inner.calls) == 1 and clock.sleeps == []
 
 
+def test_a_spent_quota_is_skipped_until_it_resets():
+    """After a 429 asking for an hour, the fallback skips that provider without a request."""
+    clock = FakeClock()
+    spent = ScriptedLLM(sdk_error(openai.RateLimitError, 429, retry_after="3600"), ANSWER)
+    backup = ScriptedLLM(ANSWER)
+    retrying = RetryingLLM(spent, max_tries=2, base_delay=1, sleep=clock.sleep, clock=clock)
+    llm = FallbackLLM([retrying, backup], clock=clock)
+
+    llm.chat(MESSAGES)  # the 429: the backup answers
+    llm.chat(MESSAGES)  # the spent provider is not asked
+    with pytest.raises(LLMUnavailable, match="quota"):
+        retrying.chat(MESSAGES)
+    clock.now += 3600
+    llm.chat(MESSAGES)  # the quota is back
+
+    assert len(spent.calls) == 2 and len(backup.calls) == 2
+
+
 def test_gemini_retry_delay_in_the_body_counts_as_retry_after():
     """Gemini says how long to wait in the error body; a spent daily quota raises at once."""
     clock = FakeClock()
@@ -206,7 +224,7 @@ def test_fallback_raises_one_clear_error_when_all_fail():
     """When every provider fails, one error says so and keeps the last cause."""
     providers = [ScriptedLLM(ValueError("down 1")), ScriptedLLM(ValueError("down 2"))]
 
-    with pytest.raises(RuntimeError, match="no LLM provider answered") as info:
+    with pytest.raises(LLMUnavailable, match="no LLM provider answered") as info:
         FallbackLLM(providers).chat(MESSAGES)
 
     assert str(info.value.__cause__) == "down 2"
@@ -218,7 +236,7 @@ def test_fallback_starts_no_provider_after_the_deadline():
     second = ScriptedLLM(ANSWER)
     llm = FallbackLLM([SlowFailure(clock, 30), second], budget=25, clock=clock)
 
-    with pytest.raises(RuntimeError, match="deadline"):
+    with pytest.raises(LLMUnavailable, match="deadline"):
         llm.chat(MESSAGES)
 
     assert second.calls == []

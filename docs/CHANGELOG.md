@@ -5,6 +5,33 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-28: Step 8, the API and the UI
+
+**Goal:** serve the cited answers and the classifier over HTTP, with cost guards, and add a small UI.
+**Branch:** `step-8-api`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/api/main.py` | `create_app()`: `/health`, `/search`, `/ask`, `/classify`, `/upload`, the API key, the daily cap, one deadline per request, and 503 when no model answers in time. Answers and classifications carry the disclaimer | The pipelines are injected, so the contract tests run on fakes |
+| `src/actwise/api/guards.py` | `DailyCap`: in memory, per instance, safe across threads | R6, decision 009 |
+| `src/actwise/ingest/files.py` | `extract_text()` for .txt, .md, .pdf and .docx, cut to the 8,000 characters of `/classify` | `/upload` |
+| `src/actwise/api/app.py` | The wiring: serving profile, system E, `answer.v2` and the classifier; `make serve` | |
+| `src/actwise/llm/wrappers.py` | `LLMUnavailable`; a provider whose quota is spent is skipped, without a request, until its Retry-After has passed | From the step 6a review: the fallback answers at once |
+| `src/actwise/generation/rag.py`, `src/actwise/agent/classifier.py` | A `deadline` passed to every model call | R5, API side |
+| `src/actwise/retrieval/dense.py`, `hybrid.py` | `bge_m3_retriever()` and `build_hybrid()`, moved from `evals/run_eval.py` | The API and the evals build system E the same way |
+| `ui/app.py` | Streamlit: an Ask tab and a Classify tab (text or file), calling the API over HTTP; `make ui` and a `ui` extra | The API image stays without Streamlit |
+| `docs/decisions/009-api.md` | The request deadline, the cap kept per instance, and the error codes | |
+
+**Results (local, Gemini 3.5 Flash-Lite):**
+- **Guards, live:** 401 without the key, 422 for bad input, 415 for a `.exe`, and 429 once `MAX_DAILY_REQUESTS` was reached. The tests also cover 413 and 503.
+- **Live:** `/ask` answered in English and French in 2–3 s, and three dev scenarios came back with their gold tiers in 1.4–2.8 s, as JSON, from a `.txt` and from a `.docx`.
+- **UI:** both tabs ran against the live API in a Streamlit `AppTest` smoke run.
+- **Checks:** 225 tests pass, coverage is 96 %, and ruff and mypy are clean.
+
+**Next:** step 9 fine-tunes and shrinks the embedder, which the cloud profile needs.
+
+---
+
 ## 2026-10-27: Step 7, the risk classifier agent
 
 **Goal:** an agent that reads the AI Act before it decides, and cannot return a classification that is invalid or ungrounded.

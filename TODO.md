@@ -193,18 +193,18 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 8: API and UI
 
-- [ ] `[test]` `test_daily_cap_resets_next_day`
-- [ ] `[test]` `test_extract_text`
-- [ ] `[test]` `test_api_contract` (422 / 401 / 429 / 415)
-- [ ] `[test]` `test_register_failure_is_ignored`
-- [ ] `api/guards.py`, `api/main.py`, `ingest/files.py`
-- [ ] `[fix]` One deadline per API request, passed to every `chat()` of `/ask` and `/classify` (R5, API side)
-- [ ] Skip a provider whose quota is spent while serving (a `blocked_until` next to the throttle; from the step 6a review)
-- [ ] `[fix]` Decide on the per-instance cap: document it or move it to Firestore (R6)
-- [ ] `api/app.py` wiring (profiles: local, cloud)
-- [ ] `make serve` + curl examples
-- [ ] Optional: SSE streaming for `/ask`
-- [ ] `ui/app.py` (Streamlit: ask tab + classify tab)
+- [x] `[test]` `test_daily_cap_resets_next_day`
+- [x] `[test]` `test_extract_text`
+- [x] `[test]` `test_api_contract` (422 / 401 / 429 / 415), plus 413, 503 and one deadline per request
+- [x] `[test]` `test_register_failure_is_ignored`
+- [x] `api/guards.py`, `api/main.py`, `ingest/files.py`
+- [x] `[fix]` One deadline per API request (50 s), passed to every `chat()` of `/ask` and `/classify` (R5, API side)
+- [x] Skip a provider whose quota is spent while serving (`_blocked_until` next to the throttle; from the step 6a review)
+- [x] `[fix]` Decide on the per-instance cap: kept in memory and documented, one instance in step 13 (R6, decision 009)
+- [x] `api/app.py` wiring (the local profile; the cloud profile comes in step 13)
+- [x] `make serve` + curl examples (README)
+- [ ] Optional: SSE streaming for `/ask` (skipped in step 8)
+- [x] `ui/app.py` (Streamlit: ask tab + classify tab; `make ui`, `ui` extra)
 
 ---
 
@@ -269,9 +269,10 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Secrets: gemini, groq, qdrant, gsheets; grant `secretAccessor`
 - [ ] **EUR 1 budget alert** (50 / 90 / 100 %)
 - [ ] Qdrant Cloud cluster + `make index-cloud`
+- [ ] `api/app.py`: the cloud profile (the ONNX embedder of step 9, Qdrant Cloud)
 - [ ] `requirements-cloud.txt`, multi-stage `Dockerfile`, image **< 450 MB** compressed
 - [ ] `deploy/env.yaml`
-- [ ] Manual first deploy + smoke tests + cold start ≤ 15 s
+- [ ] Manual first deploy (`--max-instances 1`, decision 009) + smoke tests + cold start ≤ 15 s
 - [ ] Workload Identity Federation for GitHub
 - [ ] `.github/workflows/deploy.yml` (candidate revision → smoke test → traffic)
 - [ ] Clean up old images after each deploy
