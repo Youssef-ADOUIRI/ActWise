@@ -3,10 +3,12 @@
 Provider-neutral messages are plain dicts:
 
     {"role": "system" | "user", "content": str}
-    {"role": "assistant", "content": str, "tool_calls": [{"id", "name", "arguments": dict}]}
+    {"role": "assistant", "content": str, "tool_calls": [{"id", "name", "arguments", "extra"}]}
     {"role": "tool", "tool_call_id": str, "content": str}
 
-Tools are {"name": str, "description": str, "parameters": <JSON schema>}.
+Tools are {"name": str, "description": str, "parameters": <JSON schema>}. A tool call's
+`extra` holds provider data that must go back unchanged on the next turn, keyed by
+provider, such as the thought signature Gemini 3 attaches to every function call.
 
 `deadline` is a `time.monotonic()` value by which a call must return: retries,
 fallbacks and HTTP timeouts all fit inside it, so one call can't outlive its time
@@ -17,7 +19,7 @@ HTTP `status_code` (both SDKs set one on API errors) may be worth retrying.
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 Message = dict[str, Any]
@@ -32,6 +34,7 @@ class ToolCall:
     id: str
     name: str
     arguments: dict[str, Any]
+    extra: dict[str, Any] = field(default_factory=dict)  # provider data, sent back as received
 
 
 @dataclass(frozen=True)

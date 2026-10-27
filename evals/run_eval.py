@@ -130,6 +130,16 @@ def fingerprint(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+def write_report(report: dict[str, Any], markdown: str) -> Path:
+    """Write evals/reports/<name>.json and .md; returns the path without a suffix."""
+    REPORTS.mkdir(parents=True, exist_ok=True)
+    out = REPORTS / report["name"]  # names like answer.v1 hold a dot: add suffixes by hand
+    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+    Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
+    Path(f"{out}.md").write_text(markdown, encoding="utf-8", newline="\n")
+    return out
+
+
 def git_commit() -> str:
     """Short commit hash, marked "-dirty" if the working tree has uncommitted changes."""
     commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
@@ -219,11 +229,7 @@ def main() -> None:
             f"{s['citation_precision_lenient']}; cache {cache}"
         )
 
-    REPORTS.mkdir(parents=True, exist_ok=True)
-    out = REPORTS / report["name"]  # names like answer.v1 hold a dot: add suffixes by hand
-    json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
-    Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
-    Path(f"{out}.md").write_text(markdown, encoding="utf-8", newline="\n")
+    out = write_report(report, markdown)
     print(f"wrote {out}.json and {out}.md")
 
 

@@ -5,6 +5,37 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-27: Step 7, the risk classifier agent
+
+**Goal:** an agent that reads the AI Act before it decides, and cannot return a classification that is invalid or ungrounded.
+**Branch:** `step-7-classifier`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/agent/schemas.py` | `Classification` (tier, reasons, citations, confidence, follow-up questions), its title-free tool schema, and `TIER_ARTICLES` | The output shape is defined once; each tier names the articles it must cite |
+| `src/actwise/agent/classifier.py` | Tools `read_ai_act_article` (by id), `search_ai_act` (AI Act only, one per paragraph) and `submit_classification`. Guards: schema errors fed back, citations read or retrieved, the tier cites its own rule, follow-ups for `needs_more_info`, a plain-text nudge, a budget warning 3 steps before the limit of 8 | A wrong or ungrounded answer is refused inside the loop, not after it |
+| `src/actwise/prompts/classify.v1.md` | The order of checks: Art. 5, Art. 6 with Annex I/III and the Art. 6(3) exceptions, Art. 50, else minimal risk | |
+| `data/eval/risk_scenarios.csv`, `src/actwise/evaluation/scenarios.py`, `tests/test_scenarios.py` | 40 scenarios (20 dev / 20 test, 12 in French, 6 ambiguous). Each quotes its deciding sentence, checked word for word against the paragraph the agent reads, and every label is verified by a person | The guide's rule: never trust a label nobody checked |
+| `src/actwise/evaluation/classifier_eval.py`, `evals/run_classifier.py` | Accuracy on clear and ambiguous scenarios apart, the confusion matrix, prohibited labelled minimal and other dangerous downgrades, failed runs, steps; `make eval-classifier` | |
+| `src/actwise/llm/base.py`, `openai_compat.py` | `ToolCall.extra`: unknown provider fields kept per provider and sent back unchanged | Gemini 3 rejects a turn whose function calls lack their thought signature |
+| `src/actwise/retrieval/passages.py` | `paragraph_passages()`: a long paragraph's windows joined back, without their shared words | What the read tool shows and what the scenario test checks |
+| `evals/run_eval.py`, `evals/judge_kappa.py` | One `write_report()` for the three eval scripts | Found by `/simplify` |
+| `docs/decisions/008-classifier.md`, `docs/model_card.md`, `docs/failure_cases.md` | The design record; the first limitations, including the AI Omnibus dates; queries that name an article miss it | |
+
+**Results (dev, commit `f3670f9`):**
+- **Clear scenarios:** 17/17, in English and in French. **Ambiguous:** 3/3.
+- **Safety:** 0 prohibited or high-risk systems labelled minimal risk, and 0 runs out of steps.
+- **Cost:** 3.55 model calls per run on Gemini 3.5 Flash-Lite.
+- **Checks:** 212 tests pass, coverage is 97 %, and ruff and mypy are clean.
+
+**Found live:**
+- Searching for "Article 6(1)" never returned it, which led to the read tool.
+- The agent kept searching after it had found its rule, which led to the budget warning.
+
+**Next:** step 8 serves `/classify` through the API, with one deadline per request.
+
+---
+
 ## 2026-10-25: Step 6b, calibrated judge and 179 questions
 
 **Goal:** a judge calibrated against human labels, a golden set of 150+ questions, and the retrieval and answer results re-measured on it. This closes M3.

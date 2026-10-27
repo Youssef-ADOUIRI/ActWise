@@ -46,7 +46,7 @@
 | [M1 Measured baseline](#m1-measured-baseline)                                   | 2     | 3           | ✅ Done        |
 | [M2 Retrieval quality](#m2-retrieval-quality)                                   | 3–4   | 4           | ✅ Done        |
 | [M3 Grounded generation](#m3-grounded-generation)                               | 3–4   | 5, 6        | ✅ Done        |
-| [M4 Classifier agent and API](#m4-classifier-agent-and-api)                     | 5     | 7, 8        | ⬜             |
+| [M4 Classifier agent and API](#m4-classifier-agent-and-api)                     | 5     | 7, 8        | 🟨             |
 | [M5 Own model and framework comparison](#m5-own-model-and-framework-comparison) | 6     | 9, 10       | ⬜             |
 | [M6 Integrations and observability](#m6-integrations-and-observability)         | 7     | 11, 12      | ⬜             |
 | [M7 Production on Cloud Run](#m7-production-on-cloud-run)                       | 8     | 13          | ⬜             |

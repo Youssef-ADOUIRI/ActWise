@@ -1,5 +1,6 @@
 import json
 import time
+from dataclasses import asdict
 from types import SimpleNamespace
 
 from actwise.llm.anthropic_adapter import AnthropicLLM, to_anthropic_messages
@@ -94,7 +95,7 @@ def test_openai_adapter_round_trip():
 
 def test_openai_messages_carry_tool_calls_as_json():
     """Assistant tool calls become function calls with JSON-string arguments."""
-    messages = to_openai_messages(CONVERSATION)
+    messages = to_openai_messages(CONVERSATION, "gemini")
 
     assert messages[2]["content"] is None
     assert messages[2]["tool_calls"][0] == {
@@ -166,3 +167,25 @@ def test_sdk_clients_do_not_retry_on_their_own():
 
     assert openai_client.max_retries == 0
     assert anthropic_client.max_retries == 0
+
+
+def test_provider_extras_on_tool_calls_go_back_unchanged():
+    """Gemini's thought signature goes back to Gemini, and never to another provider."""
+    signature = {"extra_content": {"google": {"thought_signature": "c2ln"}}}
+    call = SimpleNamespace(
+        id="c1",
+        function=SimpleNamespace(name="lookup", arguments="{}"),
+        model_extra=signature,
+    )
+    response = SimpleNamespace(
+        choices=[SimpleNamespace(message=SimpleNamespace(content=None, tool_calls=[call]))],
+        usage=None,
+    )
+
+    [parsed] = openai_llm(FakeCreate(response)).chat(CONVERSATION[1:2]).tool_calls
+    turn = {"role": "assistant", "content": "", "tool_calls": [asdict(parsed)]}
+
+    assert parsed.extra == {"gemini": signature}
+    sent = to_openai_messages([turn], "gemini")[0]["tool_calls"][0]
+    assert sent["extra_content"] == signature["extra_content"]
+    assert "extra_content" not in to_openai_messages([turn], "groq")[0]["tool_calls"][0]

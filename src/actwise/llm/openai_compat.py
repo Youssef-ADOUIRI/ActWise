@@ -8,8 +8,12 @@ from typing import Any
 from actwise.llm.base import MAX_TOKENS, LLMResponse, Message, Tool, ToolCall, time_left
 
 
-def to_openai_messages(messages: list[Message]) -> list[dict[str, Any]]:
-    """Provider-neutral messages in the Chat Completions format: tool arguments as JSON strings."""
+def to_openai_messages(messages: list[Message], provider: str) -> list[dict[str, Any]]:
+    """Provider-neutral messages in the Chat Completions format, as `provider` expects them.
+
+    Tool arguments become JSON strings; a tool call carries back only the extra fields that
+    this provider attached to it (a fallback chain must not send Gemini's signature to Groq).
+    """
     out: list[dict[str, Any]] = []
     for m in messages:
         if m["role"] == "assistant" and m.get("tool_calls"):
@@ -18,6 +22,7 @@ def to_openai_messages(messages: list[Message]) -> list[dict[str, Any]]:
                     "id": tc["id"],
                     "type": "function",
                     "function": {"name": tc["name"], "arguments": json.dumps(tc["arguments"])},
+                    **tc.get("extra", {}).get(provider, {}),  # Gemini: the thought signature
                 }
                 for tc in m["tool_calls"]
             ]
@@ -63,7 +68,7 @@ class OpenAICompatLLM:
         """Send one request; tool-call arguments come back parsed from their JSON strings."""
         kwargs: dict[str, Any] = {
             "model": self.model,
-            "messages": to_openai_messages(messages),
+            "messages": to_openai_messages(messages, self.config["provider"]),
             "max_tokens": max_tokens,  # R12: the guide's adapter never sent it
             "timeout": time_left(deadline, self.timeout),
         }
@@ -75,7 +80,14 @@ class OpenAICompatLLM:
         response = self.client.chat.completions.create(**kwargs)
         message = response.choices[0].message
         calls = [
-            ToolCall(tc.id, tc.function.name, json.loads(tc.function.arguments or "{}"))
+            ToolCall(
+                tc.id,
+                tc.function.name,
+                json.loads(tc.function.arguments or "{}"),
+                {self.config["provider"]: extra}
+                if (extra := getattr(tc, "model_extra", None))
+                else {},
+            )
             for tc in message.tool_calls or []
         ]
         usage = getattr(response, "usage", None)

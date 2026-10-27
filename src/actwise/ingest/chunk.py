@@ -14,6 +14,8 @@ KIND_WORD = {
     "fr": {"recital": "Considérant", "article": "Article", "annex": "Annexe"},
 }
 
+WINDOW_WORDS, WINDOW_OVERLAP = 150, 25  # a long paragraph's windows, and the words they share
+
 
 @dataclass(frozen=True)
 class Chunk:
@@ -79,7 +81,11 @@ def law_of(chunk_id: str) -> str:
 
 
 def chunk_units(
-    units: list[Unit], law: str, lang: str, max_words: int = 150, overlap: int = 25
+    units: list[Unit],
+    law: str,
+    lang: str,
+    max_words: int = WINDOW_WORDS,
+    overlap: int = WINDOW_OVERLAP,
 ) -> list[Chunk]:
     """One chunk per paragraph (or per window of a long one), with its stable id."""
     chunks: list[Chunk] = []
