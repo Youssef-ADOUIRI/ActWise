@@ -46,6 +46,7 @@ def test_breakdowns_by_language_and_type():
     assert report["by_lang"]["fr"]["n"] == 1
     assert report["by_lang"]["fr"]["recall@1"] == 0.0
     assert report["by_type"]["lookup"]["mrr@10"] == 1.0
+    assert report["by_source"]["hand"]["n"] == 2  # Question.source defaults to "hand"
 
 
 def test_markdown_summary_lists_metrics_and_misses():

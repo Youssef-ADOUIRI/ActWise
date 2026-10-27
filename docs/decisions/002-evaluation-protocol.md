@@ -18,3 +18,16 @@ Rules enforced by `tests/test_golden_set.py`:
 | ≥ 50 questions, ≥ 15 in French, ≥ 20 scored in dev and in test | The minimum the guide asks for, plus usable split sizes |
 
 Side effect of the seeded draw: the best-known provisions (AI Act Articles 3, 6, 50, 113 and Annex III; GDPR Articles 4, 6, 9, 17, 35) all landed in train. So dev and test questions target less famous articles, which makes the evaluation harder but not biased: the split was fixed before any question was written.
+
+## Revisited in step 6b: the set grows to 179 questions
+
+- **Options:** spread 100 synthetic questions over train, dev and test (about 70/15/15, as the guide says), or put them all in dev and test.
+- **Measured:**
+  - The guide's spread would leave dev with about 35 scored questions and 2 out-of-scope ones. Train questions are never scored.
+  - 144 candidates were drafted from seeded dev and test paragraphs and from 24 out-of-scope topics. They were screened by rule, pre-screened by Claude and confirmed by a person; 129 were kept.
+- **Chosen:**
+  - In scope: 51 dev and 58 test synthetic questions, each from one article or annex paragraph of its split.
+  - Out of scope: 10 dev and 10 test questions, so the 95 % refusal target can be measured.
+  - Every line now has a `source` field (`hand` or `synthetic`), and every report breaks its numbers down by source.
+- **Result:** dev has 71 scored and 12 out-of-scope questions, test has 78 and 12, and 67 of the 179 questions are in French.
+- **Caveat:** each synthetic question is written from a single passage. That makes it easier for retrieval than a hand-written one, so hand-written and synthetic results are reported apart.

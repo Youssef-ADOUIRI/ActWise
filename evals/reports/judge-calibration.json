@@ -1,0 +1,608 @@
+{
+  "judge": {
+    "fallback": [
+      {
+        "provider": "groq",
+        "model": "openai/gpt-oss-120b"
+      }
+    ],
+    "prompt": "judge.v1"
+  },
+  "n": 58,
+  "perturbed": 13,
+  "judge_failed": 0,
+  "kappa_at_4": 0.7393,
+  "agreement_at_4": 0.931,
+  "kappa_at_5": 0.9517,
+  "kappa_weighted": 0.8995,
+  "planted_caught": {
+    "human": "12/13",
+    "judge": "12/13"
+  },
+  "cache_hits_misses": [
+    58,
+    0
+  ],
+  "items": [
+    {
+      "item": "h01",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q014",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer correctly states that the provided sources do not address consent as a basis for transfers without an adequacy decision.",
+      "notes": ""
+    },
+    {
+      "item": "h02",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q022",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer correctly states that the provided sources contain no information on Data Act obligations for manufacturers of connected objects.",
+      "notes": ""
+    },
+    {
+      "item": "h03",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q018",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles.",
+      "notes": ""
+    },
+    {
+      "item": "h04",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q012",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles, and the comment about sources not covering the specific scenario is accurate.",
+      "notes": ""
+    },
+    {
+      "item": "h05",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q008",
+      "human": 3,
+      "judge": 3,
+      "reason": "Most conditions are supported, but the claim of ten years experience is not found in the cited source, and confidentiality is not cited.",
+      "notes": "The claim that experts must possess at least ten years of professional experience (« et posséder au moins dix ans d'expérience professionnelle ») is completely absent"
+    },
+    {
+      "item": "h06",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q003",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited source.",
+      "notes": ""
+    },
+    {
+      "item": "h07",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q013",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer exactly matches the condition described in GDPR Art. 36 as cited in the source.",
+      "notes": ""
+    },
+    {
+      "item": "h08",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q021",
+      "human": 2,
+      "judge": 2,
+      "reason": "The answer misstates the fine percentage (5% instead of the 3% specified in the source), so the cited source does not support that claim.",
+      "notes": "The answer states that the fine cap is 5% of the provider's annual total worldwide turnover in the preceding financial year whereas [AIA-Art100] explicitly specifies 3% (\"not exceeding 3 % of their annual total worldwide turnover\" / \"n excédant pas 3 % de leur chiffre d affaires annuel mondial total\")."
+    },
+    {
+      "item": "h09",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q016",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited GDPR provisions.",
+      "notes": ""
+    },
+    {
+      "item": "h10",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q015",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer's statements are directly supported by GDPR-Art66 and GDPR-Rec136.",
+      "notes": ""
+    },
+    {
+      "item": "h11",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q003",
+      "human": 3,
+      "judge": 4,
+      "reason": "The answer accurately reflects Article 15(4) except for the added 'within 30 days' which is not mentioned in the source.",
+      "notes": "The timeframe added at the very end (\"within 30 days\") does not appear in [AIA-Art15-4] or in any of the other provided sources."
+    },
+    {
+      "item": "h12",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q016",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited GDPR article.",
+      "notes": ""
+    },
+    {
+      "item": "h13",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q015",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by GDPR Article 66(1).",
+      "notes": ""
+    },
+    {
+      "item": "h14",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q002",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited sources.",
+      "notes": ""
+    },
+    {
+      "item": "h15",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q016",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR article and the summary about source coverage is accurate.",
+      "notes": ""
+    },
+    {
+      "item": "h16",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q009",
+      "human": 4,
+      "judge": 4,
+      "reason": "All listed situations match Article 83(1) except the added 'within 30 days' for the registration, which is not stated in the source.",
+      "notes": ""
+    },
+    {
+      "item": "h17",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q008",
+      "human": 5,
+      "judge": 5,
+      "reason": "All claims are directly supported by the cited article AIA-Art68-2.",
+      "notes": ""
+    },
+    {
+      "item": "h18",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q014",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by GDPR Article 49(1).",
+      "notes": ""
+    },
+    {
+      "item": "h19",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q013",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles.",
+      "notes": ""
+    },
+    {
+      "item": "h20",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q012",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles.",
+      "notes": ""
+    },
+    {
+      "item": "h21",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q004",
+      "human": 1,
+      "judge": 1,
+      "reason": "The answer states a twelve‑month validity period, but the source specifies nine months.",
+      "notes": "Claims certificates remain valid for twelve months whereas [AIA-Art36-3] explicitly states nine months (though the accompanying condition is supported)"
+    },
+    {
+      "item": "h22",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q003",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited provisions of the AI Act.",
+      "notes": ""
+    },
+    {
+      "item": "h23",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q007",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements about who facilitates the drawing up of codes of practice and the deadline are directly supported by the provided sources.",
+      "notes": ""
+    },
+    {
+      "item": "h24",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q011",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by GDPR Art 14 source.",
+      "notes": ""
+    },
+    {
+      "item": "h25",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q018",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles.",
+      "notes": ""
+    },
+    {
+      "item": "h26",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q017",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by GDPR Article 79(2) as cited.",
+      "notes": ""
+    },
+    {
+      "item": "h27",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q020",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are consistent with the provided sources.",
+      "notes": ""
+    },
+    {
+      "item": "h28",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q006",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited EU AI Regulation sources.",
+      "notes": ""
+    },
+    {
+      "item": "h29",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q009",
+      "human": 5,
+      "judge": 5,
+      "reason": "All listed situations are directly stated in Article 83(1) of the AI Act.",
+      "notes": ""
+    },
+    {
+      "item": "h30",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q018",
+      "human": 3,
+      "judge": 3,
+      "reason": "The answer correctly cites liability for acting contrary to controller instructions, but incorrectly adds a €5,000,000 compensation cap not found in the cited source.",
+      "notes": "Core liability and compensation claims are supported by [GDPR-Art82] and [GDPR-Rec146] but the appended detail (\"capped at a maximum of 5000000 EUR per claim\") is unsupported."
+    },
+    {
+      "item": "h31",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q011",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by GDPR Article 14(3) as cited.",
+      "notes": ""
+    },
+    {
+      "item": "h32",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q001",
+      "human": 5,
+      "judge": 5,
+      "reason": "All claims are directly supported by the cited sources.",
+      "notes": ""
+    },
+    {
+      "item": "h33",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q012",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited GDPR articles and recitals.",
+      "notes": ""
+    },
+    {
+      "item": "h34",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q001",
+      "human": 3,
+      "judge": 4,
+      "reason": "Main claim is supported but the added detail about a 48‑hour limit is not in the source",
+      "notes": "The quote is from [AIA-Art5](1)(h)(i) but the injected timeframe (\"within 48 hours\") is unsupported by the sources."
+    },
+    {
+      "item": "h35",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q011",
+      "human": 1,
+      "judge": 2,
+      "reason": "The answer incorrectly states the maximum deadline as 15 days, while the source specifies it must not exceed one month; other cited details are supported.",
+      "notes": "States the maximum deadline is 15 days (\"15 jours\") whereas [GDPR-Art14-3](a) explicitly states one month (\"un mois\"). Also includes an unsupported meta-statement at the end."
+    },
+    {
+      "item": "h36",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q009",
+      "human": 4,
+      "judge": 4,
+      "reason": "All main claims are supported by the sources except the mention of a mandatory annual audit, which is not in the cited text.",
+      "notes": ""
+    },
+    {
+      "item": "h37",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q020",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited source and correctly note the lack of coverage on associations.",
+      "notes": ""
+    },
+    {
+      "item": "h38",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q008",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited articles.",
+      "notes": ""
+    },
+    {
+      "item": "h39",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q017",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by GDPR Article 79(2) and the meta‑statement about the sources is accurate.",
+      "notes": ""
+    },
+    {
+      "item": "h40",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q005",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are supported by the cited source and no contradictory information is present.",
+      "notes": ""
+    },
+    {
+      "item": "h41",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q001",
+      "human": 2,
+      "judge": 4,
+      "reason": "Main claim is supported, but the statement that sources do not cover point (h)(i) is inaccurate.",
+      "notes": "The second sentence directly contradicts [AIA-Art5-1](h)(i) which explicitly mentions trafficking in human beings."
+    },
+    {
+      "item": "h42",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q010",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the provided GDPR excerpts.",
+      "notes": ""
+    },
+    {
+      "item": "h43",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q013",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited GDPR articles.",
+      "notes": ""
+    },
+    {
+      "item": "h44",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q002",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited sources.",
+      "notes": ""
+    },
+    {
+      "item": "h45",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q019",
+      "human": 4,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited sources.",
+      "notes": "only a non-substantive disclaimer note is appended at the end"
+    },
+    {
+      "item": "h46",
+      "kind": "perturbed",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q007",
+      "human": 3,
+      "judge": 3,
+      "reason": "The answer correctly cites who facilitates the drawing-up of codes, but adds an unsupported claim about a 6‑month deadline.",
+      "notes": "The appended detail (\"though the initial draft must be submitted within 6 months\") is unsupported"
+    },
+    {
+      "item": "h47",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q006",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited articles, and the note about lack of coverage is accurate.",
+      "notes": ""
+    },
+    {
+      "item": "h48",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q002",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the provided source excerpts.",
+      "notes": ""
+    },
+    {
+      "item": "h49",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q005",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements are directly supported by the cited articles.",
+      "notes": ""
+    },
+    {
+      "item": "h50",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q005",
+      "human": 2,
+      "judge": 4,
+      "reason": "Main claim that the Commission can investigate is supported, but the added detail of a 48‑hour deadline for the notifying authority is not found in the sources.",
+      "notes": "The injected timeframe (\"dans un délai de 48 heures\") whereas the source states \"sans retard\" (\"without delay\")"
+    },
+    {
+      "item": "h51",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q019",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the provided AI Act source excerpts.",
+      "notes": ""
+    },
+    {
+      "item": "h52",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q010",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer's claim is fully supported by GDPR Article 3(2).",
+      "notes": ""
+    },
+    {
+      "item": "h53",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v2",
+      "id": "q010",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer's claim is fully supported by GDPR Article 3(2).",
+      "notes": ""
+    },
+    {
+      "item": "h54",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q014",
+      "human": 5,
+      "judge": 5,
+      "reason": "The answer's claim is directly stated in GDPR Article 49(1).",
+      "notes": ""
+    },
+    {
+      "item": "h55",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q015",
+      "human": 5,
+      "judge": 5,
+      "reason": "All claims are directly supported by GDPR Article 66(1).",
+      "notes": ""
+    },
+    {
+      "item": "h56",
+      "kind": "real",
+      "report": "hybrid-binding-dev-answer.v1",
+      "id": "q004",
+      "human": 5,
+      "judge": 5,
+      "reason": "All statements in the answer are directly supported by the cited source.",
+      "notes": ""
+    },
+    {
+      "item": "h57",
+      "kind": "real",
+      "report": "baseline-dev-plain",
+      "id": "q017",
+      "human": 5,
+      "judge": 5,
+      "reason": "All claims in the answer are directly stated in the GDPR Article 79 source.",
+      "notes": ""
+    },
+    {
+      "item": "h58",
+      "kind": "perturbed",
+      "report": "baseline-dev-plain",
+      "id": "q004",
+      "human": 2,
+      "judge": 1,
+      "reason": "The answer states a twelve‑month validity period, but the source specifies nine months.",
+      "notes": "Claims certificates remain valid for twelve months whereas [AIA-Art36] explicitly states nine months (\"neuf mois\")."
+    }
+  ]
+}
