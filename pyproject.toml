@@ -23,6 +23,7 @@ dependencies = [
 [project.optional-dependencies]
 local = ["sentence-transformers", "qdrant-client"]
 cloud = ["onnxruntime", "tokenizers", "qdrant-client"]
+ui = ["streamlit"]
 
 [dependency-groups]
 dev = [

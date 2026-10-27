@@ -20,12 +20,10 @@ import logging
 import os
 import subprocess
 import time
-from collections.abc import Callable
-from dataclasses import dataclass
 from datetime import UTC, datetime
 from functools import partial
 from pathlib import Path
-from typing import Any, Protocol
+from typing import Any
 
 from dotenv import load_dotenv
 
@@ -38,67 +36,10 @@ from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
 from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
-from actwise.retrieval.bm25 import BM25
-from actwise.retrieval.dense import CACHE_DIR, DenseRetriever, build_store
-from actwise.retrieval.embedders import BGE_M3, SentenceTransformerEmbedder
 from actwise.retrieval.hybrid import HybridRetriever
-from actwise.retrieval.naive import MAX_WORDS, OVERLAP, naive_passages
-from actwise.retrieval.passages import Hit, Passage, chunk_passages
-from actwise.retrieval.rerank import BGE_RERANKER, CrossEncoderReranker
+from actwise.retrieval.systems import SYSTEMS
 
 REPORTS = Path("evals/reports")
-
-
-class Retriever(Protocol):
-    config: dict[str, Any]
-
-    def search(self, query: str, top_k: int = 5) -> list[Hit]:
-        """The `top_k` best passages for the query, best first."""
-        ...
-
-
-def dense(passages: list[Passage]) -> DenseRetriever:
-    """Cosine search with the pinned BGE-M3 over cached passage vectors."""
-    embedder = SentenceTransformerEmbedder(*BGE_M3)
-    return DenseRetriever(passages, embedder, build_store(passages, embedder, CACHE_DIR))
-
-
-def hybrid(rerank: bool = False, binding_first: bool = False) -> HybridRetriever:
-    """Dense and BM25 over the structure-aware chunks, fused with RRF."""
-    passages = chunk_passages()
-    reranker = CrossEncoderReranker(*BGE_RERANKER) if rerank else None
-    return HybridRetriever(dense(passages), BM25(passages), reranker, binding_first=binding_first)
-
-
-@dataclass(frozen=True)
-class System:
-    description: str
-    build: Callable[[], Retriever]
-
-
-CHUNKS = "structure-aware chunks with their headers"
-SYSTEMS = {
-    "baseline": System(
-        f"Baseline: fixed {MAX_WORDS}-word windows ({OVERLAP} shared) ignoring "
-        "structure, dense BGE-M3, cosine similarity, no rerank",
-        lambda: dense(naive_passages()),
-    ),
-    "dense": System(f"A: {CHUNKS}, dense BGE-M3, no rerank", lambda: dense(chunk_passages())),
-    "bm25": System(f"B: {CHUNKS}, BM25 only, no rerank", lambda: BM25(chunk_passages())),
-    "hybrid": System(f"C: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, no rerank", hybrid),
-    "hybrid-rerank": System(
-        f"D: {CHUNKS}, dense BGE-M3 + BM25 fused with RRF, top 20 reranked by bge-reranker-v2-m3",
-        lambda: hybrid(rerank=True),
-    ),
-    "hybrid-binding": System(
-        "E: as C, with articles and annexes ranked before recitals",
-        lambda: hybrid(binding_first=True),
-    ),
-    "hybrid-rerank-binding": System(
-        "F: as D, with articles and annexes ranked before recitals",
-        lambda: hybrid(rerank=True, binding_first=True),
-    ),
-}
 
 
 def in_two_passes(hybrid: HybridRetriever, questions: list[Question]) -> tuple[SearchFn, float]:

@@ -84,12 +84,16 @@ class RagPipeline:
         """`prompt` is the system prompt text, such as `load_prompt("answer.v1")`."""
         self.llm, self.search, self.prompt = llm, search, prompt
 
-    def ask(self, question: str, lang: str) -> AskResult:
-        """Answer in `lang`, or refuse; an answer left with no valid citation is refused too."""
+    def ask(self, question: str, lang: str, deadline: float | None = None) -> AskResult:
+        """Answer in `lang`, or refuse; an answer left with no valid citation is refused too.
+
+        `deadline` (`time.monotonic()` seconds) bounds the model call, retries included.
+        """
         if looks_like_injection(question):
             return AskResult(refusal(lang), "injection", [], [], [], None)
         sources = sources_of(self.search(question, CONTEXT_PASSAGES), lang)
-        reply = self.llm.chat(build_messages(self.prompt, question, sources), temperature=0)
+        messages = build_messages(self.prompt, question, sources)
+        reply = self.llm.chat(messages, temperature=0, deadline=deadline)
         if is_refusal(reply.text):
             return AskResult(refusal(lang), "not_covered", [], [], sources, reply)
         retrieved = {s["id"] for s in sources}
