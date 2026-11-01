@@ -5,6 +5,33 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-10-28: Step 8, the API and the UI
+
+**Goal:** serve the cited answers and the classifier over HTTP, with cost guards, and add a small UI.
+**Branch:** `step-8-api`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/api/main.py` | `create_app()`: `/health`, `/search`, `/ask`, `/classify`, `/upload`, the API key, the daily cap, one deadline per request, and 503 when no model answers in time. Answers and classifications carry the disclaimer | The pipelines are injected, so the contract tests run on fakes |
+| `src/actwise/api/guards.py` | `DailyCap`: in memory, per instance, safe across threads | R6, decision 009 |
+| `src/actwise/ingest/files.py` | `extract_text()` for .txt, .md, .pdf and .docx, cut to the 8,000 characters of `/classify`. Readers yield their text piece by piece, and reading stops at the limit | `/upload`. A 2 MB, 880-page PDF took 15.6 s before the early stop and takes 0.12 s with it |
+| `src/actwise/api/app.py` | The wiring: serving profile, system E, `answer.v2` and the classifier; `make serve` | |
+| `src/actwise/llm/wrappers.py`, `factory.py` | `LLMUnavailable`. `Profile.max_wait`: a Retry-After above it (5 s serving, 60 s offline) skips the provider, without a request, until it has passed | Serving fails over instead of sleeping through a rate limit (found by `/simplify`); from the step 6a review: a spent quota costs no request |
+| `src/actwise/generation/rag.py`, `src/actwise/agent/classifier.py` | A `deadline` passed to every model call | R5, API side |
+| `src/actwise/retrieval/systems.py` | `SYSTEMS`, their builders, and `SERVED` (system E), moved from `evals/run_eval.py` | The API and both eval scripts pick the system by name |
+| `ui/app.py` | Streamlit: an Ask tab and a Classify tab (text or file), calling the API over HTTP. `make ui` stops uploads at 2 MB; `ui` extra | The API image stays without Streamlit |
+| `docs/decisions/009-api.md`, `docs/failure_cases.md` | The request deadline, the cap kept per instance, and the error codes. A question on the workplace emotion-recognition ban that retrieval missed | |
+
+**Results (local, Gemini 3.5 Flash-Lite):**
+- **Guards, live:** 401 without the key, 422 for bad input, 415 for a `.exe`, and 429 once `MAX_DAILY_REQUESTS` was reached. The tests also cover 413 and 503.
+- **Live:** `/ask` answered in English and French in 2–3 s, and three dev scenarios came back with their gold tiers in 1.4–2.8 s, as JSON, from a `.txt` and from a `.docx`. A PDF upload was classified in 2.7 s.
+- **UI:** both tabs ran against the live API in a Streamlit `AppTest` smoke run.
+- **Checks:** 226 tests pass, coverage is 95 %, and ruff and mypy are clean.
+
+**Next:** step 9 fine-tunes and shrinks the embedder, which the cloud profile needs.
+
+---
+
 ## 2026-10-27: Step 7, the risk classifier agent
 
 **Goal:** an agent that reads the AI Act before it decides, and cannot return a classification that is invalid or ungrounded.

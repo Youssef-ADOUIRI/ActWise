@@ -58,3 +58,21 @@ The classifier agent searched for "Article 6(1) safety component third party con
 The golden set never names its article (`tests/test_golden_set.py`), so the retrieval metrics don't measure this case.
 
 **Fix for the agent:** a `read_ai_act_article` tool returns an article or annex by id (decision 008). Routing "Article N" queries to the same lookup in the RAG pipeline is left for later.
+
+## Found in step 8: a ban worded differently from the question
+
+**What happened:** asked through the live API, "Is emotion recognition at work allowed?" was refused as not covered.
+
+**Where the answer is:** Art. 5(1)(f) bans AI systems "to infer emotions of a natural person in the areas of workplace and education institutions". That text sits in the window AIA-Art5-1#4, among the other banned practices.
+
+**What retrieval returned instead:**
+- the definition of an emotion recognition system (Art. 3(39));
+- Art. 50(3);
+- GDPR Art. 88(1) and 88(2);
+- Annex III(1).
+
+No part of Art. 5(1) came back. The question says "emotion recognition" and "work", while the ban says "infer emotions" and "workplace".
+
+**Why the refusal is correct:** none of the passages the model read answered the question, so it refused. That is the fail-closed behaviour we want.
+
+**Not yet measured:** the golden set has no question on Art. 5(1)(f), so the dev metrics miss this case. Add one before retrieval is tuned again.

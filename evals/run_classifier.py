@@ -15,15 +15,14 @@ from datetime import UTC, datetime
 from typing import Any
 
 from dotenv import load_dotenv
-from run_eval import SYSTEMS, fingerprint, git_commit, write_report
+from run_eval import fingerprint, git_commit, write_report
 
 from actwise.agent.classifier import CLASSIFY_PROMPT, ai_act_articles
 from actwise.evaluation.classifier_eval import classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import SCENARIOS_FILE, load_scenarios
 from actwise.llm.factory import OFFLINE, build_llm
 from actwise.retrieval.passages import paragraph_passages
-
-SYSTEM = "hybrid-binding"
+from actwise.retrieval.systems import SERVED, SYSTEMS
 
 
 def to_markdown(report: dict[str, Any]) -> str:
@@ -32,7 +31,7 @@ def to_markdown(report: dict[str, Any]) -> str:
     lines = [
         f"# Classifier report: {report['name']}",
         "",
-        f"Prompt `{report['prompt']}`, retrieval `{SYSTEM}`, split `{report['split']}`: "
+        f"Prompt `{report['prompt']}`, retrieval `{SERVED}`, split `{report['split']}`: "
         f"{s['n']} scenarios ({s['clear']} clear, {s['n'] - s['clear']} ambiguous).",
         "",
         "| Metric | Value |",
@@ -72,7 +71,7 @@ def main() -> None:
     llm = build_llm(os.environ, OFFLINE)
 
     scenarios = [s for s in load_scenarios() if s.split == args.split]
-    retriever = SYSTEMS[SYSTEM].build()
+    retriever = SYSTEMS[SERVED].build()
     articles = ai_act_articles(paragraph_passages())
     rows = classify_scenarios(llm, retriever.search, articles, scenarios)
     report = {

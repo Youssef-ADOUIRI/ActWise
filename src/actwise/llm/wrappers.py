@@ -28,6 +28,10 @@ MAX_RETRY_AFTER = 60.0  # a longer Retry-After means a spent quota, not a busy m
 RETRY_DELAY = re.compile(r"""['"]retryDelay['"]:\s*['"](\d+(?:\.\d+)?)s['"]""")
 
 
+class LLMUnavailable(RuntimeError):
+    """No answer: every provider failed, the deadline passed, or the quota is spent."""
+
+
 def retry_after(error: Exception) -> float:
     """The seconds a provider asks to wait, or 0 if it gives no hint.
 
@@ -91,14 +95,20 @@ class RetryingLLM:
         max_tries: int,
         base_delay: float,
         min_interval: float = 0.0,
+        max_wait: float = MAX_RETRY_AFTER,
         sleep: Callable[[float], None] = time.sleep,
         clock: Callable[[], float] = time.monotonic,
     ):
-        """`min_interval` keeps calls under a rate limit; `sleep` and `clock` are for tests."""
+        """Space calls by `min_interval`; a Retry-After over `max_wait` skips this provider.
+
+        `sleep` and `clock` are for tests.
+        """
         self.inner, self.config = inner, inner.config
         self.max_tries, self.base_delay, self.min_interval = max_tries, base_delay, min_interval
+        self.max_wait = max_wait
         self.sleep, self.clock = sleep, clock
         self._last = float("-inf")  # start of the previous call: the first call never waits
+        self._blocked_until = float("-inf")  # a spent quota: no call before this time
 
     def chat(
         self,
@@ -111,8 +121,12 @@ class RetryingLLM:
         """Ask `inner`; retry a RETRYABLE status while tries remain and the wait fits the deadline.
 
         Before each try, wait for the longest of the backoff, the provider's Retry-After
-        and the rate-limit interval. A Retry-After above `MAX_RETRY_AFTER` raises at once.
+        and the rate-limit interval. A Retry-After above `max_wait` raises at once, and
+        until it has passed every call raises without a request, so a fallback chain goes
+        straight to the next provider.
         """
+        if (blocked := self._blocked_until - self.clock()) > 0:
+            raise LLMUnavailable(f"rate-limited: no call for another {blocked:.0f} s")
         error: Exception | None = None
         hint = 0.0  # the provider's Retry-After after the last failure
         for attempt in range(self.max_tries):
@@ -129,7 +143,8 @@ class RetryingLLM:
                 if getattr(exc, "status_code", None) not in RETRYABLE:
                     raise
                 hint = retry_after(exc)
-                if hint > MAX_RETRY_AFTER:  # waiting can't help: keep the tries for later
+                if hint > self.max_wait:  # not worth waiting: skip this provider until then
+                    self._blocked_until = self.clock() + hint
                     raise
                 error = exc
         raise error or TimeoutError("the deadline passed before the first try")
@@ -162,11 +177,11 @@ class FallbackLLM:
         last: Exception | None = None
         for provider in self.providers:
             if deadline is not None and self.clock() >= deadline:
-                raise RuntimeError("no LLM provider answered before the deadline") from last
+                raise LLMUnavailable("no LLM provider answered before the deadline") from last
             try:
                 return provider.chat(messages, tools, temperature, max_tokens, deadline=deadline)
             except Exception as exc:  # any failure moves on to the next provider
                 name = f"{provider.config['provider']}/{provider.config['model']}"
                 log.warning("LLM %s failed, trying the next provider: %r", name, exc)
                 last = exc
-        raise RuntimeError("no LLM provider answered") from last
+        raise LLMUnavailable("no LLM provider answered") from last
