@@ -60,11 +60,13 @@ def tool_messages(llm, call):
 def test_happy_path():
     """Search then submit: the result is returned, and the search reached the model."""
     llm = ScriptedLLM(reply(SEARCH), reply(submit()))
+    description = "A city scores residents' trustworthiness."
 
-    outcome = classify(llm, search, articles, "A city scores residents' trustworthiness.")
+    outcome = classify(llm, search, articles, description, deadline=42.0)
 
     assert outcome.result.tier == "prohibited"
     assert (outcome.steps, outcome.lookups) == (2, 1)
+    assert [call["deadline"] for call in llm.calls] == [42.0, 42.0]  # one per request (R5)
     [found] = tool_messages(llm, 1)
     assert found.startswith("[AIA-Art5-1]\n") and "[AIA-Art50-1]" in found
     assert "GDPR" not in found

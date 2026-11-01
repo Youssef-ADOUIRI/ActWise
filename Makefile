@@ -1,5 +1,5 @@
 .PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet eval-classifier serve deploy
+	candidates label-sheet eval-classifier serve ui deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -60,8 +60,14 @@ eval: eval-retrieval
 llm-smoke:
 	uv run python -m actwise.llm.smoke
 
+# The API on http://localhost:8000 (try it at /docs). BGE-M3 takes about 2 GB of RAM.
 serve:
-	@echo "TODO step 8: uv run uvicorn actwise.api.app:app --reload"
+	uv run --extra local uvicorn actwise.api.app:app --port 8000
+
+# The Streamlit UI; it calls the API at ACTWISE_API_URL, so start `make serve` first.
+# Uploads stop at 2 MB, the API's limit, before they are sent.
+ui:
+	uv run --extra ui streamlit run ui/app.py --server.maxUploadSize 2
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"

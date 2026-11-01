@@ -44,13 +44,15 @@ def test_unknown_provider_fails_loudly():
 
 
 def test_serving_profile_fails_over_fast():
-    """Serving: 2 tries, no throttle, a budget, fallback; offline: throttled, one provider (R5)."""
+    """Serving: 2 tries, no throttle, short waits, a budget, fallback; offline: one model (R5)."""
     serving, offline = build_llm(ENV, SERVING).inner, build_llm(ENV, OFFLINE).inner
 
     assert serving.budget == SERVING.budget
-    assert [(p.max_tries, p.min_interval) for p in serving.providers] == [(2, 0.0)] * 3
+    assert [(p.max_tries, p.min_interval, p.max_wait) for p in serving.providers] == [
+        (2, 0.0, 5.0)
+    ] * 3
     assert offline.budget is None
-    assert [p.min_interval for p in offline.providers] == [4.0]  # an eval run is one model
+    assert [(p.min_interval, p.max_wait) for p in offline.providers] == [(4.0, 60.0)]
 
 
 def test_config_never_holds_a_key():

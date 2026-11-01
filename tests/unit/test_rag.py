@@ -49,6 +49,15 @@ def test_rag_refuses_in_user_language(reply):
     assert (result.refused, result.reason, result.citations) == (True, "not_covered", [])
 
 
+def test_the_request_deadline_reaches_the_model():
+    """The caller's deadline goes to the model call, so one request has one time budget (R5)."""
+    rag, llm = pipeline("It is high-risk [AIA-Art6-2].")
+
+    rag.ask("Is a CV-screening tool high-risk?", "en", deadline=42.0)
+
+    assert llm.calls[0]["deadline"] == 42.0
+
+
 def test_an_answer_without_a_valid_citation_is_refused():
     """With every citation invented (or none at all), nothing backs the answer: refused."""
     result = pipeline("Fines apply [GDPR-Art83-5].")[0].ask("What are the fines?", "en")
