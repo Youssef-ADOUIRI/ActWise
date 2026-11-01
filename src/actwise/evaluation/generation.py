@@ -1,4 +1,4 @@
-"""Scores for a set of answers: invented citations, refusals, citation precision, faithfulness.
+"""Scores for a set of answers: refusals, citations, gold articles in context, faithfulness.
 
 Each row is one answered question (see `evaluation/answers.py`); rows with a `judge`
 verdict also get faithfulness and lenient citation precision.
@@ -27,6 +27,10 @@ def summarise_answers(rows: list[dict[str, Any]]) -> dict[str, Any]:
     answered = [r for r in rows if not r["refused"]]
     judged = [r for r in answered if (r.get("judge") or {}).get("score") is not None]
     strict = [article_id(c) in r["gold"] for r in in_scope for c in r["citations"]]
+    gold_in_context = [
+        any(article_id(s["id"]) in r["gold"] for s in r["sources"]) for r in in_scope
+    ]
+    gold_cited = [any(article_id(c) in r["gold"] for c in r["citations"]) for r in in_scope]
     lenient = [c not in r["judge"]["unsupported"] for r in judged for c in r["citations"]]
     faithfulness = [(r["judge"]["score"] - 1) / 4 for r in judged]
     return {
@@ -41,6 +45,9 @@ def summarise_answers(rows: list[dict[str, Any]]) -> dict[str, Any]:
             1 for r in rows for c in r["invented"] if c in extract_citations(r["answer"])
         ),
         "citation_precision_strict": share(strict),
+        # per in-scope question: did the model read a gold article, and did it cite one?
+        "gold_in_context": share(gold_in_context),
+        "gold_cited": share(gold_cited),
         "citation_precision_lenient": share(lenient),
         "faithfulness": share(faithfulness),
         # score 5: no unsupported claim at all, where judge and humans agree best (kappa 0.95)
