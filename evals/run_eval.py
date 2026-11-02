@@ -36,12 +36,19 @@ from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
 from actwise.generation.context import MAX_REFERENCES, ParagraphContext
 from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
+from actwise.generation.rewrite import REWRITE_PROMPT
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
 from actwise.retrieval.hybrid import HybridRetriever
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SYSTEMS
 
 REPORTS = Path("evals/reports")
+CONTEXTS: dict[str, dict[str, Any] | None] = {  # step 8b, one phase per entry
+    "windows": None,
+    "paragraphs": {},
+    "references": {"max_references": MAX_REFERENCES},
+    "rewrite": {"max_references": MAX_REFERENCES, "main_paragraphs": True},
+}
 
 
 def in_two_passes(hybrid: HybridRetriever, questions: list[Question]) -> tuple[SearchFn, float]:
@@ -108,10 +115,10 @@ def main() -> None:
     parser.add_argument("--judge", action="store_true", help="score the answers (with --prompt)")
     parser.add_argument(
         "--context",
-        choices=["windows", "paragraphs", "references"],
+        choices=CONTEXTS,
         default="windows",
-        help="what the model reads: the top windows, whole paragraphs, or whole paragraphs "
-        "and the units they name (step 8b)",
+        help="what the model reads (step 8b): the top windows; whole paragraphs; plus the "
+        "units they name; plus rewritten queries and each article's first paragraph",
     )
     args = parser.parse_args()
     if args.judge and not args.prompt:
@@ -159,20 +166,20 @@ def main() -> None:
 
     markdown = to_markdown(report)
     if llm is not None:
-        context = None
-        if args.context != "windows":
-            references = MAX_REFERENCES if args.context == "references" else 0
-            context = ParagraphContext(paragraph_passages(), max_references=references)
+        options = CONTEXTS[args.context]
+        context = None if options is None else ParagraphContext(paragraph_passages(), **options)
+        rewrite = load_prompt(REWRITE_PROMPT) if args.context == "rewrite" else None
         ask: Ask = (
             partial(plain_ask, llm, retriever.search)
             if args.prompt == "plain"
-            else RagPipeline(llm, retriever.search, load_prompt(args.prompt), context).ask
+            else RagPipeline(llm, retriever.search, load_prompt(args.prompt), context, rewrite).ask
         )
         rows = answer_questions(ask, questions, judge)
         cache = {"answers": [llm.hits, llm.misses], "judge": judge and [judge.hits, judge.misses]}
         answers = {
             "prompt": args.prompt,
             "context": args.context,
+            "rewrite": REWRITE_PROMPT if rewrite else None,
             "judge": judge and {**judge.config, "prompt": JUDGE_PROMPT},
             "summary": summarise_answers(rows) | {"cache_hits_misses": cache},
             "by_source": by_source(rows),

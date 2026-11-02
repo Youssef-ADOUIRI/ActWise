@@ -10,8 +10,10 @@ from dataclasses import dataclass
 from actwise.generation.citations import extract_citations, invented_citations, strip_citations
 from actwise.generation.context import ParagraphContext
 from actwise.generation.guardrails import looks_like_injection, redact_pii
+from actwise.generation.rewrite import rewrite_queries
 from actwise.ids import human_label, paragraph_id
 from actwise.llm.base import LLM, LLMResponse, Message
+from actwise.retrieval.fusion import fuse_hits
 from actwise.retrieval.passages import Hit
 
 log = logging.getLogger(__name__)
@@ -82,27 +84,44 @@ class RagPipeline:
     """Retrieve, answer with a versioned prompt, and keep only the citations that were retrieved."""
 
     def __init__(
-        self, llm: LLM, search: Search, prompt: str, context: ParagraphContext | None = None
+        self,
+        llm: LLM,
+        search: Search,
+        prompt: str,
+        context: ParagraphContext | None = None,
+        rewrite: str | None = None,
     ):
         """`prompt` is the system prompt text, such as `load_prompt("answer.v1")`.
 
         `context` turns the ranked windows into whole paragraphs; without it the model
-        reads the top CONTEXT_PASSAGES windows as they are.
+        reads the top CONTEXT_PASSAGES windows as they are. `rewrite` (a prompt text, with
+        a context only) adds searches for queries in the law's words, fused with the
+        question's own.
         """
-        self.llm, self.search, self.prompt, self.context = llm, search, prompt, context
+        if rewrite is not None and context is None:
+            raise ValueError("a rewrite needs a paragraph context")
+        self.llm, self.search, self.prompt = llm, search, prompt
+        self.context, self.rewrite = context, rewrite
+
+    def retrieve(self, question: str, lang: str, deadline: float | None = None) -> list[Hit]:
+        """What the model reads: the top windows, or whole paragraphs found by every query."""
+        if self.context is None:
+            return self.search(question, CONTEXT_PASSAGES)
+        rankings = [self.search(question, self.context.pool)]
+        if self.rewrite is not None:
+            queries = rewrite_queries(self.llm, self.rewrite, question, deadline)
+            rankings += [self.search(query, self.context.pool) for query in queries]
+        hits = fuse_hits(rankings) if len(rankings) > 1 else rankings[0]
+        return self.context.select(hits, lang)
 
     def ask(self, question: str, lang: str, deadline: float | None = None) -> AskResult:
         """Answer in `lang`, or refuse; an answer left with no valid citation is refused too.
 
-        `deadline` (`time.monotonic()` seconds) bounds the model call, retries included.
+        `deadline` (`time.monotonic()` seconds) bounds the model calls, retries included.
         """
         if looks_like_injection(question):
             return AskResult(refusal(lang), "injection", [], [], [], None)
-        if self.context is None:
-            hits = self.search(question, CONTEXT_PASSAGES)
-        else:
-            hits = self.context.select(self.search(question, self.context.pool), lang)
-        sources = sources_of(hits, lang)
+        sources = sources_of(self.retrieve(question, lang, deadline), lang)
         messages = build_messages(self.prompt, question, sources)
         reply = self.llm.chat(messages, temperature=0, deadline=deadline)
         if is_refusal(reply.text):

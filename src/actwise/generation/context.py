@@ -38,14 +38,17 @@ class ParagraphContext:
         word_budget: int = WORD_BUDGET,
         pool: int = POOL,
         max_references: int = 0,
+        main_paragraphs: bool = False,
     ):
         """`paragraphs` holds every paragraph in each language, as `paragraph_passages()` gives.
 
         With `max_references`, up to that many units named by the chosen paragraphs follow.
+        With `main_paragraphs`, a later paragraph of an article brings the article's first
+        one, which usually states the rule that the others qualify.
         """
         self.paragraphs = {(p.id, p.lang): p for p in paragraphs}
         self.max_paragraphs, self.word_budget, self.pool = max_paragraphs, word_budget, pool
-        self.max_references = max_references
+        self.max_references, self.main_paragraphs = max_references, main_paragraphs
 
     def references(self, pid: str) -> list[str]:
         """The annex units and same-article paragraphs that paragraph `pid` names, in order."""
@@ -69,7 +72,8 @@ class ParagraphContext:
     def select(self, hits: Sequence[Hit], lang: str) -> list[Hit]:
         """The paragraphs of `hits`, best first: one copy each, in `lang` when it has one.
 
-        Then the units they name, up to `max_references`, as long as the budget allows.
+        Then their articles' first paragraphs (with `main_paragraphs`) and the units they
+        name (up to `max_references`), as long as the budget allows.
         """
         chosen: list[Hit] = []
         seen: set[str] = set()
@@ -92,7 +96,13 @@ class ParagraphContext:
                 break
             if (pid := paragraph_id(hit.id)) not in seen:
                 add(pid, hit.lang, hit.score)
-        named = [ref for hit in list(chosen) for ref in self.references(hit.id)]
+        ranked = list(chosen)
+        if self.main_paragraphs:
+            for hit in ranked:
+                first = f"{article_id(hit.id)}-1"
+                if "-Art" in hit.id and first not in seen and (first, "en") in self.paragraphs:
+                    add(first, "en", 0.0)
+        named = [ref for hit in ranked for ref in self.references(hit.id)]
         added = 0
         for ref in named:
             if added == self.max_references:
