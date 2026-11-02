@@ -40,6 +40,7 @@ def summarise_answers(rows: list[dict[str, Any]]) -> dict[str, Any]:
         "refusal_rate": share([r["refused"] for r in out_of_scope]),
         "false_refusal_rate": share([r["refused"] for r in in_scope]),
         "refusal_reasons": dict(Counter(r["reason"] for r in rows if r["refused"])),
+        "retried": sum(1 for r in rows if r.get("retried")),  # refused once, rewritten (step 8b)
         "invented_citations": sum(len(r["invented"]) for r in rows),
         "invented_shown": sum(
             1 for r in rows for c in r["invented"] if c in extract_citations(r["answer"])

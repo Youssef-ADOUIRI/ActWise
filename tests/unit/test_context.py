@@ -71,7 +71,7 @@ def test_main_paragraphs_bring_an_article_s_first_paragraph():
     hits = [window("AIA-Art2-3"), window("AIA-AnnexIII-5")]
 
     plain = ParagraphContext(paragraphs).select(hits, "en")
-    main = ParagraphContext(paragraphs, main_paragraphs=True).select(hits, "en")
+    main = ParagraphContext(paragraphs).select(hits, "en", main_paragraphs=True)
 
     assert [hit.id for hit in plain] == ["AIA-Art2-3", "AIA-AnnexIII-5"]
     assert [hit.id for hit in main] == ["AIA-Art2-3", "AIA-AnnexIII-5", "AIA-Art2-1"]
