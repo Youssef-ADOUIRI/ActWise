@@ -1,7 +1,7 @@
 {
   "name": "phase3r-dev",
-  "created": "2026-11-02T10:50:12+00:00",
-  "git_commit": "80a1ba8",
+  "created": "2026-11-02T10:52:57+00:00",
+  "git_commit": "30de6c3",
   "split": "dev",
   "system": {
     "name": "hybrid-binding",
@@ -46,7 +46,7 @@
     "recall@20": 0.9868,
     "mrr@10": 0.8776,
     "ndcg@10": 0.8987,
-    "ms_per_query": 206.9
+    "ms_per_query": 178.9
   },
   "ci95": {
     "recall@5": [
@@ -2290,7 +2290,15 @@
     "prompt": "answer.v2",
     "context": "rewrite",
     "rewrite": "rewrite.v1",
-    "judge": null,
+    "judge": {
+      "fallback": [
+        {
+          "provider": "groq",
+          "model": "openai/gpt-oss-120b"
+        }
+      ],
+      "prompt": "judge.v1"
+    },
     "summary": {
       "n": 88,
       "in_scope": 76,
@@ -2306,11 +2314,14 @@
       "citation_precision_strict": 0.9029,
       "gold_in_context": 0.9737,
       "gold_cited": 0.9737,
-      "citation_precision_lenient": null,
-      "faithfulness": null,
-      "fully_supported": null,
-      "faithfulness_ci95": null,
-      "judged": 0,
+      "citation_precision_lenient": 0.9612,
+      "faithfulness": 0.977,
+      "fully_supported": 0.9474,
+      "faithfulness_ci95": [
+        0.9441,
+        0.9967
+      ],
+      "judged": 76,
       "judge_failed": 0,
       "uncited_sentences": 0.7,
       "models": {
@@ -2323,7 +2334,10 @@
           116,
           0
         ],
-        "judge": null
+        "judge": [
+          32,
+          44
+        ]
       }
     },
     "by_source": {
@@ -2342,11 +2356,14 @@
         "citation_precision_strict": 0.8333,
         "gold_in_context": 0.95,
         "gold_cited": 0.95,
-        "citation_precision_lenient": null,
-        "faithfulness": null,
-        "fully_supported": null,
-        "faithfulness_ci95": null,
-        "judged": 0,
+        "citation_precision_lenient": 1.0,
+        "faithfulness": 1.0,
+        "fully_supported": 1.0,
+        "faithfulness_ci95": [
+          1.0,
+          1.0
+        ],
+        "judged": 20,
         "judge_failed": 0,
         "uncited_sentences": 1.05,
         "models": {
@@ -2368,11 +2385,14 @@
         "citation_precision_strict": 0.8571,
         "gold_in_context": 0.8,
         "gold_cited": 0.8,
-        "citation_precision_lenient": null,
-        "faithfulness": null,
-        "fully_supported": null,
-        "faithfulness_ci95": null,
-        "judged": 0,
+        "citation_precision_lenient": 1.0,
+        "faithfulness": 1.0,
+        "fully_supported": 1.0,
+        "faithfulness_ci95": [
+          1.0,
+          1.0
+        ],
+        "judged": 5,
         "judge_failed": 0,
         "uncited_sentences": 1.6,
         "models": {
@@ -2396,11 +2416,14 @@
         "citation_precision_strict": 0.9394,
         "gold_in_context": 1.0,
         "gold_cited": 1.0,
-        "citation_precision_lenient": null,
-        "faithfulness": null,
-        "fully_supported": null,
-        "faithfulness_ci95": null,
-        "judged": 0,
+        "citation_precision_lenient": 0.9394,
+        "faithfulness": 0.9657,
+        "fully_supported": 0.9216,
+        "faithfulness_ci95": [
+          0.9167,
+          0.9951
+        ],
+        "judged": 51,
         "judge_failed": 0,
         "uncited_sentences": 0.47,
         "models": {
@@ -2463,7 +2486,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2237,
         "output_tokens": 114,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q002",
@@ -2517,7 +2545,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1172,
         "output_tokens": 128,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q003",
@@ -2588,7 +2621,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1759,
         "output_tokens": 96,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims in the answer are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q004",
@@ -2641,7 +2679,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1133,
         "output_tokens": 66,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims in the answer are directly stated in the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q005",
@@ -2695,7 +2738,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1066,
         "output_tokens": 102,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source and the interpretation about lack of coverage is consistent with the sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q006",
@@ -2755,7 +2803,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 769,
         "output_tokens": 107,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q007",
@@ -2814,7 +2867,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1216,
         "output_tokens": 96,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source, and the answer correctly notes the lack of deadline information.",
+          "unsupported": []
+        }
       },
       {
         "id": "q008",
@@ -2873,7 +2931,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1238,
         "output_tokens": 195,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source AIA-Art68-2.",
+          "unsupported": []
+        }
       },
       {
         "id": "q009",
@@ -2926,7 +2989,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 694,
         "output_tokens": 196,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All listed situations are directly stated in Article 83(1) of the AI Act.",
+          "unsupported": []
+        }
       },
       {
         "id": "q010",
@@ -2985,7 +3053,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1456,
         "output_tokens": 75,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is fully supported by GDPR Article 3(2) as cited.",
+          "unsupported": []
+        }
       },
       {
         "id": "q011",
@@ -3039,7 +3112,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1589,
         "output_tokens": 277,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q012",
@@ -3105,7 +3183,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2594,
         "output_tokens": 151,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles, and the comment about source coverage is accurate.",
+          "unsupported": []
+        }
       },
       {
         "id": "q013",
@@ -3165,7 +3248,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1083,
         "output_tokens": 187,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q014",
@@ -3224,7 +3312,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1279,
         "output_tokens": 92,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is directly supported by GDPR Article 49(1).",
+          "unsupported": []
+        }
       },
       {
         "id": "q015",
@@ -3284,7 +3377,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2172,
         "output_tokens": 126,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q016",
@@ -3337,7 +3435,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1266,
         "output_tokens": 85,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited GDPR article, and the statement about lack of other steps is consistent with the sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q017",
@@ -3396,7 +3499,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1899,
         "output_tokens": 163,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by GDPR Article 79(2) and no citation is contradicted.",
+          "unsupported": []
+        }
       },
       {
         "id": "q018",
@@ -3450,7 +3558,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 610,
         "output_tokens": 108,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q019",
@@ -3523,7 +3636,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 980,
         "output_tokens": 183,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited AI Act provisions, and the claim about GDPR is accurate given the sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q020",
@@ -3584,7 +3702,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2135,
         "output_tokens": 203,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited sources and the disclaimer about missing coverage is accurate.",
+          "unsupported": []
+        }
       },
       {
         "id": "q021",
@@ -3759,7 +3882,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 853,
         "output_tokens": 93,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly stated in the cited source AIA-Art15-5.",
+          "unsupported": []
+        }
       },
       {
         "id": "q052",
@@ -3825,7 +3953,14 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1933,
         "output_tokens": 165,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 4,
+          "reason": "Main claim about required measures is supported by GDPR-Art22-3, but the citation of GDPR-Art22-2 does not support that claim.",
+          "unsupported": [
+            "GDPR-Art22-2"
+          ]
+        }
       },
       {
         "id": "q053",
@@ -3880,7 +4015,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1302,
         "output_tokens": 705,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q054",
@@ -3939,7 +4079,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1775,
         "output_tokens": 160,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims in the answer are directly supported by GDPR Article 30(5).",
+          "unsupported": []
+        }
       },
       {
         "id": "q055",
@@ -3992,7 +4137,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 961,
         "output_tokens": 257,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All listed situations are directly stated in source AIA-Art83-1.",
+          "unsupported": []
+        }
       },
       {
         "id": "q056",
@@ -4057,7 +4207,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1374,
         "output_tokens": 74,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer accurately reflects the limitation to obligations in Article 53 as stated in the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q057",
@@ -4128,7 +4283,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2356,
         "output_tokens": 44,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer directly reflects the statement in source AIA-Art77-2.",
+          "unsupported": []
+        }
       },
       {
         "id": "q058",
@@ -4181,7 +4341,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1130,
         "output_tokens": 233,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by GDPR Article 49(1) as provided.",
+          "unsupported": []
+        }
       },
       {
         "id": "q059",
@@ -4246,7 +4411,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1506,
         "output_tokens": 103,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is directly supported by GDPR Article 80(2).",
+          "unsupported": []
+        }
       },
       {
         "id": "q060",
@@ -4299,7 +4469,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 701,
         "output_tokens": 36,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim about the three‑month deadline is directly stated in GDPR Art 78(2).",
+          "unsupported": []
+        }
       },
       {
         "id": "q061",
@@ -4353,7 +4528,14 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 877,
         "output_tokens": 103,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 1,
+          "reason": "The answer incorrectly claims the sources do not indicate what information must be provided, contradicting Article 37(2) which does specify that the notifying authority must provide all useful information on request.",
+          "unsupported": [
+            "AIA-Art37-2"
+          ]
+        }
       },
       {
         "id": "q062",
@@ -4407,7 +4589,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1186,
         "output_tokens": 314,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited articles of the AI Regulation.",
+          "unsupported": []
+        }
       },
       {
         "id": "q063",
@@ -4472,7 +4659,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1709,
         "output_tokens": 59,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q064",
@@ -4525,7 +4717,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 717,
         "output_tokens": 78,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is fully supported by GDPR Article 86.",
+          "unsupported": []
+        }
       },
       {
         "id": "q065",
@@ -4578,7 +4775,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 936,
         "output_tokens": 64,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q066",
@@ -4650,7 +4852,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1298,
         "output_tokens": 118,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly stated in the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q067",
@@ -4712,7 +4919,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1015,
         "output_tokens": 230,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q068",
@@ -4765,7 +4977,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 880,
         "output_tokens": 54,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is directly stated in the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q069",
@@ -4837,7 +5054,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1962,
         "output_tokens": 375,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q070",
@@ -4908,7 +5130,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2420,
         "output_tokens": 166,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source AIA-Art49-4.",
+          "unsupported": []
+        }
       },
       {
         "id": "q071",
@@ -4967,7 +5194,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1169,
         "output_tokens": 51,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source GDPR-Art66-1.",
+          "unsupported": []
+        }
       },
       {
         "id": "q072",
@@ -5032,7 +5264,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1461,
         "output_tokens": 51,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer exactly matches the statement in GDPR Article 36(4) and the citation is correct.",
+          "unsupported": []
+        }
       },
       {
         "id": "q073",
@@ -5091,7 +5328,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2220,
         "output_tokens": 197,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by GDPR Art22-2, and no citation is unsupported.",
+          "unsupported": []
+        }
       },
       {
         "id": "q074",
@@ -5156,7 +5398,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1438,
         "output_tokens": 281,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All listed items are directly stated in GDPR Article 30(1).",
+          "unsupported": []
+        }
       },
       {
         "id": "q075",
@@ -5215,7 +5462,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1373,
         "output_tokens": 79,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source",
+          "unsupported": []
+        }
       },
       {
         "id": "q076",
@@ -5268,7 +5520,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 858,
         "output_tokens": 42,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly stated in the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q077",
@@ -5333,7 +5590,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1700,
         "output_tokens": 82,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer accurately reflects the content of Article 77(3) and adds no unsupported claims.",
+          "unsupported": []
+        }
       },
       {
         "id": "q078",
@@ -5392,7 +5654,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1481,
         "output_tokens": 19,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer exactly matches the statement in GDPR-Art49-5.",
+          "unsupported": []
+        }
       },
       {
         "id": "q079",
@@ -5457,7 +5724,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1290,
         "output_tokens": 91,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by GDPR Article 79(2).",
+          "unsupported": []
+        }
       },
       {
         "id": "q080",
@@ -5516,7 +5788,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1763,
         "output_tokens": 76,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is fully supported by GDPR Article 80(1).",
+          "unsupported": []
+        }
       },
       {
         "id": "q081",
@@ -5581,7 +5858,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1112,
         "output_tokens": 50,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer directly matches the statement in GDPR Article 78(4).",
+          "unsupported": []
+        }
       },
       {
         "id": "q082",
@@ -5634,7 +5916,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 902,
         "output_tokens": 125,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited source AIA-Art68-3.",
+          "unsupported": []
+        }
       },
       {
         "id": "q083",
@@ -5687,7 +5974,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 815,
         "output_tokens": 40,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer is fully supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q084",
@@ -5746,7 +6038,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1083,
         "output_tokens": 76,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims in the answer are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q085",
@@ -5799,7 +6096,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 920,
         "output_tokens": 86,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q086",
@@ -5853,7 +6155,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 921,
         "output_tokens": 192,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited sources.",
+          "unsupported": []
+        }
       },
       {
         "id": "q087",
@@ -5906,7 +6213,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 604,
         "output_tokens": 70,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer exactly reflects the content of GDPR Article 82(5) and is fully supported.",
+          "unsupported": []
+        }
       },
       {
         "id": "q088",
@@ -5961,7 +6273,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 619,
         "output_tokens": 87,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "q089",
@@ -6014,7 +6331,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2111,
         "output_tokens": 292,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All listed elements are directly stated in GDPR Article 23(2) and correctly cited.",
+          "unsupported": []
+        }
       },
       {
         "id": "q090",
@@ -6073,7 +6395,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1048,
         "output_tokens": 70,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer directly matches the statement in source AIA-Art49-2.",
+          "unsupported": []
+        }
       },
       {
         "id": "q091",
@@ -6144,7 +6471,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1425,
         "output_tokens": 84,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim about the two‑week deadline and simple majority is directly stated in GDPR‑Art66‑4.",
+          "unsupported": []
+        }
       },
       {
         "id": "q092",
@@ -6203,7 +6535,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1073,
         "output_tokens": 73,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer exactly matches the statement in GDPR-Art36-1 and the citation is appropriate.",
+          "unsupported": []
+        }
       },
       {
         "id": "q093",
@@ -6262,7 +6599,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1461,
         "output_tokens": 88,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q094",
@@ -6327,7 +6669,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1476,
         "output_tokens": 47,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is directly stated in GDPR Article 22(1).",
+          "unsupported": []
+        }
       },
       {
         "id": "q095",
@@ -6380,7 +6727,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1499,
         "output_tokens": 397,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims in the answer are directly supported by GDPR Article 14(2) as provided.",
+          "unsupported": []
+        }
       },
       {
         "id": "q096",
@@ -6439,7 +6791,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1457,
         "output_tokens": 45,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements in the answer are directly supported by GDPR Article 30(4).",
+          "unsupported": []
+        }
       },
       {
         "id": "q097",
@@ -6511,7 +6868,14 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2660,
         "output_tokens": 93,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 4,
+          "reason": "The main claim about confidentiality obligations is supported by Article 77(4), but the citation of Article 77(1) does not support that specific statement.",
+          "unsupported": [
+            "AIA-Art77-1"
+          ]
+        }
       },
       {
         "id": "q098",
@@ -6564,7 +6928,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1298,
         "output_tokens": 615,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by GDPR Article 49(1) as provided.",
+          "unsupported": []
+        }
       },
       {
         "id": "q099",
@@ -6617,7 +6986,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 802,
         "output_tokens": 58,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "The answer's claim is directly stated in the cited source GDPR-Art78-1.",
+          "unsupported": []
+        }
       },
       {
         "id": "q100",
@@ -6671,7 +7045,14 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 894,
         "output_tokens": 99,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 4,
+          "reason": "Main claim is supported by AIA-Art68-5, but citation of AIA-Art68-1 does not back the specific detail.",
+          "unsupported": [
+            "AIA-Art68-1"
+          ]
+        }
       },
       {
         "id": "q101",
@@ -6724,7 +7105,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 795,
         "output_tokens": 72,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited source.",
+          "unsupported": []
+        }
       },
       {
         "id": "q161",
@@ -7453,7 +7839,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 680,
         "output_tokens": 89,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR article.",
+          "unsupported": []
+        }
       },
       {
         "id": "h016",
@@ -7526,7 +7917,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 1974,
         "output_tokens": 297,
-        "retried": true
+        "retried": true,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR articles.",
+          "unsupported": []
+        }
       },
       {
         "id": "h017",
@@ -7585,7 +7981,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 997,
         "output_tokens": 154,
-        "retried": true
+        "retried": true,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited articles of the AI Act.",
+          "unsupported": []
+        }
       },
       {
         "id": "h018",
@@ -7644,7 +8045,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 829,
         "output_tokens": 111,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All claims are directly supported by the cited source and the statement about lack of coverage is accurate.",
+          "unsupported": []
+        }
       },
       {
         "id": "h019",
@@ -7703,7 +8109,12 @@
         "model": "gemini-3.5-flash-lite",
         "input_tokens": 2166,
         "output_tokens": 98,
-        "retried": false
+        "retried": false,
+        "judge": {
+          "score": 5,
+          "reason": "All statements are directly supported by the cited GDPR article and the observation about source coverage is accurate.",
+          "unsupported": []
+        }
       }
     ]
   }
