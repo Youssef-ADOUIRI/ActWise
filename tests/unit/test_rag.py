@@ -2,6 +2,7 @@ import logging
 
 import pytest
 
+from actwise.generation.context import ParagraphContext
 from actwise.generation.prompts import answer_prompts, json_object, load_prompt
 from actwise.generation.rag import REFUSAL, RagPipeline, build_messages, is_refusal
 from actwise.llm.base import LLMResponse
@@ -56,6 +57,27 @@ def test_the_request_deadline_reaches_the_model():
     rag.ask("Is a CV-screening tool high-risk?", "en", deadline=42.0)
 
     assert llm.calls[0]["deadline"] == 42.0
+
+
+def test_paragraph_context_feeds_whole_paragraphs():
+    """With a context, the pipeline fetches a pool of windows and shows whole paragraphs."""
+    asked = []
+    paragraphs = [
+        Passage("AIA-Art6-2", "en", "AI Act Article 6(2)\nThe whole paragraph."),
+        Passage("AIA-Art3-12", "en", "AI Act Article 3(12)\nThe whole definition."),
+    ]
+    context = ParagraphContext(paragraphs)
+    llm = ScriptedLLM(LLMResponse("It is high-risk [AIA-Art6-2].", [], 50, 10, "m"))
+
+    def spy(question, top_k):
+        asked.append(top_k)
+        return HITS[:top_k]
+
+    result = RagPipeline(llm, spy, "Answer from the sources.", context).ask("High-risk?", "en")
+
+    assert asked == [context.pool]
+    assert [s["text"] for s in result.sources] == [p.text for p in paragraphs]
+    assert result.citations == ["AIA-Art6-2"]
 
 
 def test_an_answer_without_a_valid_citation_is_refused():
