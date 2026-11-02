@@ -38,17 +38,14 @@ class ParagraphContext:
         word_budget: int = WORD_BUDGET,
         pool: int = POOL,
         max_references: int = 0,
-        main_paragraphs: bool = False,
     ):
         """`paragraphs` holds every paragraph in each language, as `paragraph_passages()` gives.
 
         With `max_references`, up to that many units named by the chosen paragraphs follow.
-        With `main_paragraphs`, a later paragraph of an article brings the article's first
-        one, which usually states the rule that the others qualify.
         """
         self.paragraphs = {(p.id, p.lang): p for p in paragraphs}
         self.max_paragraphs, self.word_budget, self.pool = max_paragraphs, word_budget, pool
-        self.max_references, self.main_paragraphs = max_references, main_paragraphs
+        self.max_references = max_references
 
     def references(self, pid: str) -> list[str]:
         """The annex units and same-article paragraphs that paragraph `pid` names, in order."""
@@ -69,11 +66,12 @@ class ParagraphContext:
         ]
         return [ref for ref in dict.fromkeys(found) if (ref, "en") in self.paragraphs]
 
-    def select(self, hits: Sequence[Hit], lang: str) -> list[Hit]:
+    def select(self, hits: Sequence[Hit], lang: str, main_paragraphs: bool = False) -> list[Hit]:
         """The paragraphs of `hits`, best first: one copy each, in `lang` when it has one.
 
-        Then their articles' first paragraphs (with `main_paragraphs`) and the units they
-        name (up to `max_references`), as long as the budget allows.
+        Then the units they name (up to `max_references`) and, with `main_paragraphs`, the
+        first paragraph of each article they belong to, which usually states the rule that
+        later paragraphs qualify (Art. 2(3) brings Art. 2(1)). All within the budget.
         """
         chosen: list[Hit] = []
         seen: set[str] = set()
@@ -97,7 +95,7 @@ class ParagraphContext:
             if (pid := paragraph_id(hit.id)) not in seen:
                 add(pid, hit.lang, hit.score)
         ranked = list(chosen)
-        if self.main_paragraphs:
+        if main_paragraphs:
             for hit in ranked:
                 first = f"{article_id(hit.id)}-1"
                 if "-Art" in hit.id and first not in seen and (first, "en") in self.paragraphs:

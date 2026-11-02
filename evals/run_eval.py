@@ -47,7 +47,7 @@ CONTEXTS: dict[str, dict[str, Any] | None] = {  # step 8b, one phase per entry
     "windows": None,
     "paragraphs": {},
     "references": {"max_references": MAX_REFERENCES},
-    "rewrite": {"max_references": MAX_REFERENCES, "main_paragraphs": True},
+    "rewrite": {"max_references": MAX_REFERENCES},  # a refusal is retried, rewritten
 }
 
 

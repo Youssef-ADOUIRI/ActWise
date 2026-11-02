@@ -36,29 +36,46 @@ def test_rewrite_queries_strips_bullets_and_caps_the_count():
     assert llm.calls[0]["deadline"] == 7.0
 
 
-def test_the_pipeline_searches_every_query_and_shares_the_deadline():
-    """The rewrite's queries find what the question alone missed; both calls get the deadline."""
+def pipeline(llm, asked):
+    """A rewriting pipeline whose fake retriever records every query."""
+
+    def search(query, top_k):
+        asked.append(query)
+        return FOUND[query]
+
+    return RagPipeline(
+        llm, search, "Answer.", ParagraphContext(PARAGRAPHS), load_prompt(REWRITE_PROMPT)
+    )
+
+
+def test_a_refusal_is_retried_with_rewritten_queries():
+    """Refused from the question alone, it is retried with the rewrite's queries, all under one
+    deadline, and the second answer finds what the first search missed."""
     asked = []
     llm = ScriptedLLM(
+        reply("NOT_COVERED"),
         reply("scope providers established in a third country\npenalties for infringements"),
         reply(
             "Yes, if it places systems on the EU market [AIA-Art2-1], fines apply [AIA-Art99-3]."
         ),
     )
 
-    def search(query, top_k):
-        asked.append(query)
-        return FOUND[query]
+    result = pipeline(llm, asked).ask(QUESTION, "en", deadline=42.0)
 
-    context = ParagraphContext(PARAGRAPHS)
-    result = RagPipeline(llm, search, "Answer.", context, load_prompt(REWRITE_PROMPT)).ask(
-        QUESTION, "en", deadline=42.0
-    )
-
-    assert asked == list(FOUND)
+    assert asked == [QUESTION, *FOUND]  # the first pass, then the question and both queries
     assert [s["id"] for s in result.sources] == ["AIA-Art99-3", "AIA-Art2-1"]
-    assert result.citations == ["AIA-Art2-1", "AIA-Art99-3"]
-    assert [call["deadline"] for call in llm.calls] == [42.0, 42.0]
+    assert (result.citations, result.retried) == (["AIA-Art2-1", "AIA-Art99-3"], True)
+    assert [call["deadline"] for call in llm.calls] == [42.0, 42.0, 42.0]
+
+
+def test_an_answered_question_is_not_rewritten():
+    """An answer on the first pass costs one search and one model call: no rewrite."""
+    asked = []
+    llm = ScriptedLLM(reply("Fines apply [AIA-Art99-3]."))
+
+    result = pipeline(llm, asked).ask(QUESTION, "en")
+
+    assert (asked, len(llm.calls), result.retried) == ([QUESTION], 1, False)
 
 
 def test_a_rewrite_needs_a_paragraph_context():
