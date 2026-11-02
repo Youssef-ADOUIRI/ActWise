@@ -8,6 +8,7 @@ from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 
 from actwise.generation.citations import extract_citations, invented_citations, strip_citations
+from actwise.generation.context import ParagraphContext
 from actwise.generation.guardrails import looks_like_injection, redact_pii
 from actwise.ids import human_label, paragraph_id
 from actwise.llm.base import LLM, LLMResponse, Message
@@ -80,9 +81,15 @@ def refusal(lang: str) -> str:
 class RagPipeline:
     """Retrieve, answer with a versioned prompt, and keep only the citations that were retrieved."""
 
-    def __init__(self, llm: LLM, search: Search, prompt: str):
-        """`prompt` is the system prompt text, such as `load_prompt("answer.v1")`."""
-        self.llm, self.search, self.prompt = llm, search, prompt
+    def __init__(
+        self, llm: LLM, search: Search, prompt: str, context: ParagraphContext | None = None
+    ):
+        """`prompt` is the system prompt text, such as `load_prompt("answer.v1")`.
+
+        `context` turns the ranked windows into whole paragraphs; without it the model
+        reads the top CONTEXT_PASSAGES windows as they are.
+        """
+        self.llm, self.search, self.prompt, self.context = llm, search, prompt, context
 
     def ask(self, question: str, lang: str, deadline: float | None = None) -> AskResult:
         """Answer in `lang`, or refuse; an answer left with no valid citation is refused too.
@@ -91,7 +98,11 @@ class RagPipeline:
         """
         if looks_like_injection(question):
             return AskResult(refusal(lang), "injection", [], [], [], None)
-        sources = sources_of(self.search(question, CONTEXT_PASSAGES), lang)
+        if self.context is None:
+            hits = self.search(question, CONTEXT_PASSAGES)
+        else:
+            hits = self.context.select(self.search(question, self.context.pool), lang)
+        sources = sources_of(hits, lang)
         messages = build_messages(self.prompt, question, sources)
         reply = self.llm.chat(messages, temperature=0, deadline=deadline)
         if is_refusal(reply.text):
