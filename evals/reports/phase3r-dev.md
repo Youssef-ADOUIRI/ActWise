@@ -10,7 +10,7 @@ E: as C, with articles and annexes ranked before recitals. Split `dev`, 76 score
 | Recall@20 | 0.987 |
 | MRR@10 | 0.878 [0.82, 0.93] |
 | nDCG@10 | 0.899 |
-| ms / query | 207 |
+| ms / query | 179 |
 
 ## By language
 
@@ -58,7 +58,7 @@ E: as C, with articles and annexes ranked before recitals. Split `dev`, 76 score
 
 ## Answers: `answer.v2`
 
-Top 5 passages, temperature 0, judge: none.
+Top 5 passages, temperature 0, judge: {'fallback': [{'provider': 'groq', 'model': 'openai/gpt-oss-120b'}], 'prompt': 'judge.v1'}.
 
 | Metric | Value |
 |---|---|
@@ -73,11 +73,11 @@ Top 5 passages, temperature 0, judge: none.
 | citation_precision_strict | 0.9029 |
 | gold_in_context | 0.9737 |
 | gold_cited | 0.9737 |
-| citation_precision_lenient | None |
-| faithfulness | None |
-| fully_supported | None |
-| faithfulness_ci95 | None |
-| judged | 0 |
+| citation_precision_lenient | 0.9612 |
+| faithfulness | 0.977 |
+| fully_supported | 0.9474 |
+| faithfulness_ci95 | (0.9441, 0.9967) |
+| judged | 76 |
 | judge_failed | 0 |
 | uncited_sentences | 0.7 |
 | input_tokens | 123839 |
@@ -85,9 +85,9 @@ Top 5 passages, temperature 0, judge: none.
 
 | Source | n | Refused (out of scope) | False refusals | Faithfulness | Fully supported |
 |---|---|---|---|---|---|
-| hand | 22 | 1.0 | 0.0 | None | None |
-| hard | 5 | None | 0.0 | None | None |
-| synthetic | 61 | 1.0 | 0.0 | None | None |
+| hand | 22 | 1.0 | 0.0 | 1.0 | 1.0 |
+| hard | 5 | None | 0.0 | 1.0 | 1.0 |
+| synthetic | 61 | 1.0 | 0.0 | 0.9657 | 0.9216 |
 
 ### q001 (en, lookup)
 
@@ -99,6 +99,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > *(Note: The provided sources do not cover whether the specific term "facial recognition" is legally synonymous in every context with the "remote biometric identification systems" regulated in the text.)*
 
+Judge: 5/5. All claims are directly supported by the cited sources.
+
 ### q002 (fr, lookup)
 
 **Question:** Quelles mentions doit contenir la déclaration UE de conformité d'un système d'IA à haut risque ?
@@ -106,6 +108,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > La déclaration UE de conformité d'un système d'IA à haut risque doit contenir toutes les informations nécessaires à l'identification de la législation d'harmonisation de l'Union à laquelle elle se rapporte (lorsque le système est soumis à plusieurs actes législatifs d'harmonisation de l'Union exigeant également une telle déclaration) [AIA-Art47-3]. Elle doit également contenir les informations qui figurent à l'annexe V [AIA-Art47-2]. Les sources fournies ne précisent pas la liste détaillée de ces informations figurant à l'annexe V.
+
+Judge: 5/5. All statements are directly supported by the cited sources.
 
 ### q003 (en, obligation)
 
@@ -117,6 +121,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover what specific mitigation measures must be used to address these feedback loops.
 
+Judge: 5/5. All claims in the answer are directly supported by the cited source.
+
 ### q004 (en, lookup)
 
 **Question:** If a notified body stops its conformity assessment activities, how long can the certificates it issued remain valid?
@@ -124,6 +130,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Where a notified body decides to cease its conformity assessment activities, its certificates may remain valid for a period of nine months after the cessation of its activities, provided that another notified body has confirmed in writing that it will assume responsibilities for the high-risk AI systems covered by those certificates [AIA-Art36-3].
+
+Judge: 5/5. All claims in the answer are directly stated in the cited source.
 
 ### q005 (fr, lookup)
 
@@ -133,6 +141,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > La Commission enquête, s’il y a lieu, sur tous les cas où il existe des raisons de douter de la compétence d’un organisme notifié ou du respect continu, par un organisme notifié, des exigences établies à l’article 31 et de ses responsabilités applicables [AIA-Art37-1]. Les sources ne couvrent pas l'éventualité où d'autres entités que la Commission mèneraient ce type d'enquête spécifique.
 
+Judge: 5/5. All statements are directly supported by the cited source and the interpretation about lack of coverage is consistent with the sources.
+
 ### q006 (en, obligation)
 
 **Question:** Does a public authority that starts using a high-risk AI system to decide who receives social benefits have to register that use in an EU database?
@@ -141,6 +151,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Yes, deployers that are public authorities must register themselves, select the system, and register its use in the EU database referred to in Article 71 before putting into service or using a high-risk AI system listed in Annex III, with the exception of those listed in point 2 of Annex III [AIA-Art49-3, AIA-Art26-8]. The provided sources do not cover whether the specific use case of deciding who receives social benefits falls under Annex III or its point 2 exception.
 
+Judge: 5/5. All claims are directly supported by the cited sources.
+
 ### q007 (en, lookup)
 
 **Question:** Who facilitates the drawing up of codes of practice for general-purpose AI models, and by when were they supposed to be ready?
@@ -148,6 +160,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > The AI Office may invite all providers of general-purpose AI models, as well as relevant national competent authorities, to participate in the drawing-up of codes of practice [AIA-Art56-3]. Civil society organisations, industry, academia, and other relevant stakeholders (such as downstream providers and independent experts) may support this process [AIA-Art56-3]. The provided sources do not cover by when the codes of practice were supposed to be ready.
+
+Judge: 5/5. All statements are directly supported by the cited source, and the answer correctly notes the lack of deadline information.
 
 ### q008 (fr, lookup)
 
@@ -164,6 +178,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Cette information relève du domaine juridique et ne constitue pas un conseil juridique.
 
+Judge: 5/5. All statements are directly supported by the cited source AIA-Art68-2.
+
 ### q009 (en, definition)
 
 **Question:** Which situations count as formal non-compliance of a high-risk AI system, such as a missing CE marking?
@@ -179,6 +195,8 @@ Top 5 passages, temperature 0, judge: none.
 > - where applicable, no authorised representative has been appointed [AIA-Art83-1];
 > - technical documentation is not available [AIA-Art83-1].
 
+Judge: 5/5. All listed situations are directly stated in Article 83(1) of the AI Act.
+
 ### q010 (en, lookup)
 
 **Question:** Does the GDPR apply to a company based outside the EU that tracks the online behaviour of people in the EU?
@@ -188,6 +206,8 @@ Top 5 passages, temperature 0, judge: none.
 > Yes, the GDPR applies to the processing of personal data of data subjects who are in the Union by a controller or processor not established in the Union, where the processing activities are related to the monitoring of their behaviour as far as their behaviour takes place within the Union [GDPR-Art3-2].
 >
 > (Note: This is legal information, not legal advice.)
+
+Judge: 5/5. The answer's claim is fully supported by GDPR Article 3(2) as cited.
 
 ### q011 (fr, obligation)
 
@@ -206,6 +226,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Vous donnez des informations juridiques, et non des conseils juridiques.
 
+Judge: 5/5. All statements in the answer are directly supported by the cited GDPR articles.
+
 ### q012 (en, lookup)
 
 **Question:** Can a bank reject my loan application based only on an automated decision, with no human involved?
@@ -216,6 +238,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover whether bank loan applications specifically meet the criteria for these exceptions.
 
+Judge: 5/5. All statements are directly supported by the cited GDPR articles, and the comment about source coverage is accurate.
+
 ### q013 (fr, obligation)
 
 **Question:** Dans quel cas le responsable du traitement doit-il consulter l'autorité de contrôle avant de commencer un traitement ?
@@ -223,6 +247,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Le responsable du traitement consulte l'autorité de contrôle préalablement au traitement lorsqu'une analyse d'impact relative à la protection des données effectuée au titre de l'article 35 indique que le traitement présenterait un risque élevé si le responsable du traitement ne prenait pas de mesures pour atténuer le risque [GDPR-Art36-1]. De plus, nonobstant cette règle, le droit des États membres peut exiger que les responsables du traitement consultent l'autorité de contrôle et obtiennent son autorisation préalable en ce qui concerne le traitement effectué par un responsable du traitement dans le cadre d'une mission d'intérêt public exercée par celui-ci, y compris le traitement dans le cadre de la protection sociale et de la santé publique [GDPR-Art36-5]. Les sources fournies ne traitent pas des autres éventuels cas de consultation préalable non mentionnés dans ces articles.
+
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
 
 ### q014 (en, lookup)
 
@@ -234,6 +260,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Please note that you are provided with legal information and not legal advice.
 
+Judge: 5/5. The answer's claim is directly supported by GDPR Article 49(1).
+
 ### q015 (en, lookup)
 
 **Question:** In an emergency, can a national data protection authority act on its own without going through the cooperation procedure with other authorities, and for how long?
@@ -243,6 +271,8 @@ Top 5 passages, temperature 0, judge: none.
 > Under exceptional circumstances where a supervisory authority considers that there is an urgent need to act to protect the rights and freedoms of data subjects, it may immediately adopt provisional measures intended to produce legal effects on its own territory, by way of derogation from the consistency mechanism or the cooperation procedure [GDPR-Art66-1, GDPR-Art60-11]. The specified period of validity for these provisional measures shall not exceed three months [GDPR-Art66-1].
 >
 > The provided sources do not cover whether such an authority is specifically referred to as a "national data protection authority" in this context.
+
+Judge: 5/5. All claims are directly supported by the cited GDPR articles.
 
 ### q016 (en, lookup)
 
@@ -254,6 +284,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover what other specific steps or actions you can take beyond having the right to an effective judicial remedy.
 
+Judge: 5/5. All claims are directly supported by the cited GDPR article, and the statement about lack of other steps is consistent with the sources.
+
 ### q017 (fr, lookup)
 
 **Question:** Devant quels tribunaux puis-je agir contre une entreprise qui a violé mes droits au titre du RGPD ?
@@ -262,6 +294,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Toute action contre un responsable du traitement ou un sous-traitant (entreprise) est intentée devant les juridictions de l'État membre dans lequel le responsable du traitement ou le sous-traitant dispose d'un établissement [GDPR-Art79-2]. Une telle action peut aussi être intentée devant les juridictions de l'État membre dans lequel la personne concernée a sa résidence habituelle, sauf si le responsable du traitement ou le sous-traitant est une autorité publique d'un État membre agissant dans l'exercice de ses prérogatives de puissance publique [GDPR-Art79-2]. Les sources fournies ne couvrent pas les actions en justice intentées contre des entités autres que les responsables du traitement ou les sous-traitants.
 
+Judge: 5/5. All statements in the answer are directly supported by GDPR Article 79(2) and no citation is contradicted.
+
 ### q018 (en, obligation)
 
 **Question:** If a processor ignores the controller's instructions and this causes damage to someone, does the processor have to pay compensation?
@@ -269,6 +303,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Any controller involved in processing shall be liable for the damage caused by processing which infringes the GDPR [GDPR-Art82-2]. A processor shall be liable for the damage caused by processing where it has acted outside or contrary to lawful instructions of the controller [GDPR-Art82-2]. Any person who has suffered material or non-material damage as a result of an infringement of the regulation has the right to receive compensation from the controller or processor for the damage suffered [GDPR-Art82-1].
+
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
 
 ### q019 (en, cross_law)
 
@@ -279,6 +315,8 @@ Top 5 passages, temperature 0, judge: none.
 > The provided sources do not contain information regarding what a GDPR record of processing activities must contain.
 >
 > Regarding the EU database, before placing on the market or putting into service a high-risk AI system listed in Annex III (with the exception of high-risk AI systems listed in point 2 of Annex III), the provider or their authorised representative must register themselves and their system in the EU database referred to in Article 71 [AIA-Art49-1]. Additionally, before placing on the market or putting into service an AI system for which the provider has concluded that it is not high-risk according to Article 6(3), the provider or authorised representative must also register themselves and that system in the EU database [AIA-Art49-2]. (Please note that we give legal information, not legal advice, and we never say whether a specific company or system is compliant.)
+
+Judge: 5/5. All statements are directly supported by the cited AI Act provisions, and the claim about GDPR is accurate given the sources.
 
 ### q020 (fr, cross_law)
 
@@ -291,6 +329,8 @@ Top 5 passages, temperature 0, judge: none.
 > Les sources fournies ne couvrent pas la question de savoir si une association de défense des droits peut agir au nom de personnes discriminées par un système d'IA.
 >
 > *Remarque : Je vous donne des informations juridiques et non un avis juridique.*
+
+Judge: 5/5. All statements are directly supported by the cited sources and the disclaimer about missing coverage is accurate.
 
 ### q021 (en, not_covered)
 
@@ -316,6 +356,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > To counter AI-specific vulnerabilities, the technical solutions for high-risk AI systems shall include, where appropriate, measures to prevent, detect, respond to, resolve and control for attacks trying to manipulate the training data set (data poisoning), or pre-trained components used in training (model poisoning), inputs designed to cause the AI model to make a mistake (adversarial examples or model evasion), confidentiality attacks or model flaws [AIA-Art15-5].
 
+Judge: 5/5. All claims are directly stated in the cited source AIA-Art15-5.
+
 ### q052 (fr, obligation)
 
 **Question:** Quelles mesures minimales le responsable du traitement doit-il mettre en œuvre pour protéger les intérêts d'une personne concernée par une décision individuelle automatisée fondée sur un contrat ou un consentement ?
@@ -325,6 +367,8 @@ Top 5 passages, temperature 0, judge: none.
 > Dans les cas où une décision individuelle automatisée est nécessaire à la conclusion ou à l'exécution d'un contrat, ou est fondée sur le consentement explicite de la personne concernée, le responsable du traitement met en œuvre des mesures appropriées pour la sauvegarde des droits et libertés et des intérêts légitimes de la personne concernée, comprenant au moins le droit pour cette personne d'obtenir une intervention humaine de la part du responsable du traitement, d'exprimer son point de vue et de contester la décision [GDPR-Art22-3, GDPR-Art22-2].
 >
 > Les sources fournies ne traitent pas des autres mesures minimales spécifiques que le responsable du traitement pourrait devoir prendre en dehors de ce droit à l'intervention humaine, d'expression et de contestation.
+
+Judge: 4/5. Main claim about required measures is supported by GDPR-Art22-3, but the citation of GDPR-Art22-2 does not support that claim.
 
 ### q053 (en, lookup)
 
@@ -352,6 +396,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Furthermore, if the controller intends to further process the personal data for a purpose other than that for which the data were obtained, the controller shall provide information on that other purpose and any relevant further information as referred to in paragraph 2 prior to that further processing [GDPR-Art14-4]. The sources do not cover the specific details of paragraph 2's referenced information beyond what is explicitly listed under Article 14(2).
 
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
+
 ### q054 (fr, obligation)
 
 **Question:** Dans quels cas précis une entreprise de moins de 250 employés est-elle tout de même tenue de tenir un registre des activités de traitement ?
@@ -359,6 +405,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Une entreprise ou une organisation comptant moins de 250 employés est tout de même tenue de tenir un registre des activités de traitement si le traitement qu'elle effectue est susceptible de comporter un risque pour les droits et des libertés des personnes concernées, s'il n'est pas occasionnel, ou s'il porte notamment sur les catégories particulières de données visées à l'article 9, paragraphe 1, ou sur des données à caractère personnel relatives à des condamnations pénales et à des infractions visées à l'article 10 [GDPR-Art30-5]. Les sources fournies ne traitent pas des autres aspects ou obligations liés au registre des activités de traitement en dehors de ces conditions d'exemption et de maintien.
+
+Judge: 5/5. All claims in the answer are directly supported by GDPR Article 30(5).
 
 ### q055 (fr, lookup)
 
@@ -375,6 +423,8 @@ Top 5 passages, temperature 0, judge: none.
 > f) le cas échéant, il n'a pas été désigné de mandataire [AIA-Art83-1];
 > g) la documentation technique n'est pas disponible [AIA-Art83-1].
 
+Judge: 5/5. All listed situations are directly stated in source AIA-Art83-1.
+
 ### q056 (en, lookup)
 
 **Question:** To what obligations may adherence to the codes of practice be limited for providers of general-purpose AI models that do not present systemic risks?
@@ -383,6 +433,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > For providers of general-purpose AI models that do not present systemic risks, adherence to the codes of practice may be limited to the obligations provided for in Article 53, unless those providers explicitly declare their interest to join the full code [AIA-Art56-7]. The provided sources do not cover whether there are any further limitations or conditions beyond this.
 
+Judge: 5/5. The answer accurately reflects the limitation to obligations in Article 53 as stated in the cited source.
+
 ### q057 (en, lookup)
 
 **Question:** By what date must Member States identify and publish the list of public authorities or bodies that protect fundamental rights in relation to AI systems?
@@ -390,6 +442,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > By 2 November 2024, each Member State must identify the public authorities or bodies referred to in paragraph 1 and make a list of them publicly available [AIA-Art77-2].
+
+Judge: 5/5. The answer directly reflects the statement in source AIA-Art77-2.
 
 ### q058 (en, obligation)
 
@@ -401,6 +455,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover whether any other conditions or requirements outside of Article 49(1) apply when utilizing this specific fallback provision.
 
+Judge: 5/5. All statements in the answer are directly supported by GDPR Article 49(1) as provided.
+
 ### q059 (fr, obligation)
 
 **Question:** Est-ce qu'une organisation de protection des données peut introduire une réclamation auprès d'une autorité de contrôle sans avoir reçu de mandat de la personne concernée ?
@@ -408,6 +464,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Oui, les États membres peuvent prévoir que tout organisme, organisation ou association (qui répond aux critères visés au paragraphe 1 de l'article 80 du RGPD) a le droit d'introduire une réclamation auprès de l'autorité de contrôle compétente sans qu'un mandat ne lui ait été confié par une personne concernée, s'il considère que les droits d'une personne concernée ont été violés du fait du traitement [GDPR-Art80-2].
+
+Judge: 5/5. The answer's claim is directly supported by GDPR Article 80(2).
 
 ### q060 (en, lookup)
 
@@ -417,6 +475,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > A supervisory authority must inform the data subject within three months on the progress or outcome of the complaint lodged pursuant to Article 77 [GDPR-Art78-2].
 
+Judge: 5/5. The answer's claim about the three‑month deadline is directly stated in GDPR Art 78(2).
+
 ### q061 (fr, obligation)
 
 **Question:** Quelles informations l'autorité notifiante doit-elle fournir à la Commission concernant les organismes notifiés, et à quel moment ?
@@ -424,6 +484,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Les sources fournies n'indiquent pas quelles informations l'autorité notifiante doit fournir à la Commission concernant les organismes notifiés, ni à quel moment (elles mentionnent uniquement les informations que l'autorité notifiante peut obtenir des organismes notifiés [AIA-Art34-3], ou les informations que l'autorité notifiante fournit à la Commission sur demande concernant la notification ou le maintien de la compétence de l'organisme notifié [AIA-Art37-2]).
+
+Judge: 1/5. The answer incorrectly claims the sources do not indicate what information must be provided, contradicting Article 37(2) which does specify that the notifying authority must provide all useful information on request.
 
 ### q062 (fr, obligation)
 
@@ -440,6 +502,8 @@ Top 5 passages, temperature 0, judge: none.
 > - informer la Commission et les États membres des certificats dont elle a demandé la suspension ou le retrait [AIA-Art36-7];
 > - fournir aux autorités nationales compétentes de l'État membre dans lequel le fournisseur a son siège social toutes les informations pertinentes sur les certificats dont elle a demandé la suspension ou le retrait [AIA-Art36-7].
 
+Judge: 5/5. All statements are directly supported by the cited articles of the AI Regulation.
+
 ### q063 (fr, lookup)
 
 **Question:** Dans quelle situation le règlement s'applique-t-il au traitement de données par un responsable du traitement non établi dans l'Union, mais dans un lieu régi par le droit d'un État membre en vertu du droit international public ?
@@ -447,6 +511,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Le règlement s'applique au traitement de données à caractère personnel par un responsable du traitement qui n'est pas établi dans l'Union, mais dans un lieu où le droit d'un État membre s'applique en vertu du droit international public [GDPR-Art3-3].
+
+Judge: 5/5. All statements are directly supported by the cited source.
 
 ### q064 (en, obligation)
 
@@ -456,6 +522,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Personal data in official documents held by a public authority, a public body, or a private body for the performance of a task carried out in the public interest may be disclosed by that authority or body in accordance with Union or Member State law to which they are subject in order to reconcile public access to official documents with the right to the protection of personal data [GDPR-Art86].
 
+Judge: 5/5. The answer's claim is fully supported by GDPR Article 86.
+
 ### q065 (fr, obligation)
 
 **Question:** Quels documents les organismes notifiés doivent-ils fournir à l'autorité notifiante pour faciliter ses activités de surveillance et d'évaluation ?
@@ -463,6 +531,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Les organismes notifiés mettent à la disposition de l’autorité notifiante et lui soumettent sur demande toute la documentation pertinente, y compris celle des fournisseurs [AIA-Art34-3]. Les sources fournies ne précisent pas de liste détaillée des types spécifiques de documents composant cette documentation pertinente.
+
+Judge: 5/5. All claims are directly supported by the cited source.
 
 ### q066 (fr, lookup)
 
@@ -472,6 +542,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > La Commission peut adopter des actes d'exécution afin de définir les modalités de l'échange d'informations par voie électronique entre les autorités de contrôle, et entre ces autorités et le comité [GDPR-Art67, GDPR-Art61-9]. Les sources fournies ne précisent pas les éventuelles conditions ou procédures additionnelles applicables à ces actes d'exécution en dehors de leur adoption conformément à la procédure d'examen visée à l'article 93, paragraphe 2 [GDPR-Art67, GDPR-Art61-9].
 
+Judge: 5/5. All claims are directly stated in the cited GDPR articles.
+
 ### q067 (en, obligation)
 
 **Question:** Who is liable to pay compensation to a person who has suffered material or non-material damage due to an infringement of the regulation?
@@ -480,6 +552,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Any person who has suffered material or non-material damage as a result of an infringement of the regulation has the right to receive compensation from the controller or processor for the damage suffered [GDPR-Art82-1]. Any controller involved in processing shall be liable for the damage caused by processing which infringes the regulation [GDPR-Art82-2]. A processor shall be liable for the damage caused by processing only where it has not complied with obligations of the regulation specifically directed to processors or where it has acted outside or contrary to lawful instructions of the controller [GDPR-Art82-2]. Furthermore, where more than one controller or processor, or both a controller and a processor, are involved in the same processing and are responsible for any damage caused by processing, each controller or processor shall be held liable for the entire damage in order to ensure effective compensation of the data subject [GDPR-Art82-4]. However, a controller or processor shall be exempt from liability if it proves that it is not in any way responsible for the event giving rise to the damage [GDPR-Art82-3].
 
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
+
 ### q068 (en, lookup)
 
 **Question:** How does the Commission ensure appropriate coordination and cooperation between notified bodies involved in conformity assessment procedures for high-risk AI systems?
@@ -487,6 +561,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > The Commission shall ensure appropriate coordination and cooperation between notified bodies active in the conformity assessment procedures for high-risk AI systems by putting them in place and ensuring they are properly operated in the form of a sectoral group of notified bodies [AIA-Art38-1].
+
+Judge: 5/5. The answer's claim is directly stated in the cited source.
 
 ### q069 (en, obligation)
 
@@ -503,6 +579,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover whether additional conditions apply outside of legislative measures enacted by the Union or Member States.
 
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
+
 ### q070 (fr, lookup)
 
 **Question:** Où sont enregistrés les systèmes d'IA à haut risque utilisés dans les domaines de la migration et de l'asile, et qui a accès à ces informations ?
@@ -513,6 +591,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Seules la Commission et les autorités nationales visées à l'article 74, paragraphe 8, ont accès aux différentes sections restreintes de cette base de données [AIA-Art49-4]. Les sources ne précisent pas les règles d'accès pour d'autres types de bases de données ou pour des entités non mentionnées dans cet article.
 
+Judge: 5/5. All statements are directly supported by the cited source AIA-Art49-4.
+
 ### q071 (fr, lookup)
 
 **Question:** Quelle est la durée de validité maximale des mesures provisoires qu'une autorité de contrôle peut adopter d'urgence pour protéger les droits des personnes ?
@@ -521,6 +601,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > La durée de validité maximale des mesures provisoires adoptées en urgence n'excède pas trois mois [GDPR-Art66-1]. Les sources fournies ne précisent pas d'autres cas de figure pour cette durée maximale.
 
+Judge: 5/5. All statements are directly supported by the cited source GDPR-Art66-1.
+
 ### q072 (en, obligation)
 
 **Question:** At what point and with whom must Member States consult regarding legislative or regulatory measures related to data processing?
@@ -528,6 +610,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Member States must consult the supervisory authority during the preparation of a proposal for a legislative measure to be adopted by a national parliament, or of a regulatory measure based on such a legislative measure, which relates to processing [GDPR-Art36-4].
+
+Judge: 5/5. The answer exactly matches the statement in GDPR Article 36(4) and the citation is correct.
 
 ### q073 (fr, lookup)
 
@@ -541,6 +625,8 @@ Top 5 passages, temperature 0, judge: none.
 > c) est fondée sur le consentement explicite de la personne concernée [GDPR-Art22-2].
 >
 > Les sources fournies ne traitent pas des circonstances d'application de l'interdiction générale des décisions individuelles automatisées dans le cadre du règlement IA, mais uniquement dans le cadre du RGPD.
+
+Judge: 5/5. All statements are directly supported by GDPR Art22-2, and no citation is unsupported.
 
 ### q074 (en, lookup)
 
@@ -557,6 +643,8 @@ Top 5 passages, temperature 0, judge: none.
 > (f) where possible, the envisaged time limits for erasure of the different categories of data; [GDPR-Art30-1]
 > (g) where possible, a general description of the technical and organisational security measures referred to in Article 32(1). [GDPR-Art30-1]
 
+Judge: 5/5. All listed items are directly stated in GDPR Article 30(1).
+
 ### q075 (fr, obligation)
 
 **Question:** Que doit faire l'autorité de surveillance du marché si une non-conformité formelle persiste malgré les mesures initiales ?
@@ -564,6 +652,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Si le cas de non-conformité formelle persiste, l'autorité de surveillance du marché de l’État membre concerné prend toutes les mesures appropriées et proportionnées pour restreindre ou interdire la mise à disposition du système d’IA à haut risque sur le marché ou pour assurer son rappel ou son retrait sans tarder du marché [AIA-Art83-2].
+
+Judge: 5/5. All statements are directly supported by the cited source
 
 ### q076 (fr, lookup)
 
@@ -573,6 +663,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Le Bureau de l’IA encourage et facilite le réexamen et l’adaptation des codes de bonne pratique, et il participe à l’évaluation des normes disponibles [AIA-Art56-8].
 
+Judge: 5/5. All claims are directly stated in the cited source.
+
 ### q077 (en, obligation)
 
 **Question:** What can a public authority protecting fundamental rights do if the available documentation is not enough to determine if a high-risk AI system infringes Union law?
@@ -580,6 +672,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Where the available documentation is insufficient to ascertain whether an infringement of obligations under Union law protecting fundamental rights has occurred, the public authority or body may make a reasoned request to the market surveillance authority to organise testing of the high-risk AI system through technical means [AIA-Art77-3]. The sources do not cover what other actions, if any, that public authority may take beyond requesting such testing.
+
+Judge: 5/5. The answer accurately reflects the content of Article 77(3) and adds no unsupported claims.
 
 ### q078 (en, obligation)
 
@@ -589,6 +683,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Member States shall notify such provisions to the Commission [GDPR-Art49-5].
 
+Judge: 5/5. The answer exactly matches the statement in GDPR-Art49-5.
+
 ### q079 (en, lookup)
 
 **Question:** In which courts can a data subject bring judicial proceedings against a controller or processor?
@@ -596,6 +692,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Proceedings against a controller or a processor shall be brought before the courts of the Member State where the controller or processor has an establishment [GDPR-Art79-2]. Alternatively, such proceedings may be brought before the courts of the Member State where the data subject has his or her habitual residence, unless the controller or processor is a public authority of a Member State acting in the exercise of its public powers [GDPR-Art79-2].
+
+Judge: 5/5. All statements are directly supported by GDPR Article 79(2).
 
 ### q080 (en, lookup)
 
@@ -605,6 +703,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > A data subject has the right to mandate a not-for-profit body, organisation, or association which has been properly constituted in accordance with the law of a Member State, has statutory objectives in the public interest, and is active in the field of the protection of data subjects' rights and freedoms regarding the protection of their personal data [GDPR-Art80-1].
 
+Judge: 5/5. The answer's claim is fully supported by GDPR Article 80(1).
+
 ### q081 (en, obligation)
 
 **Question:** What must a supervisory authority do when proceedings are brought against its decision that was preceded by an opinion or decision of the Board in the consistency mechanism?
@@ -612,6 +712,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Where proceedings are brought against a decision of a supervisory authority which was preceded by an opinion or a decision of the Board in the consistency mechanism, the supervisory authority shall forward that opinion or decision to the court [GDPR-Art78-4].
+
+Judge: 5/5. The answer directly matches the statement in GDPR Article 78(4).
 
 ### q082 (en, lookup)
 
@@ -626,6 +728,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > *(Note: You give legal information, not legal advice. Never say whether a specific company or system is compliant.)*
 
+Judge: 5/5. All claims are directly supported by the cited source AIA-Art68-3.
+
 ### q083 (en, lookup)
 
 **Question:** Which institution is responsible for investigating cases where there are doubts regarding the competence of a notified body?
@@ -634,6 +738,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > The Commission is responsible for investigating all cases where there are reasons to doubt the competence of a notified body or the continued fulfilment of its requirements and responsibilities [AIA-Art37-1].
 
+Judge: 5/5. The answer is fully supported by the cited source.
+
 ### q084 (fr, lookup)
 
 **Question:** Par quel moyen l'autorité notifiante doit-elle informer la Commission et les autres États membres des modifications apportées à la notification d'un organisme notifié ?
@@ -641,6 +747,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > L’autorité notifiante doit informer la Commission et les autres États membres de toute modification pertinente apportée à la notification d’un organisme notifié au moyen de l’outil de notification électronique visé à l’article 30, paragraphe 2 [AIA-Art36-1]. Les sources ne couvrent pas d'autres aspects de la question.
+
+Judge: 5/5. All claims in the answer are directly supported by the cited source.
 
 ### q085 (fr, lookup)
 
@@ -652,6 +760,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Les sources fournies ne couvrent pas la question de savoir si d'autres conditions spécifiques s'appliquent en dehors de ce cadre.
 
+Judge: 5/5. All statements are directly supported by the cited source.
+
 ### q086 (fr, obligation)
 
 **Question:** De quelle manière les organismes notifiés doivent-ils tenir compte de la taille des fournisseurs et de la complexité des systèmes d'IA dans leurs activités ?
@@ -659,6 +769,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Les organismes notifiés évitent les charges inutiles pour les fournisseurs et tiennent dûment compte de leur taille, du secteur dans lequel ils exercent, de leur structure ainsi que du degré de complexité du système d'IA à haut risque concerné [AIA-Art34-2]. Ils le font en particulier en vue de réduire au minimum les charges administratives et les coûts de mise en conformité pour les microentreprises et les petites entreprises au sens de la recommandation 2003/361/CE, tout en respectant le degré de rigueur et le niveau de protection requis pour garantir la conformité du système avec le règlement [AIA-Art34-2]. De plus, ils disposent de procédures spécifiques pour accomplir leurs activités qui tiennent dûment compte de ces mêmes éléments (taille, secteur, structure et complexité du système) [AIA-Art31-8].
+
+Judge: 5/5. All statements in the answer are directly supported by the cited sources.
 
 ### q087 (en, lookup)
 
@@ -668,6 +780,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Where a controller or processor has paid full compensation for the damage suffered, that controller or processor is entitled to claim back from the other controllers or processors involved in the same processing that part of the compensation corresponding to their part of responsibility for the damage, in accordance with the conditions set out in paragraph 2 [GDPR-Art82-5].
 
+Judge: 5/5. The answer exactly reflects the content of GDPR Article 82(5) and is fully supported.
+
 ### q088 (en, obligation)
 
 **Question:** How must notified bodies be involved in the sectoral group that the Commission sets up for them?
@@ -675,6 +789,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > The Commission ensures the operation of appropriate coordination and cooperation between notified bodies in the form of a sectoral group [AIA-Art38-1]. Notified bodies must participate in these coordination activities [AIA-Art31-12]. Furthermore, each notifying authority must ensure that the bodies it has notified participate in the work of this group, either directly or through designated representatives [AIA-Art38-2].
+
+Judge: 5/5. All statements are directly supported by the cited articles.
 
 ### q089 (fr, lookup)
 
@@ -694,6 +810,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Les sources fournies ne traitent pas des autres aspects éventuels de ces mesures législatives en dehors de ces éléments spécifiques minimaux.
 
+Judge: 5/5. All listed elements are directly stated in GDPR Article 23(2) and correctly cited.
+
 ### q090 (en, obligation)
 
 **Question:** Who is required to register a non-high-risk AI system in the EU database before it is placed on the market or put into service?
@@ -701,6 +819,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Before placing on the market or putting into service an AI system for which the provider has concluded that it is not high-risk according to Article 6(3), that provider or, where applicable, the authorised representative shall register themselves and that system in the EU database referred to in Article 71 [AIA-Art49-2].
+
+Judge: 5/5. The answer directly matches the statement in source AIA-Art49-2.
 
 ### q091 (fr, lookup)
 
@@ -714,6 +834,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > *Ceci est une information juridique et non un avis juridique.*
 
+Judge: 5/5. The answer's claim about the two‑week deadline and simple majority is directly stated in GDPR‑Art66‑4.
+
 ### q092 (fr, obligation)
 
 **Question:** Dans quelle situation précise le responsable du traitement est-il tenu de consulter l'autorité de contrôle avant de procéder au traitement ?
@@ -721,6 +843,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Le responsable du traitement consulte l'autorité de contrôle préalablement au traitement lorsqu'une analyse d'impact relative à la protection des données effectuée au titre de l'article 35 indique que le traitement présenterait un risque élevé si le responsable du traitement ne prenait pas de mesures pour atténuer le risque [GDPR-Art36-1].
+
+Judge: 5/5. The answer exactly matches the statement in GDPR-Art36-1 and the citation is appropriate.
 
 ### q093 (en, obligation)
 
@@ -732,6 +856,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Note: This constitutes legal information, not legal advice.
 
+Judge: 5/5. All statements in the answer are directly supported by the cited source.
+
 ### q094 (en, lookup)
 
 **Question:** What right does a data subject have regarding decisions based solely on automated processing, including profiling?
@@ -739,6 +865,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > The data subject has the right not to be subject to a decision based solely on automated processing, including profiling, which produces legal effects concerning him or her or similarly significantly affects him or her [GDPR-Art22-1].
+
+Judge: 5/5. The answer's claim is directly stated in GDPR Article 22(1).
 
 ### q095 (en, lookup)
 
@@ -750,6 +878,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover any other rules or exceptions regarding information to be provided beyond what is listed in Article 14(2).
 
+Judge: 5/5. All claims in the answer are directly supported by GDPR Article 14(2) as provided.
+
 ### q096 (en, obligation)
 
 **Question:** Who must make the record of processing activities available to the supervisory authority upon request?
@@ -757,6 +887,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > The controller, the processor, and, where applicable, the controller's or the processor's representative shall make the record of processing activities available to the supervisory authority on request [GDPR-Art30-4].
+
+Judge: 5/5. All statements in the answer are directly supported by GDPR Article 30(4).
 
 ### q097 (en, obligation)
 
@@ -767,6 +899,8 @@ Top 5 passages, temperature 0, judge: none.
 > Any information or documentation obtained by national public authorities or bodies protecting fundamental rights in relation to the use of high-risk AI systems must be treated in accordance with the confidentiality obligations set out in Article 78 [AIA-Art77-1, AIA-Art77-4].
 >
 > *(Note: The provided sources do not cover how these authorities must handle such information and documentation beyond the requirement to treat it in accordance with those confidentiality obligations.)*
+
+Judge: 4/5. The main claim about confidentiality obligations is supported by Article 77(4), but the citation of Article 77(1) does not support that specific statement.
 
 ### q098 (en, lookup)
 
@@ -787,6 +921,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > The provided sources do not cover whether any other general or sector-specific laws restrict these transfers beyond what is stated regarding important reasons of public interest.
 
+Judge: 5/5. All claims are directly supported by GDPR Article 49(1) as provided.
+
 ### q099 (fr, obligation)
 
 **Question:** Quels recours une personne physique ou morale possède-t-elle face à une décision juridiquement contraignante d'une autorité de contrôle qui la concerne ?
@@ -794,6 +930,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Sans préjudice de tout autre recours administratif ou extrajudiciaire, toute personne physique ou morale a le droit de former un recours juridictionnel effectif contre une décision juridiquement contraignante d'une autorité de contrôle qui la concerne [GDPR-Art78-1].
+
+Judge: 5/5. The answer's claim is directly stated in the cited source GDPR-Art78-1.
 
 ### q100 (en, lookup)
 
@@ -803,6 +941,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Based on the provided sources, the implementing act adopted by the Commission to establish the scientific panel must include provisions on the conditions, procedures, and detailed arrangements for the scientific panel and its members to issue alerts, and to request the assistance of the AI Office for the performance of the tasks of the scientific panel [AIA-Art68-1, AIA-Art68-5]. The provided sources do not cover what other specific aspects must be included in that implementing act beyond these provisions.
 
+Judge: 4/5. Main claim is supported by AIA-Art68-5, but citation of AIA-Art68-1 does not back the specific detail.
+
 ### q101 (en, obligation)
 
 **Question:** What actions can the Commission take if a Member State fails to implement corrective measures after being informed that a notified body no longer meets its requirements?
@@ -810,6 +950,8 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Where the Member State fails to take the necessary corrective measures, the Commission may, by means of an implementing act, suspend, restrict or withdraw the designation [AIA-Art37-4]. That implementing act shall be adopted in accordance with the examination procedure referred to in Article 98(2) [AIA-Art37-4].
+
+Judge: 5/5. All claims are directly supported by the cited source.
 
 ### q161 (en, not_covered)
 
@@ -899,6 +1041,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Yes, the GDPR applies to the processing of personal data of data subjects who are in the Union by a controller or processor not established in the Union, where the processing activities are related to the monitoring of their behavior as far as their behavior takes place within the Union [GDPR-Art3-2]. The provided sources do not cover whether specific tracking practices or entities meet these legal criteria in practice. You give legal information, not legal advice.
 
+Judge: 5/5. All statements are directly supported by the cited GDPR article.
+
 ### h016 (fr, obligation)
 
 **Question:** Une banque peut-elle refuser mon crédit par un algorithme, sans qu'aucun humain n'intervienne ?
@@ -913,6 +1057,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > Les sources fournies ne permettent pas de déterminer si le refus d'un crédit spécifique par une banque remplit les conditions d'exemption du paragraphe 2 (comme la nécessité pour un contrat ou le consentement).
 
+Judge: 5/5. All statements are directly supported by the cited GDPR articles.
+
 ### h017 (en, obligation)
 
 **Question:** A high-risk AI system is sold without its CE marking but otherwise works safely. Can the authorities still make the provider fix that?
@@ -923,6 +1069,8 @@ Top 5 passages, temperature 0, judge: none.
 >
 > You give legal information, not legal advice.
 
+Judge: 5/5. All statements are directly supported by the cited articles of the AI Act.
+
 ### h018 (en, obligation)
 
 **Question:** Before selling a high-risk AI system that screens job candidates, does the provider have to put it on some official EU list?
@@ -931,6 +1079,8 @@ Top 5 passages, temperature 0, judge: none.
 
 > Before placing on the market or putting into service a high-risk AI system listed in Annex III, with the exception of high-risk AI systems referred to in point 2 of Annex III, the provider or, where applicable, the authorised representative shall register themselves and their system in the EU database referred to in Article 71 [AIA-Art49-1]. The provided sources do not cover whether the specific system that screens job candidates is included in Annex III (outside of point 2) or if it otherwise triggers this registration obligation.
 
+Judge: 5/5. All claims are directly supported by the cited source and the statement about lack of coverage is accurate.
+
 ### h019 (fr, obligation)
 
 **Question:** Une fuite de mes données m'a causé du stress, mais aucune perte d'argent. Puis-je demander une indemnisation ?
@@ -938,3 +1088,5 @@ Top 5 passages, temperature 0, judge: none.
 **Answer** (gemini-3.5-flash-lite):
 
 > Oui, toute personne ayant subi un dommage matériel ou moral du fait d'une violation du règlement a le droit d'obtenir du responsable du traitement ou du sous-traitant réparation du préjudice subi [GDPR-Art82-1]. Les sources fournies ne traitent pas de la question spécifique de savoir si le stress est juridiquement qualifié de dommage moral ouvrant droit à cette réparation. Vous donnez des informations juridiques, et non un avis juridique.
+
+Judge: 5/5. All statements are directly supported by the cited GDPR article and the observation about source coverage is accurate.
