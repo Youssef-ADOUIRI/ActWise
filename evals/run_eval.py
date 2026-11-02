@@ -33,7 +33,7 @@ from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, questi
 from actwise.evaluation.judge import JUDGE_PROMPT
 from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
-from actwise.generation.context import ParagraphContext
+from actwise.generation.context import MAX_REFERENCES, ParagraphContext
 from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
@@ -102,21 +102,22 @@ def main() -> None:
     parser.add_argument("--system", choices=SYSTEMS, default="baseline")
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
     parser.add_argument(
-        "--name", help="report name (default: <system>-<split>[-<prompt>][-paragraphs])"
+        "--name", help="report name (default: <system>-<split>[-<prompt>][-<context>])"
     )
     parser.add_argument("--prompt", choices=["plain", *answer_prompts()], help="answer too")
     parser.add_argument("--judge", action="store_true", help="score the answers (with --prompt)")
     parser.add_argument(
         "--context",
-        choices=["windows", "paragraphs"],
+        choices=["windows", "paragraphs", "references"],
         default="windows",
-        help="what the model reads: the top windows, or whole paragraphs (step 8b)",
+        help="what the model reads: the top windows, whole paragraphs, or whole paragraphs "
+        "and the units they name (step 8b)",
     )
     args = parser.parse_args()
     if args.judge and not args.prompt:
         parser.error("--judge needs --prompt")
-    if args.context == "paragraphs" and args.prompt in (None, "plain"):
-        parser.error("--context paragraphs needs an answer.vN prompt")
+    if args.context != "windows" and args.prompt in (None, "plain"):
+        parser.error(f"--context {args.context} needs an answer.vN prompt")
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)  # our progress, not every HTTP call
     load_dotenv()  # .env fills in what the environment doesn't set
@@ -137,7 +138,7 @@ def main() -> None:
         retriever.search("warm-up", 1)  # keep one-off start-up costs (model loading) out of timings
         search, first_ms = (lambda query, n: [hit.id for hit in retriever.search(query, n)]), 0.0
 
-    suffix = "paragraphs" if args.context == "paragraphs" else None
+    suffix = None if args.context == "windows" else args.context
     report = {
         "name": args.name or "-".join(filter(None, [args.system, args.split, args.prompt, suffix])),
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -158,7 +159,10 @@ def main() -> None:
 
     markdown = to_markdown(report)
     if llm is not None:
-        context = ParagraphContext(paragraph_passages()) if args.context == "paragraphs" else None
+        context = None
+        if args.context != "windows":
+            references = MAX_REFERENCES if args.context == "references" else 0
+            context = ParagraphContext(paragraph_passages(), max_references=references)
         ask: Ask = (
             partial(plain_ask, llm, retriever.search)
             if args.prompt == "plain"
