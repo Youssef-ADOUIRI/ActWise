@@ -60,6 +60,23 @@ def test_references_name_annexes_and_paragraphs_of_the_same_article():
     assert references == ["AIA-AnnexIII-5", "AIA-AnnexII", "AIA-Art5-2"]
 
 
+def test_main_paragraphs_bring_an_article_s_first_paragraph():
+    """A later paragraph brings paragraph 1 of its article; an annex point brings nothing."""
+    paragraphs = [
+        *PARAGRAPHS,
+        Passage("AIA-Art2-1", "en", "AI Act Article 2(1)\nproviders in a third country"),
+        Passage("AIA-Art2-3", "en", "AI Act Article 2(3)\nnot for military purposes"),
+        Passage("AIA-AnnexIII-1", "en", "AI Act Annex III(1)\nbiometrics"),
+    ]
+    hits = [window("AIA-Art2-3"), window("AIA-AnnexIII-5")]
+
+    plain = ParagraphContext(paragraphs).select(hits, "en")
+    main = ParagraphContext(paragraphs, main_paragraphs=True).select(hits, "en")
+
+    assert [hit.id for hit in plain] == ["AIA-Art2-3", "AIA-AnnexIII-5"]
+    assert [hit.id for hit in main] == ["AIA-Art2-3", "AIA-AnnexIII-5", "AIA-Art2-1"]
+
+
 def test_named_units_follow_in_the_question_language_up_to_the_cap():
     """The units a chosen paragraph names are added after it, in French for a French question."""
     hits = [window("AIA-Art5-1#6", "fr")]
