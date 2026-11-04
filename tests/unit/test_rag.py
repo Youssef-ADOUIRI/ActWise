@@ -124,8 +124,8 @@ def test_build_messages_puts_the_prompt_first():
 
 
 def test_prompt_files_are_versioned():
-    """Both answer versions exist and tell the model how to refuse."""
-    assert answer_prompts() == ["answer.v1", "answer.v2"]
+    """Every answer version exists and tells the model how to refuse."""
+    assert answer_prompts() == ["answer.v1", "answer.v2", "answer.v3"]
     assert all("NOT_COVERED" in load_prompt(name) for name in answer_prompts())
 
 
