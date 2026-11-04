@@ -36,6 +36,26 @@ v2 changes one rule: when the sources answer part of a question, answer that par
 
 Both prompts pass every target. **v2 is the serving prompt**, because a refusal gives the user nothing. Its known failure, a wrong "not covered" sentence in 2 of 69 answers, is the first thing a v3 would fix.
 
+## Step 8b: what the model reads (decision 010)
+
+The same 83 dev questions, with system E. "Windows" is the top 5 windows of the rows above; the other rows read whole paragraphs. Each report is `evals/reports/<row>-dev.md`. The hard tuning set (18 questions, right/wrong verdicts) is in decision 010.
+
+| Row | Context | Prompt | Out-of-scope refused | False refusals | Invented (shown) | Faithfulness | Fully supported | Citation precision strict / lenient |
+|---|---|---|---|---|---|---|---|---|
+| baseline8b | windows | `answer.v2` | 12 / 12 | 2 / 71 (2.8 %) | 0 (0) | 0.971 [0.93, 1.00] | 0.942 | 0.899 / 0.944 |
+| phase1 | whole paragraphs | `answer.v2` | 12 / 12 | 1 / 71 (1.4 %) | 0 (0) | 0.975 [0.94, 1.00] | 0.943 | 0.902 / 0.967 |
+| phase2 | + up to 3 named units | `answer.v2` | 12 / 12 | 0 / 71 | 0 (0) | not judged | – | 0.906 / – |
+| phase3 | + every question rewritten | `answer.v2` | 12 / 12 | 0 / 71 | 0 (0) | not judged | – | **0.840** / – |
+| **phase3q** | phase2 + a refusal retried with rewritten queries | `answer.v2` | 12 / 12 | **0 / 71** | 0 (0) | **0.975 [0.94, 1.00]** | 0.944 | 0.906 / 0.958 |
+| v3a | as phase3q | `answer.v3`, first wording | 12 / 12 | 0 / 71 | 0 (0) | 0.968 [0.94, 0.99] | 0.901 | 0.912 / 0.956 |
+| v3 | as phase3q | `answer.v3` | 12 / 12 | 0 / 71 | 0 (0) | *judge pending* | – | 0.923 / – |
+
+- **baseline8b** gives the same numbers as v2 above: the answers come from the cache.
+- **Whole paragraphs** remove repeated windows from the context, and **phase3q** answers every in-scope question.
+- **Rewriting every question** (phase3) drifts on precise ones, so the rewrite only retries a refusal.
+- **Retry variants:** two other merges of the retry's searches give the same dev numbers as phase3q (`phase3r`, `phase3i`). Their differences show on the hard set (decision 010).
+- **v3** drops v2's "You give legal information, not legal advice", which 15 of 94 answers repeated. The API shows its own disclaimer.
+
 ## Against the M3 targets (dev, v2)
 
 | Target | v2 | Status |
