@@ -170,8 +170,8 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Confirm the A/B winner on the grown dev set: **v2** (2.8 % false refusals against 7.0 %, faithfulness 0.971 against 0.992)
 - [x] Hit the dev targets with v2: 0 invented · faithfulness 0.971 · citation precision 0.944 lenient · refusals 12/12 · kappa 0.739
 - [x] Plain baseline on the grown dev set: refuses 0/12 out of scope, faithfulness 0.991, no citations
-- [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev); the UI's source list shows them twice too
-- [ ] Optional: `answer.v3` against v2's wrong "not covered" sentences (q061, q085)
+- [x] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev); the UI's source list shows them twice too (step 8b: whole paragraphs, one copy each)
+- [ ] Optional: a prompt against v2's wrong "not covered" sentences (q061, q085). `answer.v3` (step 8b) only drops the copied disclaimer
 
 ---
 
@@ -205,6 +205,18 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] `make serve` + curl examples (README)
 - [ ] Optional: SSE streaming for `/ask` (skipped in step 8)
 - [x] `ui/app.py` (Streamlit: ask tab + classify tab; `make ui`, `ui` extra)
+
+### Step 8b: Better answer context (not in the guide; decision 010)
+
+- [x] 24 hard questions (`source: hard`), verified by the user; 18 for tuning, 6 on test articles held out
+- [x] `gold_in_context` and `gold_cited` in `evaluation/generation.py`; right/wrong verdicts in `data/eval/hard_verdicts.csv`
+- [x] `[test]` `test_context.py`, `test_rewrite.py`, `normalise_citations`
+- [x] Phase 1: whole paragraphs (`generation/context.py`)
+- [x] Phase 2: follow the annexes and same-article paragraphs a paragraph names
+- [x] Phase 3: a refusal is retried with rewritten queries (`rewrite.v1`) and each article's first paragraph. Hard set: 11 → 16 of 18 right, none lost
+- [ ] `answer.v3` (drops the copied legal-advice sentence): dev judge run, then serve it if the M3 targets hold
+- [x] `/ask` uses the new context (`api/app.py`)
+- [x] Live: A and B answered on the right articles; the step 8 emotion-recognition question too (`docs/failure_cases.md`)
 
 ---
 

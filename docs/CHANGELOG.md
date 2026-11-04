@@ -5,6 +5,39 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-04: Step 8b, better answer context
+
+**Goal:** answer the questions that two live tests exposed. A ("can a non-EU startup face fines?") was refused, and B (live facial recognition for a trafficking suspect) was answered on the wrong legal basis. Every change is measured against a new hard set first.
+**Branch:** `step-8b-answer-context`
+
+| File | What | Why |
+|---|---|---|
+| `data/eval/hard_questions.csv`, `golden.jsonl` | 24 hard questions (`source: hard`), verified by the user: everyday words, two-article answers, exceptions. 18 are for tuning; the 6 on test articles stay held out | The dev metrics missed both A and B |
+| `data/eval/hard_verdicts.csv` | Right/wrong verdict for each hard answer that a phase changed | Correctness against a reference answer, which the judge doesn't measure |
+| `src/actwise/evaluation/generation.py`, `answers.py` | `gold_in_context`, `gold_cited` and `retried` | Is a gold article in the context, and is it cited |
+| `src/actwise/generation/context.py` | `ParagraphContext`: the first 5 distinct paragraphs, whole, in the question's language, under 2,000 words. It adds up to 3 units that they name (annex points, one-unit annexes, same-article paragraphs) and, for a retry, each article's first paragraph | Windows split Art. 5(1)(h) for B, and Annex II was missing |
+| `src/actwise/generation/rewrite.py`, `prompts/rewrite.v1.md`, `retrieval/fusion.py` | `rewrite_queries()`: 1–3 queries in the law's words. `fuse_hits()` fuses their rankings with RRF | A's words ("non-EU", "presence") are not the law's ("third country") |
+| `src/actwise/generation/rag.py` | `RagPipeline(context=, rewrite=)`: a refused question is retried once, with the rewritten queries alone, under the same deadline | Answered questions never pay for it or drift |
+| `src/actwise/generation/citations.py` | `normalise_citations()`: an id that differs from a retrieved one only in case is corrected | h015 was refused over `[GDpr-Art3-2]` |
+| `src/actwise/prompts/answer.v3.md` | `answer.v2` without "You give legal information, not legal advice." | 15 of 94 answers repeated it; the API shows its own disclaimer |
+| `src/actwise/api/app.py` | `/ask` reads whole paragraphs, follows named units and retries refusals | |
+| `evals/run_eval.py`, `evals/merge_candidates.py` | `--context` (`windows`, `paragraphs`, `references` or `rewrite`) and `--name`. The hard questions are merged into the golden set | One report per phase |
+| `docs/decisions/010-answer-context.md`, `docs/generation.md`, `docs/failure_cases.md` | What was kept and dropped, with the numbers; A, B and what is still wrong | |
+
+**Results:**
+- **Hard tuning set (18):** right answers go from 11 to 16, and none became wrong. Refusals fall from 7 to 1, and a gold article is in the context for all 18, against 72 % before.
+- **Dev (83):** the M3 targets hold. False refusals fall from 2.8 % to 0 %, faithfulness is 0.975 [0.94, 1.00], citation precision 0.906 strict and 0.958 lenient, and out-of-scope refusals stay at 12 / 12.
+- **Dropped, with the reports kept:**
+  - rewriting every question (dev precision 0.840);
+  - fusing the retry with the question's own search, which missed A's Art. 2(1);
+  - merging the searches in turns, which missed Art. 113 for q050;
+  - the first `answer.v3` wording, `v3a`.
+- **Live:** A and B are answered on the right articles, and so is the step 8 emotion-recognition question.
+- **Cost:** dev input tokens +48 %. A refused question costs two more model calls.
+- **Checks:** 241 tests pass, coverage is 95 %, and ruff and mypy are clean.
+
+---
+
 ## 2026-10-28: Step 8, the API and the UI
 
 **Goal:** serve the cited answers and the classifier over HTTP, with cost guards, and add a small UI.
