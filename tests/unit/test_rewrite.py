@@ -49,8 +49,8 @@ def pipeline(llm, asked):
 
 
 def test_a_refusal_is_retried_with_rewritten_queries():
-    """Refused from the question alone, it is retried with the rewrite's queries, all under one
-    deadline, and the second answer finds what the first search missed."""
+    """Refused from the question's search, it is retried with the rewrite's queries alone, all
+    under one deadline, and the second answer finds what the first search missed."""
     asked = []
     llm = ScriptedLLM(
         reply("NOT_COVERED"),
@@ -62,10 +62,20 @@ def test_a_refusal_is_retried_with_rewritten_queries():
 
     result = pipeline(llm, asked).ask(QUESTION, "en", deadline=42.0)
 
-    assert asked == [QUESTION, *FOUND]  # the first pass, then the question and both queries
-    assert [s["id"] for s in result.sources] == ["AIA-Art99-3", "AIA-Art2-1"]
+    assert asked == list(FOUND)  # the question, then both queries
+    assert [s["id"] for s in result.sources] == ["AIA-Art2-1", "AIA-Art99-3"]
     assert (result.citations, result.retried) == (["AIA-Art2-1", "AIA-Art99-3"], True)
     assert [call["deadline"] for call in llm.calls] == [42.0, 42.0, 42.0]
+
+
+def test_an_empty_rewrite_searches_the_question_again():
+    """No query in the rewrite's reply: the retry searches the question, not nothing."""
+    asked = []
+    llm = ScriptedLLM(reply("NOT_COVERED"), reply("\n"), reply("NOT_COVERED"))
+
+    result = pipeline(llm, asked).ask(QUESTION, "en")
+
+    assert (asked, result.reason, result.retried) == ([QUESTION, QUESTION], "not_covered", True)
 
 
 def test_an_answered_question_is_not_rewritten():

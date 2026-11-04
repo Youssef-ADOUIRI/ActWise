@@ -102,7 +102,8 @@ class RagPipeline:
         `context` turns the ranked windows into whole paragraphs; without it the model
         reads the top CONTEXT_PASSAGES windows as they are. `rewrite` (a prompt text, with
         a context only) gives a refused question a second try: searches for queries in the
-        law's words, fused with the question's own, and each article's first paragraph.
+        law's words in place of the question's own, which just failed, and each article's
+        first paragraph.
         Answered questions never pay for it, and precise ones don't drift (decision 010).
         """
         if rewrite is not None and context is None:
@@ -113,13 +114,17 @@ class RagPipeline:
     def retrieve(
         self, question: str, lang: str, deadline: float | None = None, rewrite: str | None = None
     ) -> list[Hit]:
-        """What the model reads: the top windows, or whole paragraphs found by every query."""
+        """What the model reads: the top windows, or whole paragraphs found by every query.
+
+        With `rewrite`, only the rewritten queries search. The question's own ranking just
+        failed; fused in, it outvoted what one query alone found (decision 010).
+        """
         if self.context is None:
             return self.search(question, CONTEXT_PASSAGES)
-        rankings = [self.search(question, self.context.pool)]
+        queries = [question]
         if rewrite is not None:
-            queries = rewrite_queries(self.llm, rewrite, question, deadline)
-            rankings += [self.search(query, self.context.pool) for query in queries]
+            queries = rewrite_queries(self.llm, rewrite, question, deadline) or queries
+        rankings = [self.search(query, self.context.pool) for query in queries]
         hits = fuse_hits(rankings) if len(rankings) > 1 else rankings[0]
         return self.context.select(hits, lang, main_paragraphs=rewrite is not None)
 
