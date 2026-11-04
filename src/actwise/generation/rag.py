@@ -100,11 +100,11 @@ class RagPipeline:
         """`prompt` is the system prompt text, such as `load_prompt("answer.v1")`.
 
         `context` turns the ranked windows into whole paragraphs; without it the model
-        reads the top CONTEXT_PASSAGES windows as they are. `rewrite` (a prompt text, with
-        a context only) gives a refused question a second try: searches for queries in the
-        law's words in place of the question's own, which just failed, and each article's
-        first paragraph.
-        Answered questions never pay for it, and precise ones don't drift (decision 010).
+        reads the top CONTEXT_PASSAGES windows as they are. `rewrite` (a prompt text; it
+        needs a context) gives a refused question one more try: it searches with queries
+        in the law's words instead of the question's own, and adds each article's first
+        paragraph. Answered questions never pay for it, and precise ones don't drift
+        (decision 010).
         """
         if rewrite is not None and context is None:
             raise ValueError("a rewrite needs a paragraph context")
