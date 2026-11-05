@@ -23,8 +23,8 @@
     | 2: + named units | 6 / 18 | 72 % | 11 | 0 / 71 | not judged | 0.906 / – |
     | 3, every question rewritten | 3 / 18 | 94 % | – | 0 / 71 | not judged | **0.840** / – |
     | 3, retry: fused with the question | 2 / 18 | 94 % | – | 0 / 71 | 0.975 [0.94, 1.00] | 0.906 / 0.958 |
-    | **3, retry: rewritten queries alone** | **1 / 18** | **100 %** | **16** | **0 / 71** | **0.975 [0.94, 1.00]** | **0.906 / 0.958** |
-    | + `answer.v3` | 1 / 18 | 100 % | 16 | 0 / 71 | *judge pending* | 0.923 / – |
+    | **3, retry: rewritten queries alone** | 1 / 18 | 100 % | 16 | 0 / 71 | 0.975 [0.94, 1.00] | 0.906 / 0.958 |
+    | **+ `answer.v3`** | **1 / 18** | **100 %** | **16** | **0 / 71** | **0.982 [0.96, 1.00]** | **0.923 / 0.945** |
 
   - **No right answer became wrong** in any phase. The 16 right answers include A ("can a non-EU startup face fines?"), h002, h004, h016 and h017. h012 and h013 are still wrong (`docs/failure_cases.md`).
   - **Rewriting every question** drifts on questions that were already precise. On q009, the rewritten search lost Art. 83, and the answer cited Art. 8, 16, 20 and 80 instead. Dev precision fell to 0.840.
@@ -34,6 +34,7 @@
     - rewritten queries alone: 8, the only merge that also reaches h017's Art. 83.
   - **`answer.v3`:**
     - **The copied sentence:** answers that repeat v2's legal-advice sentence go from 15 of 94 to 0. The API shows its own disclaimer.
+    - **Judged against v2 with the same context:** dev faithfulness 0.975 → 0.982, with fully supported answers at 0.944 for both. On the 13 train hard questions, faithfulness goes from 0.896 to 1.000.
     - **A first wording, v3a,** added "End with your last cited sentence". The model then cited sources on its "not covered" sentence: fully supported answers on dev fell from 0.944 to 0.901, and strict precision on the train hard questions from 1.0 to 0.714. The reports are `evals/reports/v3a-*`.
   - **Cost:**
     - On dev, input tokens rise from 77.6K to 114.8K (+48 %), from whole paragraphs and the named units.
@@ -43,7 +44,7 @@
   - **Up to 3 named units** (`MAX_REFERENCES`).
   - **Retry on refusal:** `rewrite.v1`, the rewritten queries alone fused with RRF, plus each article's first paragraph.
   - **Citation ids in the wrong case are corrected** before the citation check, so `[GDpr-Art3-2]` counts as `[GDPR-Art3-2]`.
-  - **`answer.v3`**, *if its dev judge run holds the M3 targets.*
+  - **`answer.v3`:** it holds every M3 target, and no dev number falls below the baseline's interval.
   - `/ask` uses all of it (`api/app.py`). The classifier doesn't change.
 - **Why:**
   - **Windows split the law.** Art. 5(1)(h) reached the model with its list (i)–(iii) before the "unless … strictly necessary" sentence. A whole paragraph keeps a rule and its exceptions together, and following "Annex II" brings in the offences that (h)(iii) refers to.

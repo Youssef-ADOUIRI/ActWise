@@ -34,7 +34,7 @@ v2 changes one rule: when the sources answer part of a question, answer that par
   - q061: it says the sources don't say what to send the Commission, but Art. 37(2) does. Judge score 1; v1 gets 5.
   - q085: it adds a "not covered" sentence that Art. 3(2) and 3(3) contradict. Judge score 3.
 
-Both prompts pass every target. **v2 is the serving prompt**, because a refusal gives the user nothing. Its known failure, a wrong "not covered" sentence in 2 of 69 answers, is the first thing a v3 would fix.
+Both prompts pass every target. **v2 became the serving prompt**, because a refusal gives the user nothing; step 8b replaced it with v3 (below). Its known failure, a wrong "not covered" sentence in 2 of 69 answers, is still open: v3 only drops the copied disclaimer.
 
 ## Step 8b: what the model reads (decision 010)
 
@@ -46,24 +46,24 @@ The same 83 dev questions, with system E. "Windows" is the top 5 windows of the 
 | phase1 | whole paragraphs | `answer.v2` | 12 / 12 | 1 / 71 (1.4 %) | 0 (0) | 0.975 [0.94, 1.00] | 0.943 | 0.902 / 0.967 |
 | phase2 | + up to 3 named units | `answer.v2` | 12 / 12 | 0 / 71 | 0 (0) | not judged | – | 0.906 / – |
 | phase3 | + every question rewritten | `answer.v2` | 12 / 12 | 0 / 71 | 0 (0) | not judged | – | **0.840** / – |
-| **phase3q** | phase2 + a refusal retried with rewritten queries | `answer.v2` | 12 / 12 | **0 / 71** | 0 (0) | **0.975 [0.94, 1.00]** | 0.944 | 0.906 / 0.958 |
+| phase3q | phase2 + a refusal retried with rewritten queries | `answer.v2` | 12 / 12 | 0 / 71 | 0 (0) | 0.975 [0.94, 1.00] | 0.944 | 0.906 / 0.958 |
 | v3a | as phase3q | `answer.v3`, first wording | 12 / 12 | 0 / 71 | 0 (0) | 0.968 [0.94, 0.99] | 0.901 | 0.912 / 0.956 |
-| v3 | as phase3q | `answer.v3` | 12 / 12 | 0 / 71 | 0 (0) | *judge pending* | – | 0.923 / – |
+| **v3** | as phase3q | `answer.v3` | 12 / 12 | **0 / 71** | 0 (0) | **0.982 [0.96, 1.00]** | 0.944 | 0.923 / 0.945 |
 
 - **baseline8b** gives the same numbers as v2 above: the answers come from the cache.
 - **Whole paragraphs** remove repeated windows from the context, and **phase3q** answers every in-scope question.
 - **Rewriting every question** (phase3) drifts on precise ones, so the rewrite only retries a refusal.
 - **Retry variants:** two other merges of the retry's searches give the same dev numbers as phase3q (`phase3r`, `phase3i`). Their differences show on the hard set (decision 010).
-- **v3** drops v2's "You give legal information, not legal advice", which 15 of 94 answers repeated. The API shows its own disclaimer.
+- **v3** drops v2's "You give legal information, not legal advice", which 15 of 94 answers repeated. The API shows its own disclaimer. **`/ask` serves v3.**
 
-## Against the M3 targets (dev, v2)
+## Against the M3 targets (dev)
 
-| Target | v2 | Status |
-|---|---|---|
-| Invented citations shown = 0 | 0 | ✅ guaranteed by the pipeline, which reads citations back from the shown text and refuses otherwise |
-| Faithfulness ≥ 0.85 | 0.971 [0.93, 1.00] | ✅ (fully supported: 0.942) |
-| Citation precision ≥ 0.90 | 0.944 lenient, 0.899 strict | ✅ on the judge-based reading. Strict counts a citation outside the gold article as wrong, even when it supports the sentence |
-| Out-of-scope refusals ≥ 95 % | 12 / 12 | ✅ |
-| Judge vs human kappa ≥ 0.6 | 0.739 | ✅ |
+| Target | v2 (step 6) | v3, served (step 8b) | Status |
+|---|---|---|---|
+| Invented citations shown = 0 | 0 | 0 | ✅ guaranteed by the pipeline, which reads citations back from the shown text and refuses otherwise |
+| Faithfulness ≥ 0.85 | 0.971 [0.93, 1.00] | 0.982 [0.96, 1.00] | ✅ (fully supported: 0.942, then 0.944) |
+| Citation precision ≥ 0.90 | 0.944 lenient, 0.899 strict | 0.945 lenient, 0.923 strict | ✅ on the judge-based reading. Strict counts a citation outside the gold article as wrong, even when it supports the sentence |
+| Out-of-scope refusals ≥ 95 % | 12 / 12 | 12 / 12 | ✅ |
+| Judge vs human kappa ≥ 0.6 | 0.739 | 0.739 (same judge) | ✅ |
 
 Test-split numbers are reported once, at the end of the project.

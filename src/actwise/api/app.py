@@ -22,7 +22,7 @@ from actwise.llm.factory import SERVING, build_llm
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SERVED, SYSTEMS
 
-ANSWER_PROMPT = "answer.v2"  # the best prompt of step 6 (docs/generation.md)
+ANSWER_PROMPT = "answer.v3"  # v2 without the legal-advice sentence it copied (decision 010)
 
 logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
 logging.getLogger("actwise").setLevel(logging.INFO)

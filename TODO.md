@@ -214,7 +214,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Phase 1: whole paragraphs (`generation/context.py`)
 - [x] Phase 2: follow the annexes and same-article paragraphs a paragraph names
 - [x] Phase 3: a refusal is retried with rewritten queries (`rewrite.v1`) and each article's first paragraph. Hard set: 11 → 16 of 18 right, none lost
-- [ ] `answer.v3` (drops the copied legal-advice sentence): dev judge run, then serve it if the M3 targets hold
+- [x] `answer.v3` (drops the copied legal-advice sentence): judged on dev, holds the M3 targets, served by `/ask`
 - [x] `/ask` uses the new context (`api/app.py`)
 - [x] Live: A and B answered on the right articles; the step 8 emotion-recognition question too (`docs/failure_cases.md`)
 
