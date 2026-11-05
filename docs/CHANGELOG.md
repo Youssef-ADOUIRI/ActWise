@@ -20,13 +20,13 @@ Add a section for every step you commit.
 | `src/actwise/generation/rag.py` | `RagPipeline(context=, rewrite=)`: a refused question is retried once, with the rewritten queries alone, under the same deadline | Answered questions never pay for it or drift |
 | `src/actwise/generation/citations.py` | `normalise_citations()`: an id that differs from a retrieved one only in case is corrected | h015 was refused over `[GDpr-Art3-2]` |
 | `src/actwise/prompts/answer.v3.md` | `answer.v2` without "You give legal information, not legal advice." | 15 of 94 answers repeated it; the API shows its own disclaimer |
-| `src/actwise/api/app.py` | `/ask` reads whole paragraphs, follows named units and retries refusals | |
+| `src/actwise/api/app.py` | `/ask` reads whole paragraphs, follows named units, retries refusals and answers with `answer.v3` | |
 | `evals/run_eval.py`, `evals/merge_candidates.py` | `--context` (`windows`, `paragraphs`, `references` or `rewrite`) and `--name`. The hard questions are merged into the golden set | One report per phase |
 | `docs/decisions/010-answer-context.md`, `docs/generation.md`, `docs/failure_cases.md` | What was kept and dropped, with the numbers; A, B and what is still wrong | |
 
 **Results:**
 - **Hard tuning set (18):** right answers go from 11 to 16, and none became wrong. Refusals fall from 7 to 1, and a gold article is in the context for all 18, against 72 % before.
-- **Dev (83):** the M3 targets hold. False refusals fall from 2.8 % to 0 %, faithfulness is 0.975 [0.94, 1.00], citation precision 0.906 strict and 0.958 lenient, and out-of-scope refusals stay at 12 / 12.
+- **Dev (83), as served with `answer.v3`:** the M3 targets hold. False refusals fall from 2.8 % to 0 %, faithfulness is 0.982 [0.96, 1.00], citation precision 0.923 strict and 0.945 lenient, and out-of-scope refusals stay at 12 / 12.
 - **Dropped, with the reports kept:**
   - rewriting every question (dev precision 0.840);
   - fusing the retry with the question's own search, which missed A's Art. 2(1);
