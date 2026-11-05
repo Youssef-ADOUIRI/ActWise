@@ -45,7 +45,7 @@ Effect: MRR@10 0.629 → 0.806 (C → E) and Recall@5 0.900 → 0.925, at the sa
 
 | Question | Why | Idea, not done |
 |---|---|---|
-| q001, q002 | The article that refers to the annex ranks above the annex | Follow references: when a retrieved article names an annex ("set out in Annex V"), add that annex right after it |
+| q001, q002 | The article that refers to the annex ranks above the annex | Follow references: when a retrieved article names an annex ("set out in Annex V"), add that annex right after it. **Done in step 8b** for what the model reads (decision 010); the ranking is unchanged |
 | q009, q010, q014, q016 | A neighbouring article ranks first (E); the reranker fixes all four (F) | Keep for the generator, which reads the top 5; or a reranker cheap enough to serve (decision 004) |
 | q020 | GDPR Art. 80 stays outside the top 5 | Retrieve once per law (`where={"law": ...}`) when a question names both laws, then interleave |
 
@@ -76,3 +76,20 @@ No part of Art. 5(1) came back. The question says "emotion recognition" and "wor
 **Why the refusal is correct:** none of the passages the model read answered the question, so it refused. That is the fail-closed behaviour we want.
 
 **Not yet measured:** the golden set has no question on Art. 5(1)(f), so the dev metrics miss this case. Add one before retrieval is tuned again.
+
+**Step 8b:** answered. The question is refused once, then retried with rewritten queries, which find Art. 5(1). The answer states the workplace ban and its medical and safety exception.
+
+## Found in step 8b: two live questions, and what the hard set still misses
+
+| Question | Before | After step 8b (decision 010) |
+|---|---|---|
+| **A:** "Can a non-EU startup with no office or presence in Europe face fines?" (h001) | Refused: Art. 2(1), the scope, was never retrieved; penalty articles filled the 5 slots | **Answered** from Art. 2(1) and Art. 99: the retry's rewritten query "AI Act extraterritorial application providers…" ranks Art. 2(1) first |
+| **B:** "Can the police use live facial recognition to track down someone suspected of human trafficking?" | Answered on the wrong basis: the windows split Art. 5(1)(h), and Annex II was missing | **Answered on the right basis:** the whole of Art. 5(1), with "unless … strictly necessary", and Annex II, which (h)(iii) names |
+
+**A's original wording,** "zero physical *or digital* presence", reaches the same articles, but the answer hedges: "the sources do not cover whether a non-EU startup with zero physical or digital presence in Europe can face fines". Read literally, with no digital presence nothing is placed on the EU market and no output is used there, so the Act does not apply. The hedge is weak but not wrong. Retrieval is fixed; the wording of the answer is the model's.
+
+**Still wrong in the hard set:**
+- **h012** ("can a company refuse to erase my data because the law makes it keep them?"). From phase 1 on, the model answers "Oui" but explains GDPR Art. 17(1)(e), where a legal obligation *requires* erasure: the reverse. The exception, Art. 17(3)(b), never reaches the context. The baseline refused it; whole paragraphs turned that refusal into a wrong answer.
+- **h013** ("can a gym scan members' fingerprints without asking them?"). GDPR Art. 9(1) is in the context, but the model refuses as not covered. The exceptions in Art. 9(2), explicit consent among them, are not in the context.
+
+**Seen once, live, with `answer.v2`:** the model wrote `[NOT_COVERED]` in the middle of an answer, as if it were a citation, and it was shown as is. No saved report has it. Watch for it before adding code.
