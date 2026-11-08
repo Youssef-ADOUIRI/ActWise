@@ -23,6 +23,16 @@ def test_numpy_store_returns_best_matches_first():
     ]
 
 
+def test_numpy_store_round_trips_through_a_file(tmp_path):
+    """`load()` gives back the payloads and vectors that `save()` wrote."""
+    NumpyStore(PAYLOADS, VECTORS).save(tmp_path / "index.npz")
+
+    store = NumpyStore.load(tmp_path / "index.npz")
+
+    assert store.payloads == PAYLOADS
+    assert np.array_equal(store.vectors, VECTORS)
+
+
 def test_numpy_store_needs_one_payload_per_vector():
     """A store with fewer payloads than vectors is refused."""
     with pytest.raises(ValueError):

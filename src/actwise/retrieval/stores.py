@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
+from pathlib import Path
 from typing import Any, Protocol
 
 import numpy as np
@@ -41,6 +43,18 @@ class NumpyStore:
         if where:
             rows = [i for i in rows if all(self.payloads[i][f] == v for f, v in where.items())]
         return [(self.payloads[i]["key"], float(scores[i])) for i in rows[:k]]
+
+    def save(self, path: Path) -> None:
+        """Write vectors and payloads to one .npz file, so an image needn't embed the corpus."""
+        np.savez_compressed(
+            path, vectors=self.vectors, payloads=np.array(json.dumps(self.payloads))
+        )
+
+    @classmethod
+    def load(cls, path: Path) -> NumpyStore:
+        """The store `save()` wrote; no pickle is involved."""
+        with np.load(path) as data:
+            return cls(json.loads(str(data["payloads"])), data["vectors"])
 
 
 class QdrantStore:
