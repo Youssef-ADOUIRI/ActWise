@@ -1,5 +1,5 @@
-.PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet eval-classifier serve ui deploy
+.PHONY: install lint test ingest splits index index-cloud eval eval-retrieval eval-answers ablations llm-smoke \
+	candidates label-sheet pairs eval-classifier serve ui deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -27,6 +27,11 @@ splits:
 index:
 	uv run --extra local python -m actwise.retrieval.index
 
+# Step 9: the int8 MiniLM into Qdrant Cloud (QDRANT_URL, QDRANT_API_KEY in .env), plus
+# data/processed/index.npz for the image. Needs models/minilm-ft-int8 (evals/export_onnx.py).
+index-cloud:
+	uv run --extra local --extra train python -m actwise.retrieval.index --embedder ft-int8 --npz
+
 # Retrieval metrics on the golden set. First run downloads the embedder;
 # vectors are cached in .cache/embeddings, so an interrupted run resumes.
 eval-retrieval:
@@ -53,6 +58,10 @@ candidates:
 
 label-sheet:
 	uv run python evals/make_calibration.py
+
+# Step 9 training pairs from train paragraphs (LLM calls cached in .cache/llm).
+pairs:
+	uv run python evals/make_pairs.py
 
 eval: eval-retrieval
 
