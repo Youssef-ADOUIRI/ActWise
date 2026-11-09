@@ -53,10 +53,6 @@ class FakeSession:
         """No batch run yet."""
         self.batches = []
 
-    def get_inputs(self):
-        """The input names of a BERT-style export."""
-        return [SimpleNamespace(name=n) for n in ("input_ids", "attention_mask", "token_type_ids")]
-
     def run(self, outputs, feeds):
         """Hidden states shaped (batch, tokens, 2)."""
         self.batches.append(feeds)
@@ -70,12 +66,10 @@ def test_onnx_embedder_pools_each_batch(tmp_path):
     embedder = OnnxEmbedder(tmp_path, batch_size=2, query_prefix="q ")
     session = FakeSession()
     embedder._session, embedder._tokenizer = session, FakeTokenizer()
-    embedder._inputs = {i.name for i in session.get_inputs()}
 
     vectors = embedder.encode(["a", "a b c", "a b"], kind="query")
 
     assert [len(b["input_ids"]) for b in session.batches] == [2, 1]
-    assert np.all(session.batches[0]["token_type_ids"] == 0)
     # "q a" has tokens 1, 2: mean (1.5, 1); "q a b c": mean (2.5, 1); "q a b": mean (2, 1)
     expected = l2_normalize(np.array([[1.5, 1.0], [2.5, 1.0], [2.0, 1.0]], dtype=np.float32))
     assert np.allclose(vectors, expected)

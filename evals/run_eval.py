@@ -14,11 +14,9 @@ from __future__ import annotations
 
 import argparse
 import gc
-import hashlib
 import json
 import logging
 import os
-import subprocess
 import time
 from datetime import UTC, datetime
 from functools import partial
@@ -38,6 +36,7 @@ from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
 from actwise.generation.rewrite import REWRITE_PROMPT
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
+from actwise.provenance import file_hash, git_commit
 from actwise.retrieval.hybrid import HybridRetriever
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SYSTEMS
@@ -77,7 +76,7 @@ def in_two_passes(hybrid: HybridRetriever, questions: list[Question]) -> tuple[S
 
 def fingerprint(path: Path) -> str:
     """Short SHA-256 of a file, so a report records exactly which inputs it used."""
-    return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
+    return file_hash(path)[:12]
 
 
 def write_report(report: dict[str, Any], markdown: str) -> Path:
@@ -88,17 +87,6 @@ def write_report(report: dict[str, Any], markdown: str) -> Path:
     Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
     Path(f"{out}.md").write_text(markdown, encoding="utf-8", newline="\n")
     return out
-
-
-def git_commit() -> str:
-    """Short commit hash, marked "-dirty" if the working tree has uncommitted changes."""
-    commit = subprocess.run(["git", "rev-parse", "--short", "HEAD"], capture_output=True, text=True)
-    status = subprocess.run(
-        ["git", "status", "--porcelain", "--", "src", "data", "evals/*.py"],
-        capture_output=True,
-        text=True,
-    )
-    return commit.stdout.strip() + ("-dirty" if status.stdout.strip() else "")
 
 
 def main() -> None:

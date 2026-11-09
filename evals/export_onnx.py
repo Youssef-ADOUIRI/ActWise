@@ -2,8 +2,8 @@
 
     uv run --extra local --extra train python evals/export_onnx.py [--model models/minilm-ft]
 
-Writes `<model>-onnx` (fp32) and `<model>-int8`, each holding model.onnx and the
-tokenizer, and prints their sizes. The graph returns the last hidden state; mean
+Writes `<model>-int8`, holding model.onnx and the tokenizer; the fp32 export in between
+is temporary. It prints both sizes. The graph returns the last hidden state; mean
 pooling and normalisation happen in `OnnxEmbedder`, as they do in the PyTorch model.
 `--model base` exports the pinned base model instead, to models/minilm-base-*.
 """
@@ -11,13 +11,11 @@ pooling and normalisation happen in `OnnxEmbedder`, as they do in the PyTorch mo
 from __future__ import annotations
 
 import argparse
-import shutil
+import tempfile
 from pathlib import Path
 
 from actwise.retrieval.embedders import MINILM
 from actwise.retrieval.systems import MINILM_FT
-
-TOKENIZER_FILES = ("tokenizer.json", "tokenizer_config.json", "special_tokens_map.json")
 
 
 def size_mb(path: Path) -> float:
@@ -26,7 +24,7 @@ def size_mb(path: Path) -> float:
 
 
 def main() -> None:
-    """Export fp32, quantize to int8, and copy the tokenizer next to each model."""
+    """Export fp32 to a temporary folder, quantize it to int8, and save the tokenizer."""
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--model", default=MINILM_FT, help="a local folder, or 'base'")
     args = parser.parse_args()
@@ -37,7 +35,7 @@ def main() -> None:
 
     name, revision = MINILM if args.model == "base" else (args.model, None)
     stem = "models/minilm-base" if args.model == "base" else args.model.rstrip("/")
-    fp32, int8 = Path(f"{stem}-onnx"), Path(f"{stem}-int8")
+    int8 = Path(f"{stem}-int8")
     tokenizer = AutoTokenizer.from_pretrained(name, revision=revision)
     model = AutoModel.from_pretrained(name, revision=revision, attn_implementation="eager")
 
@@ -56,34 +54,32 @@ def main() -> None:
     sample = tokenizer(
         ["a short text", "a longer text with more words"], return_tensors="pt", padding=True
     )
-    fp32.mkdir(parents=True, exist_ok=True)
-    axes = {0: "batch", 1: "tokens"}
-    torch.onnx.export(
-        LastHidden().eval(),
-        (sample["input_ids"], sample["attention_mask"]),
-        str(fp32 / "model.onnx"),
-        input_names=["input_ids", "attention_mask"],
-        output_names=["last_hidden_state"],
-        dynamic_axes={"input_ids": axes, "attention_mask": axes, "last_hidden_state": axes},
-        opset_version=18,
-        external_data=False,  # one file, so OnnxEmbedder's hash of model.onnx covers the weights
-    )
-    tokenizer.save_pretrained(str(fp32))
     int8.mkdir(parents=True, exist_ok=True)
-    # One scale per weight column: on the base model, the worst cosine to PyTorch over 20
-    # chunks rises from 0.973 (one scale per tensor) to 0.989, at the same 119 MB.
-    quantize_dynamic(
-        fp32 / "model.onnx",
-        int8 / "model.onnx",
-        weight_type=QuantType.QInt8,
-        per_channel=True,
-        reduce_range=True,
-    )
-    for file in TOKENIZER_FILES:
-        if (fp32 / file).exists():
-            shutil.copy(fp32 / file, int8 / file)
-    for folder in (fp32, int8):
-        print(f"{folder}: model.onnx {size_mb(folder / 'model.onnx')} MB")
+    tokenizer.save_pretrained(str(int8))  # tokenizer.json keeps the padding OnnxEmbedder uses
+    axes = {0: "batch", 1: "tokens"}
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tmp:
+        fp32 = Path(tmp) / "model.onnx"
+        torch.onnx.export(
+            LastHidden().eval(),
+            (sample["input_ids"], sample["attention_mask"]),
+            str(fp32),
+            input_names=["input_ids", "attention_mask"],
+            output_names=["last_hidden_state"],
+            dynamic_axes={"input_ids": axes, "attention_mask": axes, "last_hidden_state": axes},
+            opset_version=18,
+            external_data=False,  # one file, so OnnxEmbedder's hash of model.onnx covers it
+        )
+        # One scale per weight column: on the base model, the worst cosine to PyTorch over 20
+        # chunks rises from 0.973 (one scale per tensor) to 0.989, at the same 119 MB.
+        quantize_dynamic(
+            fp32,
+            int8 / "model.onnx",
+            weight_type=QuantType.QInt8,
+            per_channel=True,
+            reduce_range=True,
+        )
+        print(f"fp32 model.onnx: {size_mb(fp32)} MB")
+    print(f"{int8}: model.onnx {size_mb(int8 / 'model.onnx')} MB")
 
 
 if __name__ == "__main__":

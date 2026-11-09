@@ -7,11 +7,12 @@ so a cache built with another model or setting is never reused by mistake.
 
 from __future__ import annotations
 
-import hashlib
 from pathlib import Path
 from typing import Any, Protocol
 
 import numpy as np
+
+from actwise.provenance import file_hash
 
 # Hub name and pinned commit. 9a0624b is the bot-made safetensors variant of main (5617a9f):
 # same weights, but it loads without pickle and without transformers' silent PR redirect.
@@ -34,15 +35,6 @@ def hub_snapshot(repo: str, revision: str) -> Path:
     from huggingface_hub import snapshot_download  # cloud extra: imported only when used
 
     return Path(snapshot_download(repo, revision=revision))
-
-
-def file_hash(path: Path) -> str:
-    """The first 16 hex digits of a file's SHA-256: it names weights that have no Hub commit."""
-    digest = hashlib.sha256()
-    with path.open("rb") as f:
-        for block in iter(lambda: f.read(1 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()[:16]
 
 
 class Embedder(Protocol):
@@ -85,10 +77,11 @@ class SentenceTransformerEmbedder:
         self.name, self.revision = name, revision
         self.max_len, self.batch_size = max_len, batch_size
         self.prefix = {"query": query_prefix, "passage": passage_prefix}
-        weights = Path(name) / "model.safetensors"  # a local model has no commit: hash it
+        if revision is None and Path(name).is_dir():  # a local model has no commit: hash it
+            revision = file_hash(Path(name) / "model.safetensors")
         self.config = {
             "model": name,
-            "revision": revision or (file_hash(weights) if weights.is_file() else None),
+            "revision": revision,
             "max_len": max_len,
             "prefix": self.prefix,
         }
@@ -130,28 +123,24 @@ class OnnxEmbedder:
         self.prefix = {"query": query_prefix, "passage": passage_prefix}
         self.config = {
             "model": "onnx",
-            "weights": file_hash(self.dir / "model.onnx"),  # fp32 and int8 never share a cache
+            "weights": file_hash(self.dir / "model.onnx"),  # two exports never share a cache
             "max_len": max_len,
             "prefix": self.prefix,
         }
         self._session: Any = None
         self._tokenizer: Any = None
-        self._inputs: set[str] = set()
 
     def _load(self) -> None:
-        """Open the ONNX session and the tokenizer, truncating and padding like the model."""
+        """Open the ONNX session and the tokenizer; tokenizer.json holds the padding."""
         import onnxruntime as ort  # cloud extra: imported only when used
         from tokenizers import Tokenizer
 
         tokenizer = Tokenizer.from_file(str(self.dir / "tokenizer.json"))
         tokenizer.enable_truncation(max_length=self.max_len)
-        pad = tokenizer.token_to_id("<pad>")  # XLM-R pads with id 1, not the default 0
-        tokenizer.enable_padding(pad_id=0 if pad is None else pad, pad_token="<pad>")
         self._session = ort.InferenceSession(
             str(self.dir / "model.onnx"), providers=["CPUExecutionProvider"]
         )
         self._tokenizer = tokenizer
-        self._inputs = {i.name for i in self._session.get_inputs()}
 
     def encode(self, texts: list[str], kind: str = "passage") -> np.ndarray:
         """Add the prefix for `kind`, run in batches, mean-pool and L2-normalise."""
@@ -163,9 +152,7 @@ class OnnxEmbedder:
             encodings = self._tokenizer.encode_batch(batch)
             ids = np.array([e.ids for e in encodings], dtype=np.int64)
             mask = np.array([e.attention_mask for e in encodings], dtype=np.int64)
-            feeds = {"input_ids": ids, "attention_mask": mask}
-            if "token_type_ids" in self._inputs:
-                feeds["token_type_ids"] = np.zeros_like(ids)
+            feeds = {"input_ids": ids, "attention_mask": mask}  # the inputs export_onnx.py names
             rows.append(mean_pool(self._session.run(None, feeds)[0], mask))
         return l2_normalize(np.concatenate(rows).astype(np.float32))
 

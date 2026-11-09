@@ -15,7 +15,7 @@ from pathlib import Path
 from actwise.evaluation.splits import SEED
 from actwise.evaluation.synthetic import normalise, pick_chunks, screen_question
 from actwise.generation.prompts import json_object, load_prompt
-from actwise.ids import storage_key
+from actwise.ids import is_window, storage_key
 from actwise.ingest.chunk import Chunk
 from actwise.llm.base import LLM
 
@@ -44,7 +44,7 @@ def make_pairs(
     for chunk in pick_chunks(chunks, article_split, "train", n, fr_share=0):
         for lang, question in draft_pair(llm, chunk).items():
             passage = by_key.get(storage_key(chunk.id, lang))
-            if passage is None or (lang != chunk.lang and "#" in chunk.id):
+            if passage is None or (lang != chunk.lang and is_window(chunk.id)):
                 continue  # no passage with the same text in that language
             reasons = screen_question(question, seen)
             seen.add(normalise(question))

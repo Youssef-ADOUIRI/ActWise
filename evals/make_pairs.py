@@ -26,7 +26,8 @@ from actwise.training.pairs import PAIRS_FILE, make_pairs, review_sample
 
 N_CHUNKS, REVIEW_SIZE = 800, 50
 REVIEW_FILE = Path("data/train/pairs_review.csv")
-COLUMNS = ["source", "lang", "anchor", "positive", "decision", "note"]
+PAIR_FIELDS = ("source", "lang", "anchor", "positive")  # one line of pairs.jsonl
+COLUMNS = [*PAIR_FIELDS, "decision", "note"]
 
 
 def read_drops(path: Path) -> set[str]:
@@ -51,10 +52,9 @@ def main() -> None:
             writer.writerows(review_sample(kept, REVIEW_SIZE))
     drops = read_drops(REVIEW_FILE)
     final = [p for p in kept if p["source"] not in drops]
-    fields = ("source", "lang", "anchor", "positive")
     with PAIRS_FILE.open("w", encoding="utf-8", newline="\n") as f:
         f.writelines(
-            json.dumps({k: p[k] for k in fields}, ensure_ascii=False) + "\n" for p in final
+            json.dumps({k: p[k] for k in PAIR_FIELDS}, ensure_ascii=False) + "\n" for p in final
         )
 
     reasons = Counter(r for p in pairs for r in p["screen"].split("; ") if r)

@@ -14,27 +14,16 @@ passage as a negative, which would teach the model to pull the two languages apa
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import shutil
-import subprocess
 import time
 from pathlib import Path
 
+from actwise.provenance import file_hash, git_commit
 from actwise.retrieval.embedders import MINILM, MINILM_MAX_LEN
 
 SEED = 42  # the project seed (evaluation/splits.py)
 EPOCHS, BATCH_SIZE, LEARNING_RATE, WARMUP_RATIO = 3, 32, 2e-5, 0.1
-
-
-def git_commit() -> str:
-    """The commit being trained, or "unknown" outside a git checkout."""
-    try:
-        return subprocess.run(
-            ["git", "rev-parse", "HEAD"], capture_output=True, text=True, check=True
-        ).stdout.strip()
-    except (OSError, subprocess.CalledProcessError):
-        return "unknown"
 
 
 def main() -> None:
@@ -56,8 +45,7 @@ def main() -> None:
     from sentence_transformers.losses import MultipleNegativesRankingLoss
     from sentence_transformers.training_args import BatchSamplers
 
-    raw = args.pairs.read_bytes()
-    pairs = [json.loads(line) for line in raw.decode("utf-8").splitlines()]
+    pairs = [json.loads(line) for line in args.pairs.read_text(encoding="utf-8").splitlines()]
     train = datasets.DatasetDict(
         {
             lang: datasets.Dataset.from_dict(
@@ -99,7 +87,7 @@ def main() -> None:
         "base": {"model": MINILM[0], "revision": MINILM[1]},
         "pairs": {
             "file": args.pairs.as_posix(),
-            "sha256": hashlib.sha256(raw).hexdigest(),
+            "sha256": file_hash(args.pairs),
             "by_lang": {lang: len(ds) for lang, ds in train.items()},
         },
         "recipe": {

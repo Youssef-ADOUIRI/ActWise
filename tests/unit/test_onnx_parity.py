@@ -2,7 +2,8 @@ from pathlib import Path
 
 import pytest
 
-from actwise.retrieval.embedders import MINILM_HUB, OnnxEmbedder, file_hash, hub_snapshot
+from actwise.provenance import file_hash
+from actwise.retrieval.embedders import MINILM_HUB, OnnxEmbedder, hub_snapshot
 from actwise.retrieval.passages import chunk_passages
 from actwise.retrieval.systems import MINILM_FT, MINILM_FT_INT8, minilm
 

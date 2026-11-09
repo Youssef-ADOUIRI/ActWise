@@ -25,7 +25,7 @@ from actwise.retrieval.rerank import BGE_RERANKER, CrossEncoderReranker
 
 SERVED = "hybrid-binding"  # system E: what the API and the classifier search with
 MINILM_FT = "models/minilm-ft"  # evals/train_embedder.py writes it (decision 011)
-MINILM_FT_INT8 = "models/minilm-ft-int8"  # evals/export_onnx.py writes it; MINILM_HUB is its copy
+MINILM_FT_INT8 = f"{MINILM_FT}-int8"  # evals/export_onnx.py writes it; MINILM_HUB is its copy
 
 
 class Retriever(Protocol):
