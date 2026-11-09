@@ -31,6 +31,7 @@
 - **Chosen:**
   - **J (`hybrid-binding-int8`) for the cloud profile.** The local profile keeps E with BGE-M3.
   - **int8, per channel with reduced range** (`evals/export_onnx.py`).
+  - **Published** as [`Youssef-ADOUIRI/actwise-minilm-l12-ft-int8`](https://huggingface.co/Youssef-ADOUIRI/actwise-minilm-l12-ft-int8), with [its card](../embedder_card.md). `MINILM_HUB` pins commit `8f2058b`, and I, J and `make index-cloud` load the model from there. Its `model.onnx` is the local export, byte for byte.
   - **One language per batch, no recitals.**
 - **Why:**
   - **Fine-tuning lifts Recall@5 by 16 points on dev and 20 on test,** far over the guide's +5 bar. The hand-written questions gain as much as the synthetic ones: on test, 0.675 → 0.850 against 0.810 → 0.966. So the gain doesn't come only from questions that look like the training ones.

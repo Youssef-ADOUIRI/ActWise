@@ -232,7 +232,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Evaluate base vs FT on the **test** split with your own harness (hand-written and synthetic separately): Recall@5 0.720 → 0.917 (dev 0.691 → 0.849)
 - [x] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query: 471 → 119 MB, 21 → 13 ms; Recall@5 −1.2 on test (one question), +1.3 on dev (decision 011)
 - [x] `retrieval/embedders.py` (SentenceTransformer, ONNX)
-- [ ] Publish the int8 model and model card on the HF Hub
+- [x] Publish the int8 model and model card on the HF Hub: `Youssef-ADOUIRI/actwise-minilm-l12-ft-int8`, pinned at `8f2058b`
 - [x] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply): 3,799 passages, same top 5 as NumPy
 
 ### Step 10: Frameworks (first to cut)

@@ -61,7 +61,7 @@ ActWise embeds each passage with its header, for example "GDPR Article 83(5): Ge
   - 800 passages of at least 25 words from train articles and annexes (recitals left out). A passage is a paragraph, or a window of a long one.
   - For each passage, `gemini-3.5-flash-lite` wrote one question in English and one in French whose answer is in the passage. The prompt asks it not to copy long phrases and not to name an article number.
   - Each question is paired with the passage **in its own language**. Windows give English pairs only, because the French windows don't line up with the English ones.
-  - Rules dropped 2 unreadable replies. A sample of 50 pairs was reviewed by hand: 49 kept, 1 dropped as too vague.
+  - Rules dropped 2 unreadable replies. A sample of 50 pairs was reviewed: 49 kept, 1 dropped as too vague.
   - **1,428 pairs:** 799 English, 629 French.
 
 ## Training

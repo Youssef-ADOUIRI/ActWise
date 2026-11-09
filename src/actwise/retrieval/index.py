@@ -18,15 +18,15 @@ from pathlib import Path
 from dotenv import load_dotenv
 
 from actwise.retrieval.dense import CACHE_DIR, build_store
-from actwise.retrieval.embedders import BGE_M3, Embedder, OnnxEmbedder, SentenceTransformerEmbedder
+from actwise.retrieval.embedders import BGE_M3, Embedder, SentenceTransformerEmbedder
 from actwise.retrieval.passages import chunk_passages
 from actwise.retrieval.stores import QdrantStore
-from actwise.retrieval.systems import MINILM_FT_INT8
+from actwise.retrieval.systems import minilm_int8
 
 NPZ_FILE = Path("data/processed/index.npz")  # the step 13 image searches it when Qdrant fails
 INDEXES: dict[str, tuple[str, Callable[[], Embedder]]] = {
     "bge-m3": ("actwise_bge_m3", lambda: SentenceTransformerEmbedder(*BGE_M3)),
-    "ft-int8": ("actwise_ft_int8", lambda: OnnxEmbedder(MINILM_FT_INT8)),
+    "ft-int8": ("actwise_ft_int8", minilm_int8),
 }
 
 

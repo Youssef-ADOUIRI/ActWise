@@ -4,7 +4,8 @@
 
 HF_TOKEN, from the environment or `.env`, needs write access. The files of
 models/minilm-ft-int8/ and docs/embedder_card.md (as README.md) go to the public repo
-<user>/actwise-minilm-l12-ft-int8 in one commit. Pin the printed commit in MINILM_HUB.
+<user>/actwise-minilm-l12-ft-int8 in one commit. Pin the printed commit in MINILM_HUB
+(retrieval/embedders.py).
 """
 
 from __future__ import annotations

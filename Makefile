@@ -28,7 +28,7 @@ index:
 	uv run --extra local python -m actwise.retrieval.index
 
 # Step 9: the int8 MiniLM into Qdrant Cloud (QDRANT_URL, QDRANT_API_KEY in .env), plus
-# data/processed/index.npz for the image. Needs models/minilm-ft-int8 (evals/export_onnx.py).
+# data/processed/index.npz for the image. The model comes from the Hub at MINILM_HUB.
 index-cloud:
 	uv run --extra local --extra train python -m actwise.retrieval.index --embedder ft-int8 --npz
 

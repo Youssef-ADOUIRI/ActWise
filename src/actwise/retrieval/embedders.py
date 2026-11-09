@@ -22,6 +22,18 @@ MINILM = (
     "e8f8c211226b894fcb81acc59f3b34ba3efd5f42",
 )
 MINILM_MAX_LEN = 256  # its default of 128 tokens would cut most passages
+# Our fine-tuned MiniLM in int8, as evals/publish_model.py published it; the image uses it too.
+MINILM_HUB = (
+    "Youssef-ADOUIRI/actwise-minilm-l12-ft-int8",
+    "8f2058b361a58d21ab169ba90848410f28d91609",
+)
+
+
+def hub_snapshot(repo: str, revision: str) -> Path:
+    """The folder of a pinned Hub commit, downloaded once into the Hugging Face cache."""
+    from huggingface_hub import snapshot_download  # cloud extra: imported only when used
+
+    return Path(snapshot_download(repo, revision=revision))
 
 
 def file_hash(path: Path) -> str:

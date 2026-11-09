@@ -20,7 +20,8 @@ Add a section for every step you commit.
 | `src/actwise/retrieval/embedders.py` | `OnnxEmbedder` (onnxruntime and tokenizers, no torch), `mean_pool()`, `MINILM`. A local model folder is fingerprinted by its weights | The cloud image has no torch; a retrained model never reuses old cached vectors |
 | `src/actwise/retrieval/systems.py` | Rows G `minilm`, H `minilm-ft`, I `minilm-ft-int8` and J `hybrid-binding-int8` | |
 | `src/actwise/retrieval/stores.py`, `index.py` | `NumpyStore.save()` / `load()`; `index.py` loads `.env` and takes `--embedder` and `--npz`; every payload field gets a keyword index | `make index-cloud`. Qdrant Cloud refuses filters on unindexed fields |
-| `evals/publish_model.py`, `docs/embedder_card.md` | `make publish-model`: the int8 model and its card to the Hugging Face Hub | |
+| `evals/publish_model.py`, `docs/embedder_card.md` | `make publish-model`: the int8 model and its card to the Hugging Face Hub, as `Youssef-ADOUIRI/actwise-minilm-l12-ft-int8` | Step 13's image downloads it |
+| `src/actwise/retrieval/embedders.py`, `systems.py`, `index.py` | `MINILM_HUB` pins the published commit; I, J and `make index-cloud` load it with `hub_snapshot()` | Reproducible without training; the same model as the image |
 | `pyproject.toml` | `train` extra; `cloud` gains `huggingface-hub` | |
 | `docs/decisions/011-embedder.md`, `docs/ablations.md` | The numbers and the choice | |
 
@@ -29,7 +30,8 @@ Add a section for every step you commit.
 - **int8:** 471 → 119 MB, a query embeds in 12.6 ms instead of 21.1. Recall@5 moves by one question: +1.3 points on dev, −1.2 on test, which misses the 1-point target by that question.
 - **J, the cloud retriever:** test Recall@5 0.988 against E's 0.976, MRR 0.902 against 0.924, 15 ms per query on dev against 196.
 - **Qdrant Cloud:** `actwise_ft_int8` holds 3,799 passages and returns the same top 5 as `NumpyStore` for 20 of 20 dev questions.
-- **Checks:** 259 tests pass, coverage is 97 %, and ruff and mypy are clean.
+- **Hub:** the published `model.onnx` has the same hash as the local export (`test_the_published_model_is_the_export`).
+- **Checks:** 260 tests pass, coverage is 97 %, and ruff and mypy are clean.
 
 ---
 
