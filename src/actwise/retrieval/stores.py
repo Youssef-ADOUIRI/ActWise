@@ -72,12 +72,14 @@ class QdrantStore:
     def index(
         self, payloads: list[dict[str, str]], vectors: np.ndarray, batch_size: int = 256
     ) -> None:
-        """Create the collection if needed, then upsert one point per vector."""
-        from qdrant_client.models import Distance, PointStruct, VectorParams
+        """Create the collection if needed, index each payload field, then upsert the points."""
+        from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
 
         if not self.client.collection_exists(self.collection):
             config = VectorParams(size=vectors.shape[1], distance=Distance.COSINE)
             self.client.create_collection(self.collection, vectors_config=config)
+        for field in payloads[0] if payloads else []:  # Qdrant Cloud won't filter unindexed fields
+            self.client.create_payload_index(self.collection, field, PayloadSchemaType.KEYWORD)
         points = [
             PointStruct(id=self.point_id(p["key"]), vector=v.tolist(), payload=p)
             for p, v in zip(payloads, vectors, strict=True)
