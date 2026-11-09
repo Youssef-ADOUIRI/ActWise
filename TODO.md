@@ -11,10 +11,10 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] GitHub public repo `actwise`
 - [x] Google AI Studio: Gemini key in a project with **no billing account**
 - [x] Groq console key
-- [ ] Qdrant Cloud account
+- [x] Qdrant Cloud account
 - [ ] Langfuse Cloud (Hobby plan)
-- [ ] Hugging Face account
-- [ ] Colab or Kaggle (GPU)
+- [x] Hugging Face account
+- [x] Colab or Kaggle (GPU)
 - [ ] Free Slack workspace
 - [ ] Google Cloud project for Cloud Run (billing linked, kept separate from the Gemini project)
 - [ ] Local tools: Python 3.12, uv, Docker Desktop, git, Ollama (optional)
@@ -224,16 +224,16 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 9: Fine-tune and shrink the embedder
 
-- [ ] ~800 train chunks → EN + FR questions (cached) → read 50, drop bad pairs → 1,000–1,600 pairs
-- [ ] `[test]` `test_no_split_leakage`
-- [ ] `[test]` `test_pooling_ignores_padding`
-- [ ] `[test]` `test_onnx_parity` (slow, cosine ≥ 0.98)
-- [ ] Train MiniLM-L12 on Colab/Kaggle (MNRL, 3 epochs, `max_seq_length=256`)
-- [ ] Evaluate base vs FT on the **test** split with your own harness (hand-written and synthetic separately)
-- [ ] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query
-- [ ] `retrieval/embedders.py` (SentenceTransformer, ONNX)
+- [x] ~800 train chunks → EN + FR questions (cached) → read 50, drop bad pairs → 1,000–1,600 pairs: 1,428 (799 EN, 629 FR), 1 of 50 dropped in review
+- [x] `[test]` `test_no_split_leakage`
+- [x] `[test]` `test_pooling_ignores_padding`
+- [x] `[test]` `test_onnx_parity` (slow, cosine ≥ 0.98): worst 0.989
+- [x] Train MiniLM-L12 on Colab/Kaggle (MNRL, 3 epochs, `max_seq_length=256`): 33 s on a T4
+- [x] Evaluate base vs FT on the **test** split with your own harness (hand-written and synthetic separately): Recall@5 0.720 → 0.917 (dev 0.691 → 0.849)
+- [x] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query: 471 → 119 MB, 21 → 13 ms; Recall@5 −1.2 on test (one question), +1.3 on dev (decision 011)
+- [x] `retrieval/embedders.py` (SentenceTransformer, ONNX)
 - [ ] Publish the int8 model and model card on the HF Hub
-- [ ] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply)
+- [x] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply): 3,799 passages, same top 5 as NumPy
 
 ### Step 10: Frameworks (first to cut)
 
@@ -280,7 +280,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] GCP project, enabled APIs, Artifact Registry `actwise` (europe-west1)
 - [ ] Secrets: gemini, groq, qdrant, gsheets; grant `secretAccessor`
 - [ ] **EUR 1 budget alert** (50 / 90 / 100 %)
-- [ ] Qdrant Cloud cluster + `make index-cloud`
+- [x] Qdrant Cloud cluster + `make index-cloud` (step 9)
 - [ ] `api/app.py`: the cloud profile (the ONNX embedder of step 9, Qdrant Cloud)
 - [ ] `requirements-cloud.txt`, multi-stage `Dockerfile`, image **< 450 MB** compressed
 - [ ] `deploy/env.yaml`

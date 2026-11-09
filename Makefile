@@ -1,4 +1,4 @@
-.PHONY: install lint test ingest splits index index-cloud eval eval-retrieval eval-answers ablations llm-smoke \
+.PHONY: install lint test ingest splits index index-cloud publish-model eval eval-retrieval eval-answers ablations llm-smoke \
 	candidates label-sheet pairs eval-classifier serve ui deploy
 
 SYSTEM ?= baseline
@@ -31,6 +31,10 @@ index:
 # data/processed/index.npz for the image. Needs models/minilm-ft-int8 (evals/export_onnx.py).
 index-cloud:
 	uv run --extra local --extra train python -m actwise.retrieval.index --embedder ft-int8 --npz
+
+# Step 9: the int8 MiniLM and docs/embedder_card.md to the HF Hub (HF_TOKEN with write access).
+publish-model:
+	uv run --extra local --extra train python evals/publish_model.py
 
 # Retrieval metrics on the golden set. First run downloads the embedder;
 # vectors are cached in .cache/embeddings, so an interrupted run resumes.

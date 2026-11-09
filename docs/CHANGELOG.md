@@ -5,6 +5,34 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-09: Step 9, our own embedder, fine-tuned and int8
+
+**Goal:** a retrieval model of our own that beats its base on unseen articles, and an int8 ONNX version small enough for the free-tier cloud image (decision 011).
+**Branch:** `step-9-embedder`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/prompts/pairs.v1.md`, `src/actwise/training/pairs.py`, `evals/make_pairs.py` | `make pairs`: one EN and one FR question for each of 800 train passages, each paired with the passage in its own language. Rules and a 50-pair review sheet drop bad pairs | Training data from train articles only |
+| `data/train/pairs.jsonl`, `pairs_review.csv` | 1,428 pairs (799 EN, 629 FR); the review kept 49 of 50 | |
+| `src/actwise/evaluation/synthetic.py` | `pick_chunks(fr_share=)` and `screen_question()`, split out of step 6's code | Reused by the pairs |
+| `evals/train_embedder.py`, `notebooks/train_embedder.ipynb` | MNRL, 3 epochs, batch 32, one language per batch; `training.json` records the pairs' hash, commit and versions | Runs on a free Colab or Kaggle GPU |
+| `evals/export_onnx.py` | ONNX export, then int8 per channel with reduced range | Per tensor, the worst cosine to PyTorch was 0.973 |
+| `src/actwise/retrieval/embedders.py` | `OnnxEmbedder` (onnxruntime and tokenizers, no torch), `mean_pool()`, `MINILM`. A local model folder is fingerprinted by its weights | The cloud image has no torch; a retrained model never reuses old cached vectors |
+| `src/actwise/retrieval/systems.py` | Rows G `minilm`, H `minilm-ft`, I `minilm-ft-int8` and J `hybrid-binding-int8` | |
+| `src/actwise/retrieval/stores.py`, `index.py` | `NumpyStore.save()` / `load()`; `index.py` loads `.env` and takes `--embedder` and `--npz`; every payload field gets a keyword index | `make index-cloud`. Qdrant Cloud refuses filters on unindexed fields |
+| `evals/publish_model.py`, `docs/embedder_card.md` | `make publish-model`: the int8 model and its card to the Hugging Face Hub | |
+| `pyproject.toml` | `train` extra; `cloud` gains `huggingface-hub` | |
+| `docs/decisions/011-embedder.md`, `docs/ablations.md` | The numbers and the choice | |
+
+**Results:**
+- **Fine-tuning, Recall@5:** dev 0.691 → 0.849, test 0.720 → 0.917 (run once). On hand-written questions: dev 0.525 → 0.775, test 0.675 → 0.850.
+- **int8:** 471 → 119 MB, a query embeds in 12.6 ms instead of 21.1. Recall@5 moves by one question: +1.3 points on dev, −1.2 on test, which misses the 1-point target by that question.
+- **J, the cloud retriever:** test Recall@5 0.988 against E's 0.976, MRR 0.902 against 0.924, 15 ms per query on dev against 196.
+- **Qdrant Cloud:** `actwise_ft_int8` holds 3,799 passages and returns the same top 5 as `NumpyStore` for 20 of 20 dev questions.
+- **Checks:** 259 tests pass, coverage is 97 %, and ruff and mypy are clean.
+
+---
+
 ## 2026-11-04: Step 8b, better answer context
 
 **Goal:** answer the questions that two live tests exposed. A ("can a non-EU startup face fines?") was refused, and B (live facial recognition for a trafficking suspect) was answered on the wrong legal basis. Every change is measured against a new hard set first.
