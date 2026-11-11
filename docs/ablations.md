@@ -69,3 +69,12 @@ The test runs shared the CPU with the Qdrant Cloud upload, so their ms/query are
 - **Fine-tuning (G → H): +16 points of Recall@5 on dev and +20 on test.** The hand-written questions gain at least as much as the synthetic ones.
 - **int8 (H → I):** the model is 4 times smaller (471 → 119 MB) and Recall@5 differs by one question on each split, +1.3 points on dev and −1.2 on test. The test drop misses the 1-point target by that one question.
 - **J against E:** the same Recall@5 or better on both splits, without torch and at a thirteenth of the search time, but a lower MRR. J is the cloud profile's retriever, and the local profile keeps E.
+
+## Step 10: H rebuilt with LlamaIndex (row K)
+
+| Row | System | Recall@5 | MRR@10 | nDCG@10 | ms/query |
+|---|---|---|---|---|---|
+| H | `minilm-ft` (timed again as `minilm-ft-dev-timed`) | 0.849 [0.76, 0.92] | 0.712 | 0.765 | 20 |
+| K | `llamaindex-ft`: the same model and passages in a LlamaIndex `VectorStoreIndex` | 0.849 [0.76, 0.92] | 0.712 | 0.765 | 105 |
+
+Both rows rank the same top 10 articles for all 76 dev questions. K's extra time is LlamaIndex's `SimpleVectorStore`, not the embedder. See [frameworks/COMPARISON.md](../frameworks/COMPARISON.md) and [decision 013](decisions/013-frameworks.md).

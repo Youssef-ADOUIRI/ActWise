@@ -1,9 +1,11 @@
 """Evaluate the risk classifier on the scenarios; write evals/reports/classifier-<split>.json, .md.
 
     uv run --extra local python evals/run_classifier.py --split dev
+    uv run --extra local --extra frameworks python evals/run_classifier.py --agent langgraph
 
 The agent searches with system E (hybrid-binding) and answers with the LLM chain in .env
 (offline profile: one model, every call cached). Tune on dev; report test once, at the end.
+`--agent langgraph` runs the step 10 LangGraph version instead of the agent.
 """
 
 from __future__ import annotations
@@ -12,12 +14,13 @@ import argparse
 import logging
 import os
 from datetime import UTC, datetime
+from importlib import import_module
 from typing import Any
 
 from dotenv import load_dotenv
 from run_eval import fingerprint, git_commit, write_report
 
-from actwise.agent.classifier import CLASSIFY_PROMPT, ai_act_articles
+from actwise.agent.classifier import CLASSIFY_PROMPT, ai_act_articles, classify
 from actwise.evaluation.classifier_eval import classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import SCENARIOS_FILE, load_scenarios
 from actwise.llm.factory import OFFLINE, build_llm
@@ -31,7 +34,8 @@ def to_markdown(report: dict[str, Any]) -> str:
     lines = [
         f"# Classifier report: {report['name']}",
         "",
-        f"Prompt `{report['prompt']}`, retrieval `{SERVED}`, split `{report['split']}`: "
+        f"Classifier `{report['agent']}`, prompt `{report['prompt']}`, retrieval `{SERVED}`, "
+        f"split `{report['split']}`: "
         f"{s['n']} scenarios ({s['clear']} clear, {s['n'] - s['clear']} ambiguous).",
         "",
         "| Metric | Value |",
@@ -42,6 +46,7 @@ def to_markdown(report: dict[str, Any]) -> str:
         f"| Prohibited or high risk labelled minimal risk | {s['dangerous_downgrades']} |",
         f"| Runs that hit the step budget | {s['failed']} |",
         f"| Steps / lookups (reads and searches) per run | {s['steps']} / {s['lookups']} |",
+        f"| Seconds / input tokens per run | {s['seconds']} / {s['input_tokens']} |",
         f"| Accuracy by language (clear) | {s['by_lang']} |",
         "",
         "## Confusion (clear scenarios: gold → predicted)",
@@ -64,6 +69,7 @@ def main() -> None:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--split", choices=["dev", "test"], default="dev")
+    parser.add_argument("--agent", choices=["agent", "langgraph"], default="agent")
     args = parser.parse_args()
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)
@@ -73,13 +79,21 @@ def main() -> None:
     scenarios = [s for s in load_scenarios() if s.split == args.split]
     retriever = SYSTEMS[SERVED].build()
     articles = ai_act_articles(paragraph_passages())
-    rows = classify_scenarios(llm, retriever.search, articles, scenarios)
+    if args.agent == "langgraph":  # the frameworks extra: imported only when chosen
+        graph = import_module("frameworks.langgraph_classifier")
+        classifier, prompt = graph.classify, graph.RULE_PROMPT
+    else:
+        classifier, prompt = classify, CLASSIFY_PROMPT
+    rows = classify_scenarios(llm, retriever.search, articles, scenarios, classifier)
     report = {
-        "name": f"classifier-{args.split}",
+        "name": f"classifier-{args.split}"
+        if args.agent == "agent"
+        else f"classifier-{args.agent}-{args.split}",
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
-        "prompt": CLASSIFY_PROMPT,
+        "prompt": prompt,
+        "agent": args.agent,
         "system": retriever.config,
         "llm": llm.config,
         "inputs": {"scenarios": fingerprint(SCENARIOS_FILE)},

@@ -20,6 +20,7 @@ import os
 import time
 from datetime import UTC, datetime
 from functools import partial
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -39,9 +40,16 @@ from actwise.llm.factory import OFFLINE, build_judge, build_llm
 from actwise.provenance import file_hash, git_commit
 from actwise.retrieval.hybrid import HybridRetriever
 from actwise.retrieval.passages import paragraph_passages
-from actwise.retrieval.systems import SYSTEMS
+from actwise.retrieval.systems import SYSTEMS, System
 
 REPORTS = Path("evals/reports")
+# Step 10: H rebuilt with LlamaIndex (frameworks extra), imported only when chosen
+SYSTEMS = SYSTEMS | {
+    "llamaindex-ft": System(
+        "K: as H, embedded, stored and searched by LlamaIndex",
+        lambda: import_module("frameworks.llamaindex_pipeline").build(),
+    )
+}
 CONTEXTS: dict[str, dict[str, Any] | None] = {  # step 8b, one phase per entry
     "windows": None,
     "paragraphs": {},

@@ -1,9 +1,10 @@
 {
   "name": "classifier-dev",
-  "created": "2026-10-27T02:38:07+00:00",
-  "git_commit": "f3670f9",
+  "created": "2026-11-11T20:33:19+00:00",
+  "git_commit": "7f12f3d-dirty",
   "split": "dev",
   "prompt": "classify.v1",
+  "agent": "agent",
   "system": {
     "embedder": {
       "model": "BAAI/bge-m3",
@@ -37,7 +38,7 @@
     ]
   },
   "inputs": {
-    "scenarios": "85ae86bb0c56"
+    "scenarios": "83413ce85c36"
   },
   "summary": {
     "n": 20,
@@ -49,6 +50,8 @@
     "failed": 0,
     "steps": 3.55,
     "lookups": 3.05,
+    "seconds": 1.163,
+    "input_tokens": 8714,
     "confusion": {
       "prohibited": {
         "prohibited": 4
@@ -71,8 +74,8 @@
       "fr": 1.0
     },
     "cache_hits_misses": [
-      0,
-      71
+      71,
+      0
     ]
   },
   "per_scenario": [
@@ -91,7 +94,10 @@
         "AIA-Art5-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.019,
+      "input_tokens": 3881,
+      "output_tokens": 106
     },
     {
       "id": "s03",
@@ -108,7 +114,10 @@
         "AIA-Art5-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 18.763,
+      "input_tokens": 10424,
+      "output_tokens": 179
     },
     {
       "id": "s05",
@@ -125,7 +134,10 @@
         "AIA-Art5-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.018,
+      "input_tokens": 3873,
+      "output_tokens": 110
     },
     {
       "id": "s07",
@@ -142,7 +154,10 @@
         "AIA-Art5-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.015,
+      "input_tokens": 3869,
+      "output_tokens": 100
     },
     {
       "id": "s09",
@@ -161,7 +176,10 @@
         "AIA-Art6-2"
       ],
       "confidence": 0.95,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.472,
+      "input_tokens": 27446,
+      "output_tokens": 263
     },
     {
       "id": "s11",
@@ -180,7 +198,10 @@
         "AIA-Art6-3"
       ],
       "confidence": 0.95,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.499,
+      "input_tokens": 17162,
+      "output_tokens": 289
     },
     {
       "id": "s13",
@@ -199,7 +220,10 @@
         "AIA-Art6-2"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.016,
+      "input_tokens": 4335,
+      "output_tokens": 153
     },
     {
       "id": "s15",
@@ -219,7 +243,10 @@
         "AIA-Art6-3"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.022,
+      "input_tokens": 6826,
+      "output_tokens": 176
     },
     {
       "id": "s17",
@@ -237,7 +264,10 @@
         "AIA-AnnexI-a.11"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.014,
+      "input_tokens": 7758,
+      "output_tokens": 194
     },
     {
       "id": "s19",
@@ -258,7 +288,10 @@
         "AIA-Art50-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.553,
+      "input_tokens": 11768,
+      "output_tokens": 302
     },
     {
       "id": "s21",
@@ -277,7 +310,10 @@
         "AIA-Art50-2"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.627,
+      "input_tokens": 12150,
+      "output_tokens": 261
     },
     {
       "id": "s23",
@@ -294,7 +330,10 @@
         "AIA-Art50-4"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.014,
+      "input_tokens": 2713,
+      "output_tokens": 127
     },
     {
       "id": "s25",
@@ -315,7 +354,10 @@
         "AIA-Art50-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.447,
+      "input_tokens": 9790,
+      "output_tokens": 264
     },
     {
       "id": "s27",
@@ -340,7 +382,10 @@
         "AIA-Art50-1"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.014,
+      "input_tokens": 7651,
+      "output_tokens": 317
     },
     {
       "id": "s29",
@@ -360,7 +405,10 @@
         "AIA-AnnexIII-4"
       ],
       "confidence": 0.95,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.256,
+      "input_tokens": 6156,
+      "output_tokens": 235
     },
     {
       "id": "s31",
@@ -380,7 +428,10 @@
       "follow_up_questions": [
         "What is the specific intended purpose and domain of the image analysis (e.g., medical, biometric identification, employment, critical infrastructure, law enforcement)?",
         "Does the AI system generate synthetic content or deep fakes, or interact directly with individuals?"
-      ]
+      ],
+      "seconds": 0.148,
+      "input_tokens": 5568,
+      "output_tokens": 183
     },
     {
       "id": "s33",
@@ -400,7 +451,10 @@
       "follow_up_questions": [
         "Is this system used purely for biometric verification (such as granting access to specific employees whose identity is already known and being authenticated, i.e., 1-to-1 verification), or does it perform remote biometric identification (1-to-many matching against a database)?",
         "Is the building a publicly accessible space or used for law enforcement purposes?"
-      ]
+      ],
+      "seconds": 0.263,
+      "input_tokens": 9205,
+      "output_tokens": 287
     },
     {
       "id": "s35",
@@ -419,7 +473,10 @@
         "AIA-Art50-2"
       ],
       "confidence": 0.95,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.28,
+      "input_tokens": 6102,
+      "output_tokens": 213
     },
     {
       "id": "s37",
@@ -437,7 +494,10 @@
         "AIA-Art6-2"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.141,
+      "input_tokens": 4309,
+      "output_tokens": 139
     },
     {
       "id": "s39",
@@ -457,7 +517,10 @@
         "AIA-Art50-2"
       ],
       "confidence": 1.0,
-      "follow_up_questions": []
+      "follow_up_questions": [],
+      "seconds": 0.685,
+      "input_tokens": 13290,
+      "output_tokens": 267
     }
   ]
 }

@@ -1,3 +1,5 @@
+from actwise.agent.classifier import ClassifyOutcome
+from actwise.agent.schemas import Classification
 from actwise.evaluation.classifier_eval import FAILED, classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import Scenario
 from actwise.llm.base import LLMResponse, ToolCall
@@ -65,3 +67,27 @@ def test_classify_scenarios_records_failures_and_results():
     assert (ok["predicted"], ok["citations"], ok["steps"]) == ("prohibited", ["AIA-Art5-1"], 2)
     assert "tier" not in ok  # stored once, as `predicted`
     assert failed["predicted"] == FAILED and "step" in failed["error"]
+
+
+def test_classify_scenarios_runs_the_classifier_it_is_given():
+    """Another classifier (the LangGraph one) goes through the same harness; cost is recorded."""
+    seen = []
+
+    def classifier(llm, search, articles, description):
+        """Answers high risk after one model call that cost 100 + 20 tokens."""
+        seen.append(description)
+        llm.chat([{"role": "user", "content": description}])
+        result = Classification(
+            tier="high_risk", reasons=["r"], citations=["AIA-Art6-2"], confidence=0.5
+        )
+        return ClassifyOutcome(result, steps=1, lookups=3)
+
+    scenario = Scenario("s02", "dev", "en", False, "high_risk", "AIA-Art6", "", "CVs.", "yes")
+    llm = ScriptedLLM(LLMResponse("", [], 100, 20, "m"))
+
+    [r] = classify_scenarios(llm, lambda q, k: [], {}, [scenario], classifier)
+
+    assert seen == ["CVs."]
+    assert (r["predicted"], r["steps"], r["lookups"]) == ("high_risk", 1, 3)
+    assert (r["input_tokens"], r["output_tokens"]) == (100, 20)
+    assert r["seconds"] >= 0

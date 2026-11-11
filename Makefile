@@ -1,5 +1,5 @@
 .PHONY: install lint test ingest splits index index-cloud publish-model eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet pairs eval-classifier serve ui deploy
+	candidates label-sheet pairs compare eval-classifier serve ui deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -12,7 +12,7 @@ install:
 lint:
 	uv run ruff check .
 	uv run ruff format --check .
-	uv run mypy src evals
+	uv run mypy src evals frameworks
 
 test:
 	uv run pytest --cov=src --cov-fail-under=80
@@ -84,3 +84,9 @@ ui:
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"
+
+# Step 10: H rebuilt with LlamaIndex and the classifier as a LangGraph rule walk, on dev
+# (frameworks/COMPARISON.md). The first run embeds the corpus and calls the model.
+compare:
+	uv run --extra local --extra frameworks python evals/run_eval.py --system llamaindex-ft --split dev
+	uv run --extra local --extra frameworks python evals/run_classifier.py --agent langgraph --split dev
