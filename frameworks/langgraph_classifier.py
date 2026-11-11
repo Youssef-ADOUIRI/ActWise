@@ -33,9 +33,10 @@ from actwise.generation.prompts import load_prompt
 from actwise.generation.rag import Search, format_sources
 from actwise.llm.base import LLM, Message
 
-RULE_PROMPT = "classify_rule.v1"
+CLASSIFY_PROMPT = "classify_rule.v1"  # the agent's name for it, so one harness loads both
 RULES = list(TIER_ARTICLES.items())  # (tier, the articles that decide it), in checking order
 NUDGE = "Call decide_rule now."
+SYSTEM = load_prompt(CLASSIFY_PROMPT)
 
 
 class RuleDecision(BaseModel):
@@ -72,39 +73,29 @@ class State(TypedDict, total=False):
     rule: int  # index into RULES
     messages: list[Message]  # the conversation about the current rule
     retrieved: set[str]  # every paragraph id read so far: what may be cited
-    decisions: list[RuleDecision]  # the earlier rules, none of which applied
-    decision: RuleDecision | None  # the current rule's, until it is refused
-    calls: list[str]  # the tool call ids of the model's last reply
+    decisions: list[RuleDecision]  # one per rule checked; the last may still be refused
     steps: int  # model calls
-    lookups: int  # articles read
     result: Classification
 
 
-def tool_replies(calls: list[str], content: str) -> list[Message]:
-    """The same answer to every tool call of a reply, as the providers require."""
-    return [{"role": "tool", "tool_call_id": call, "content": content} for call in calls]
+def tool_replies(asked: Message, content: str) -> list[Message]:
+    """The same answer to every tool call of the model's message, as the providers require."""
+    calls = asked["tool_calls"]
+    return [{"role": "tool", "tool_call_id": c["id"], "content": content} for c in calls]
 
 
 def retrieve_for_rule(state: State, runtime: Runtime[Deps]) -> State:
     """Move to the next rule: read its articles and start a conversation about it."""
     rule = state.get("rule", -1) + 1
-    articles = RULES[rule][1]
-    found = [p for article in articles for p in runtime.context.articles.get(article, [])]
+    found = [p for article in RULES[rule][1] for p in runtime.context.articles.get(article, [])]
     prompt = (
         f"AI system description:\n{state['description']}\n\n"
         f"Check rule {rule + 1}.\n\n{format_sources(found)}"
     )
-    earlier = state.get("decisions", [])
     return {
         "rule": rule,
-        "messages": [
-            {"role": "system", "content": load_prompt(RULE_PROMPT)},
-            {"role": "user", "content": prompt},
-        ],
+        "messages": [{"role": "system", "content": SYSTEM}, {"role": "user", "content": prompt}],
         "retrieved": state.get("retrieved", set()) | {p["id"] for p in found},
-        "decisions": earlier + [d for d in [state.get("decision")] if d is not None],
-        "decision": None,
-        "lookups": state.get("lookups", 0) + len(articles),
     }
 
 
@@ -132,32 +123,30 @@ def decide(state: State, runtime: Runtime[Deps]) -> State:
             {"role": "user", "content": NUDGE},
         ]
         return {"steps": steps + 1, "messages": state["messages"] + told}
-    calls = [call.id for call in reply.tool_calls]
-    asked = [asdict(call) for call in reply.tool_calls]
-    messages = state["messages"] + [
-        {"role": "assistant", "content": reply.text, "tool_calls": asked}
-    ]
+    calls = [asdict(call) for call in reply.tool_calls]
+    asked: Message = {"role": "assistant", "content": reply.text, "tool_calls": calls}
+    messages = state["messages"] + [asked]
     verdict = check(reply.tool_calls[0].arguments, state["retrieved"])
     if isinstance(verdict, str):
-        return {"steps": steps + 1, "messages": messages + tool_replies(calls, verdict)}
-    return {"steps": steps + 1, "messages": messages, "decision": verdict, "calls": calls}
+        return {"steps": steps + 1, "messages": messages + tool_replies(asked, verdict)}
+    decisions = state.get("decisions", []) + [verdict]
+    return {"steps": steps + 1, "messages": messages, "decisions": decisions}
 
 
 def after_decide(state: State) -> str:
     """Ask again, check the next rule, or submit: the first rule that applies decides."""
-    decision = state.get("decision")
-    if decision is None:
+    decisions = state.get("decisions", [])
+    if len(decisions) <= state["rule"]:  # no decision on the current rule yet
         return "decide"
-    if decision.applies == "no" and state["rule"] + 1 < len(RULES):
+    if decisions[-1].applies == "no" and state["rule"] + 1 < len(RULES):
         return "retrieve_for_rule"
     return "submit"
 
 
 def submit(state: State) -> State:
     """Build the classification from every rule checked, and run the agent's guards."""
-    decision = state["decision"]
-    assert decision is not None  # after_decide only routes a decision here
-    decisions = state.get("decisions", []) + [decision]
+    decisions = state["decisions"]
+    decision = decisions[-1]
     tier = {"yes": RULES[state["rule"]][0], "unclear": "needs_more_info", "no": "minimal_risk"}
     arguments = {
         "tier": tier[decision.applies],
@@ -169,7 +158,8 @@ def submit(state: State) -> State:
     verdict = accept(arguments, state["retrieved"])
     if isinstance(verdict, Classification):
         return {"result": verdict}
-    return {"decision": None, "messages": state["messages"] + tool_replies(state["calls"], verdict)}
+    messages = state["messages"]
+    return {"decisions": decisions[:-1], "messages": messages + tool_replies(messages[-1], verdict)}
 
 
 def compile_graph() -> CompiledStateGraph[State, Deps, State, State]:
@@ -205,4 +195,5 @@ def classify(
         context=Deps(llm, articles, max_steps, deadline),
         config={"recursion_limit": 4 * max_steps},
     )
-    return ClassifyOutcome(state["result"], state["steps"], state["lookups"])
+    lookups = sum(len(articles) for _, articles in RULES[: state["rule"] + 1])  # articles read
+    return ClassifyOutcome(state["result"], state["steps"], lookups)

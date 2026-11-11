@@ -53,7 +53,7 @@ def code_lines(path: Path, only: set[str] | None = None) -> int:
         if isinstance(node, (ast.Import, ast.ImportFrom)):
             continue
         defined = names_of(node)
-        if not defined & SHARED if only is None else defined & only:
+        if not defined & SHARED and (only is None or defined & only):
             lines.update(range(node.lineno, (node.end_lineno or node.lineno) + 1))
     owners = (ast.Module, ast.ClassDef, ast.FunctionDef, ast.AsyncFunctionDef)
     for owner in ast.walk(tree):  # docstrings
@@ -61,7 +61,8 @@ def code_lines(path: Path, only: set[str] | None = None) -> int:
             first = owner.body[0]
             lines -= set(range(first.lineno, (first.end_lineno or first.lineno) + 1))
     text = source.splitlines()
-    return sum(1 for n in lines if text[n - 1].strip() and not text[n - 1].strip().startswith("#"))
+    rows = (text[n - 1].strip() for n in lines)
+    return sum(1 for row in rows if row and not row.startswith("#"))
 
 
 def main() -> None:

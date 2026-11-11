@@ -237,7 +237,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 10: Frameworks (first to cut)
 
-- [x] `frameworks/llamaindex_pipeline.py` + smoke test: same Recall@5 as H (0.849), 105 against 20 ms per query
+- [x] `frameworks/llamaindex_pipeline.py` + smoke test: same Recall@5 as H (0.849), 103 against 20 ms per query
 - [x] `frameworks/langgraph_classifier.py` + smoke test: 16/17 clear against the agent's 17/17, 2.90 calls per run against 3.55
 - [x] `frameworks/COMPARISON.md` filled from measured numbers; neither framework goes into the API (decision 013)
 

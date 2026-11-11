@@ -1,7 +1,7 @@
 {
   "name": "classifier-langgraph-dev",
-  "created": "2026-11-11T20:37:45+00:00",
-  "git_commit": "7f12f3d-dirty",
+  "created": "2026-11-11T20:51:49+00:00",
+  "git_commit": "207f9ae-dirty",
   "split": "dev",
   "prompt": "classify_rule.v1",
   "agent": "langgraph",
@@ -50,7 +50,7 @@
     "failed": 0,
     "steps": 2.9,
     "lookups": 3.75,
-    "seconds": 0.021,
+    "seconds": 0.006,
     "input_tokens": 11312,
     "confusion": {
       "prohibited": {
@@ -96,7 +96,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.012,
+      "seconds": 0.008,
       "input_tokens": 2780,
       "output_tokens": 73
     },
@@ -116,7 +116,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.008,
+      "seconds": 0.003,
       "input_tokens": 2787,
       "output_tokens": 136
     },
@@ -136,7 +136,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.016,
+      "seconds": 0.004,
       "input_tokens": 5701,
       "output_tokens": 149
     },
@@ -156,7 +156,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.008,
+      "seconds": 0.002,
       "input_tokens": 2774,
       "output_tokens": 88
     },
@@ -179,7 +179,7 @@
       ],
       "confidence": 0.95,
       "follow_up_questions": [],
-      "seconds": 0.015,
+      "seconds": 0.005,
       "input_tokens": 8763,
       "output_tokens": 234
     },
@@ -202,7 +202,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.015,
+      "seconds": 0.005,
       "input_tokens": 8767,
       "output_tokens": 295
     },
@@ -225,7 +225,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.021,
+      "seconds": 0.006,
       "input_tokens": 11728,
       "output_tokens": 294
     },
@@ -248,7 +248,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.022,
+      "seconds": 0.006,
       "input_tokens": 11727,
       "output_tokens": 371
     },
@@ -271,7 +271,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.021,
+      "seconds": 0.006,
       "input_tokens": 11745,
       "output_tokens": 308
     },
@@ -297,7 +297,7 @@
       ],
       "confidence": 0.9,
       "follow_up_questions": [],
-      "seconds": 0.022,
+      "seconds": 0.006,
       "input_tokens": 10378,
       "output_tokens": 400
     },
@@ -323,7 +323,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.028,
+      "seconds": 0.007,
       "input_tokens": 13285,
       "output_tokens": 412
     },
@@ -349,7 +349,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.037,
+      "seconds": 0.009,
       "input_tokens": 19642,
       "output_tokens": 760
     },
@@ -377,7 +377,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.029,
+      "seconds": 0.007,
       "input_tokens": 16522,
       "output_tokens": 512
     },
@@ -405,7 +405,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.036,
+      "seconds": 0.009,
       "input_tokens": 19442,
       "output_tokens": 543
     },
@@ -428,7 +428,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.022,
+      "seconds": 0.006,
       "input_tokens": 11733,
       "output_tokens": 369
     },
@@ -455,7 +455,7 @@
         "Is the AI system intended to be used as a safety component of a product, or is it itself a product, covered by Annex I?",
         "Does the AI system fall under any of the high-risk use cases listed in Annex III of the EU AI Act?"
       ],
-      "seconds": 0.03,
+      "seconds": 0.007,
       "input_tokens": 17930,
       "output_tokens": 559
     },
@@ -480,7 +480,7 @@
       "follow_up_questions": [
         "Is the face recognition system used for remote biometric identification (i.e., identifying persons at a distance in a public space), or is it used solely for biometric verification (confirming someone is who they claim to be, e.g., unlocking a door with a badge) or local access control not falling under remote biometric identification?"
       ],
-      "seconds": 0.015,
+      "seconds": 0.004,
       "input_tokens": 8729,
       "output_tokens": 339
     },
@@ -509,7 +509,7 @@
       ],
       "confidence": 0.9,
       "follow_up_questions": [],
-      "seconds": 0.028,
+      "seconds": 0.007,
       "input_tokens": 16504,
       "output_tokens": 586
     },
@@ -532,7 +532,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.015,
+      "seconds": 0.004,
       "input_tokens": 8751,
       "output_tokens": 209
     },
@@ -558,7 +558,7 @@
       ],
       "confidence": 1.0,
       "follow_up_questions": [],
-      "seconds": 0.028,
+      "seconds": 0.007,
       "input_tokens": 16559,
       "output_tokens": 470
     }

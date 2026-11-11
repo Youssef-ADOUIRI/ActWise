@@ -75,6 +75,6 @@ The test runs shared the CPU with the Qdrant Cloud upload, so their ms/query are
 | Row | System | Recall@5 | MRR@10 | nDCG@10 | ms/query |
 |---|---|---|---|---|---|
 | H | `minilm-ft` (timed again as `minilm-ft-dev-timed`) | 0.849 [0.76, 0.92] | 0.712 | 0.765 | 20 |
-| K | `llamaindex-ft`: the same model and passages in a LlamaIndex `VectorStoreIndex` | 0.849 [0.76, 0.92] | 0.712 | 0.765 | 105 |
+| K | `llamaindex-ft`: the same model and passages in a LlamaIndex `VectorStoreIndex` | 0.849 [0.76, 0.92] | 0.712 | 0.765 | 103 |
 
 Both rows rank the same top 10 articles for all 76 dev questions. K's extra time is LlamaIndex's `SimpleVectorStore`, not the embedder. See [frameworks/COMPARISON.md](../frameworks/COMPARISON.md) and [decision 013](decisions/013-frameworks.md).

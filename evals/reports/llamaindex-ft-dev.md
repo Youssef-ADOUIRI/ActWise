@@ -10,7 +10,7 @@ K: as H, embedded, stored and searched by LlamaIndex. Split `dev`, 76 scored que
 | Recall@20 | 0.967 |
 | MRR@10 | 0.712 [0.63, 0.79] |
 | nDCG@10 | 0.765 |
-| ms / query | 112 |
+| ms / query | 103 |
 
 ## By language
 

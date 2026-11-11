@@ -16,13 +16,14 @@ Add a section for every step you commit.
 | `frameworks/langgraph_classifier.py`, `prompts/classify_rule.v1.md` | The guide's rule walk: `retrieve_for_rule` → `decide` → `submit`, with the agent's `Classification` and `accept()`; `run_classifier.py --agent langgraph` | The classifier half |
 | `src/actwise/evaluation/classifier_eval.py` | `classify_scenarios(classifier=)`; each row records seconds and tokens | One harness for both classifiers |
 | `src/actwise/agent/classifier.py` | `uncited()`, split out of `accept()` | The graph checks each rule's citations with it |
+| `src/actwise/llm/wrappers.py` | `CountingLLM`: the tokens of every reply in a run | Cost per classification |
 | `frameworks/loc.py`, `frameworks/COMPARISON.md` | Lines of code, and the measured table | |
-| `pyproject.toml`, `Makefile` | The `frameworks` extra (not in CI or the image), `frameworks` packaged next to `actwise`, `make compare` | |
+| `pyproject.toml`, `Makefile` | The `frameworks` extra (not in CI or the image); the editable install puts `frameworks/` on the path, and the wheel stays `actwise` only; `make compare` | |
 | `docs/decisions/013-frameworks.md`, `docs/ablations.md` | The choice, and row K | |
 
 **Results (dev):**
-- **LlamaIndex:** the same Recall@5 (0.849) and MRR@10 (0.712) as H, with the same top 10 for all 76 questions. It takes 105 ms per query against 20, because `SimpleVectorStore` scores each passage in Python. 51 lines of code against 131, and 60 MB of new packages.
-- **LangGraph:** 16 of 17 clear and 3 of 3 ambiguous scenarios, against 17 and 3. It misses s29, an Art. 6(3) exception. 2.90 model calls per run against 3.55, but 11,312 input tokens against 8,714. 15 of its 58 calls were retries, because the model sent an enum as a list. 4 ms of framework overhead per run, 131 lines against 97, 12 MB of new packages.
+- **LlamaIndex:** the same Recall@5 (0.849) and MRR@10 (0.712) as H, with the same top 10 for all 76 questions. It takes 103 ms per query against 20, because `SimpleVectorStore` scores each passage in Python. 40 lines of code against 131, and 60 MB of new packages.
+- **LangGraph:** 16 of 17 clear and 3 of 3 ambiguous scenarios, against 17 and 3. It misses s29, an Art. 6(3) exception. 2.90 model calls per run against 3.55, but 11,312 input tokens against 8,714. 15 of its 58 calls were retries, because the model sent an enum as a list. 3 ms of framework overhead per run, 122 lines against 97, 12 MB of new packages.
 - **Kept in the API:** our own retriever and agent.
 
 ---

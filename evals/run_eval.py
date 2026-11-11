@@ -20,7 +20,6 @@ import os
 import time
 from datetime import UTC, datetime
 from functools import partial
-from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -41,13 +40,13 @@ from actwise.provenance import file_hash, git_commit
 from actwise.retrieval.hybrid import HybridRetriever
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SYSTEMS, System
+from frameworks import llamaindex_pipeline
 
 REPORTS = Path("evals/reports")
-# Step 10: H rebuilt with LlamaIndex (frameworks extra), imported only when chosen
-SYSTEMS = SYSTEMS | {
+# Row K (step 10): H rebuilt with LlamaIndex; building it needs the frameworks extra
+EVAL_SYSTEMS = SYSTEMS | {
     "llamaindex-ft": System(
-        "K: as H, embedded, stored and searched by LlamaIndex",
-        lambda: import_module("frameworks.llamaindex_pipeline").build(),
+        "K: as H, embedded, stored and searched by LlamaIndex", llamaindex_pipeline.build
     )
 }
 CONTEXTS: dict[str, dict[str, Any] | None] = {  # step 8b, one phase per entry
@@ -102,7 +101,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument("--system", choices=SYSTEMS, default="baseline")
+    parser.add_argument("--system", choices=EVAL_SYSTEMS, default="baseline")
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
     parser.add_argument(
         "--name", help="report name (default: <system>-<split>[-<prompt>][-<context>])"
@@ -128,7 +127,7 @@ def main() -> None:
     llm = build_llm(os.environ, OFFLINE) if args.prompt else None
     judge = build_judge(os.environ) if args.judge else None
 
-    system = SYSTEMS[args.system]
+    system = EVAL_SYSTEMS[args.system]
     article_split = split_of(load_splits())
     questions = [q for q in load_golden() if question_split(q, article_split) == args.split]
 

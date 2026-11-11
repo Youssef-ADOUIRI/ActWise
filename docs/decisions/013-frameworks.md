@@ -7,14 +7,14 @@
 - **Measured:** on dev, with the same chunks, embedder, model and guards. The full table is in [frameworks/COMPARISON.md](../../frameworks/COMPARISON.md).
   - **LlamaIndex:**
     - **Same results:** the same Recall@5 (0.849) and MRR@10 (0.712), and the same top 10 for all 76 questions.
-    - **Slower:** 105 ms per query against H's 20. About 80 ms of that is `SimpleVectorStore`, which rebuilds an array from Python lists and scores each passage separately.
-    - **Smaller:** 51 lines against 131.
+    - **Slower:** 103 ms per query against H's 20. About 80 ms of that is `SimpleVectorStore`, which rebuilds an array from Python lists and scores each passage separately.
+    - **Smaller:** 40 lines against 131.
     - **Heavier:** 23 packages and 60 MB more.
   - **LangGraph:**
     - **Accuracy:** 16 of 17 clear and 3 of 3 ambiguous scenarios, against the agent's 17 and 3. No dangerous downgrade and no failed run.
     - **Cost:** 2.90 model calls per run against 3.55, but 11,312 input tokens against 8,714.
     - **Retries:** 15 of the 58 calls were spent on the model sending `"applies": ["no"]` as a list.
-    - **Size:** 131 lines against 97, and 16 packages, 12 MB, for 4 ms of overhead per run.
+    - **Size:** 122 lines against 97, and 16 packages, 12 MB, for 3 ms of overhead per run.
 - **Chosen:**
   - **The API keeps** system E and the agent, as before.
   - **The framework versions stay** in `frameworks/`, behind the `frameworks` extra, which neither CI nor the image installs. Their smoke tests skip without it.

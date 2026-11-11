@@ -45,8 +45,8 @@ dev = [
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/actwise", "frameworks"]  # frameworks: step 10, importable from evals/
+[tool.hatch.build]
+dev-mode-dirs = ["src", "."]  # the editable install also puts frameworks/ (step 10) on the path
 
 [tool.ruff]
 line-length = 100

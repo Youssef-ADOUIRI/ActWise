@@ -1,7 +1,7 @@
 {
   "name": "llamaindex-ft-dev",
-  "created": "2026-11-11T20:31:34+00:00",
-  "git_commit": "7f12f3d-dirty",
+  "created": "2026-11-11T20:51:36+00:00",
+  "git_commit": "207f9ae-dirty",
   "split": "dev",
   "system": {
     "name": "llamaindex-ft",
@@ -35,7 +35,7 @@
     "recall@20": 0.9671,
     "mrr@10": 0.7119,
     "ndcg@10": 0.765,
-    "ms_per_query": 112.2
+    "ms_per_query": 102.7
   },
   "ci95": {
     "recall@5": [

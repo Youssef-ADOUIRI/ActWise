@@ -10,7 +10,7 @@ Classifier `langgraph`, prompt `classify_rule.v1`, retrieval `hybrid-binding`, s
 | Prohibited or high risk labelled minimal risk | 0 |
 | Runs that hit the step budget | 0 |
 | Steps / lookups (reads and searches) per run | 2.9 / 3.75 |
-| Seconds / input tokens per run | 0.021 / 11312 |
+| Seconds / input tokens per run | 0.006 / 11312 |
 | Accuracy by language (clear) | {'en': 0.9167, 'fr': 1.0} |
 
 ## Confusion (clear scenarios: gold → predicted)

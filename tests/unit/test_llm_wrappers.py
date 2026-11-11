@@ -6,7 +6,7 @@ import openai
 import pytest
 
 from actwise.llm.base import LLMResponse, ToolCall
-from actwise.llm.wrappers import CachedLLM, FallbackLLM, LLMUnavailable, RetryingLLM
+from actwise.llm.wrappers import CachedLLM, CountingLLM, FallbackLLM, LLMUnavailable, RetryingLLM
 from tests.unit.toys import ScriptedLLM
 
 MESSAGES = [{"role": "user", "content": "Which AI practices are banned?"}]
@@ -265,3 +265,16 @@ def test_fallback_passes_the_deadline_down():
     llm.chat(MESSAGES, deadline=110.0)
 
     assert [call["deadline"] for call in inner.calls] == [125.0, 110.0]
+
+
+def test_counting_adds_up_every_reply():
+    """Two replies of 10 + 5 and 30 + 7 tokens cost 40 + 12; the request reaches the model."""
+    inner = ScriptedLLM(LLMResponse("a", [], 10, 5, "m"), LLMResponse("b", [], 30, 7, "m"))
+    counted = CountingLLM(inner)
+
+    counted.chat([{"role": "user", "content": "q1"}], deadline=3.0)
+    reply = counted.chat([{"role": "user", "content": "q2"}])
+
+    assert reply.text == "b"
+    assert (counted.input_tokens, counted.output_tokens) == (40, 12)
+    assert inner.calls[0]["deadline"] == 3.0

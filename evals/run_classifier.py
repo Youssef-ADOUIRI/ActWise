@@ -20,12 +20,16 @@ from typing import Any
 from dotenv import load_dotenv
 from run_eval import fingerprint, git_commit, write_report
 
-from actwise.agent.classifier import CLASSIFY_PROMPT, ai_act_articles, classify
+from actwise.agent.classifier import ai_act_articles
 from actwise.evaluation.classifier_eval import classify_scenarios, summarise_classifications
 from actwise.evaluation.scenarios import SCENARIOS_FILE, load_scenarios
 from actwise.llm.factory import OFFLINE, build_llm
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SERVED, SYSTEMS
+
+# Each module has `classify` and `CLASSIFY_PROMPT`; the LangGraph one needs the frameworks
+# extra, so it is imported only when chosen.
+CLASSIFIERS = {"agent": "actwise.agent.classifier", "langgraph": "frameworks.langgraph_classifier"}
 
 
 def to_markdown(report: dict[str, Any]) -> str:
@@ -69,7 +73,7 @@ def main() -> None:
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--split", choices=["dev", "test"], default="dev")
-    parser.add_argument("--agent", choices=["agent", "langgraph"], default="agent")
+    parser.add_argument("--agent", choices=CLASSIFIERS, default="agent")
     args = parser.parse_args()
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)
@@ -79,12 +83,8 @@ def main() -> None:
     scenarios = [s for s in load_scenarios() if s.split == args.split]
     retriever = SYSTEMS[SERVED].build()
     articles = ai_act_articles(paragraph_passages())
-    if args.agent == "langgraph":  # the frameworks extra: imported only when chosen
-        graph = import_module("frameworks.langgraph_classifier")
-        classifier, prompt = graph.classify, graph.RULE_PROMPT
-    else:
-        classifier, prompt = classify, CLASSIFY_PROMPT
-    rows = classify_scenarios(llm, retriever.search, articles, scenarios, classifier)
+    chosen = import_module(CLASSIFIERS[args.agent])
+    rows = classify_scenarios(llm, retriever.search, articles, scenarios, chosen.classify)
     report = {
         "name": f"classifier-{args.split}"
         if args.agent == "agent"
@@ -92,7 +92,7 @@ def main() -> None:
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
-        "prompt": prompt,
+        "prompt": chosen.CLASSIFY_PROMPT,
         "agent": args.agent,
         "system": retriever.config,
         "llm": llm.config,

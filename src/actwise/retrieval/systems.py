@@ -1,4 +1,8 @@
-"""The retrieval systems of docs/ablations.md, by name: the evals and the API build them here."""
+"""The retrieval systems of docs/ablations.md, by name: the evals and the API build them here.
+
+Row K, the LlamaIndex version of H (step 10), lives in frameworks/ and is added by
+evals/run_eval.py, so the product package never imports a framework.
+"""
 
 from __future__ import annotations
 

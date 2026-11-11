@@ -13,26 +13,11 @@ from actwise.evaluation.generation import share
 from actwise.evaluation.metrics import mean
 from actwise.evaluation.scenarios import Scenario
 from actwise.generation.rag import Search
-from actwise.llm.base import LLM, LLMResponse
+from actwise.llm.base import LLM
+from actwise.llm.wrappers import CountingLLM
 
 FAILED = "failed"  # the predicted tier of a run that hit the step budget
 Classifier = Callable[[LLM, Search, Articles, str], ClassifyOutcome]
-
-
-class TokenCount:
-    """An LLM that adds up the tokens of every reply, cached ones included."""
-
-    def __init__(self, llm: LLM):
-        """Wrap `llm`; nothing counted yet."""
-        self.llm, self.config = llm, llm.config
-        self.input = self.output = 0
-
-    def chat(self, *args: Any, **kwargs: Any) -> LLMResponse:
-        """Ask the wrapped model and count what the reply cost."""
-        reply = self.llm.chat(*args, **kwargs)
-        self.input += reply.input_tokens
-        self.output += reply.output_tokens
-        return reply
 
 
 def classify_scenarios(
@@ -49,7 +34,7 @@ def classify_scenarios(
     rows = []
     for s in scenarios:
         row: dict[str, Any] = {"id": s.id, "lang": s.lang, "ambiguous": s.ambiguous, "gold": s.gold}
-        counted, start = TokenCount(llm), time.perf_counter()
+        counted, start = CountingLLM(llm), time.perf_counter()
         try:
             outcome = classifier(counted, search, articles, s.description)
         except ClassificationError as exc:
@@ -60,7 +45,11 @@ def classify_scenarios(
         seconds = round(time.perf_counter() - start, 3)
         rows.append(
             row
-            | {"seconds": seconds, "input_tokens": counted.input, "output_tokens": counted.output}
+            | {
+                "seconds": seconds,
+                "input_tokens": counted.input_tokens,
+                "output_tokens": counted.output_tokens,
+            }
         )
     return rows
 
