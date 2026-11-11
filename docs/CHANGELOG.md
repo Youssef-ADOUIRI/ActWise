@@ -5,6 +5,17 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-11: Tracing plan, LangSmith instead of Langfuse
+
+| File | What | Why |
+|---|---|---|
+| `docs/decisions/012-tracing.md` | Step 12 will trace with LangSmith (`@traceable`, `wrap_openai`, `wrap_anthropic`) instead of Langfuse | It also traces step 10's LangGraph classifier with no extra code |
+| `TODO.md`, `docs/ROADMAP.md`, `.env.example` | The account, the step 12 items and the `LANGSMITH_*` variables | No code used Langfuse yet |
+
+**Cost:** the free plan holds 5,000 traces a month, a tenth of Langfuse's, so tracing stays off unless `LANGSMITH_TRACING=true`.
+
+---
+
 ## 2026-11-09: Step 9, our own embedder, fine-tuned and int8
 
 **Goal:** a retrieval model of our own that beats its base on unseen articles, and an int8 ONNX version small enough for the free-tier cloud image (decision 011).

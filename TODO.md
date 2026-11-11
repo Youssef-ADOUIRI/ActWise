@@ -12,7 +12,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Google AI Studio: Gemini key in a project with **no billing account**
 - [x] Groq console key
 - [x] Qdrant Cloud account
-- [ ] Langfuse Cloud (Hobby plan)
+- [ ] LangSmith (Developer plan; decision 012)
 - [x] Hugging Face account
 - [x] Colab or Kaggle (GPU)
 - [ ] Free Slack workspace
@@ -262,10 +262,11 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 12: Observability
 
-- [ ] `[test]` `test_observe_is_noop_without_langfuse`
+- [ ] `[test]` `test_traceable_is_noop_without_langsmith`
 - [ ] `[test]` `test_log_event_is_valid_json`
-- [ ] `observability/tracing.py` (optional Langfuse); `@observe` on `ask` and `classify`
-- [ ] Langfuse OpenAI drop-in inside `OpenAICompatLLM`; no input capture on `/classify`; `redact_pii`
+- [ ] `observability/tracing.py` (optional LangSmith, off unless `LANGSMITH_TRACING=true`); `@traceable` on `ask` and `classify`
+- [ ] `wrap_openai` inside `OpenAICompatLLM`, `wrap_anthropic` inside `AnthropicLLM`; no inputs sent for `/classify` (`process_inputs`); `redact_pii`
+- [ ] Free tier: 5,000 traces a month, so evals, tests and the step 14 load test run with tracing off
 - [ ] JSON structured logs, one line per request
 - [ ] Cost per query at paid prices → README
 - [ ] Trace screenshot in `docs/`
