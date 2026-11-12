@@ -65,6 +65,7 @@ def answer_questions(
             "model": reply.model if reply else "",
             "input_tokens": reply.input_tokens if reply else 0,
             "output_tokens": reply.output_tokens if reply else 0,
+            "retried": result.retried,
         }
         if judge is not None and not result.refused:
             verdict = judge_answer(judge, question.question, result.sources, result.answer)

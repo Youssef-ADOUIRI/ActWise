@@ -80,10 +80,11 @@ def test_dev_and_test_have_enough_scored_questions(questions, article_split):
 
 
 def test_sources(questions):
-    """Every question is hand-written or reviewed synthetic; the 50 hand-written ones come first."""
-    assert {q.source for q in questions} == {"hand", "synthetic"}
+    """The 50 hand-written questions come first, then the reviewed synthetic ones, then hard."""
+    assert {q.source for q in questions} == {"hand", "synthetic", "hard"}
     assert [q.source for q in questions[:50]] == ["hand"] * 50
-    assert all(q.source == "synthetic" for q in questions[50:])
+    assert all(q.source == "synthetic" for q in questions[50:179])
+    assert all(q.source == "hard" for q in questions[179:])
 
 
 def test_questions_do_not_name_the_article(questions):

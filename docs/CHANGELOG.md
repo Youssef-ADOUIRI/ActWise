@@ -5,6 +5,127 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-12: Classifier eval, recall on the costly tiers
+
+**Branch:** `classifier-confusion-recall`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/evaluation/classifier_eval.py` | Recall on prohibited and high risk, over clear and ambiguous scenarios, a failed run counting as a miss; the confusion matrix is 5×5 over every scenario, zeros included | Under-classifying risk is the costly mistake |
+| `evals/run_classifier.py` | The recalls with their counts, the matrix as a table; `--rescore` scores saved reports again without calling the model | |
+| `evals/reports/classifier-*dev*.json`, `.md` | The three dev reports, rescored from their saved runs | The predictions, seconds and tokens are unchanged |
+| `docs/decisions/008-classifier.md`, `frameworks/COMPARISON.md` | The recalls | |
+
+**Results (dev):** recall 1.0 on prohibited (4 of 4) and high risk (6 of 6), for the agent and for the LangGraph rule walk. The graph's one miss, s29, over-classifies.
+
+---
+
+## 2026-11-12: Commit messages rewritten
+
+| File | What | Why |
+|---|---|---|
+| `docs/rewritten-commits.md` | Every branch's old commit hash and its new one | The co-author trailers were dropped from all commit messages. Files, authors and dates are unchanged, but every hash changed, and the reports and the HF Hub card record the old ones |
+| `docs/ablations.md`, `docs/decisions/011-embedder.md` | Step 9's commit `4e66661` is now `30e667e` | |
+
+---
+
+## 2026-11-11: Step 10, LlamaIndex and LangGraph against our own code
+
+**Goal:** rebuild retrieval with LlamaIndex and the classifier with LangGraph, and compare each with our own version on the same data, model and guards (decision 013).
+**Branch:** `step-10-frameworks`
+
+| File | What | Why |
+|---|---|---|
+| `frameworks/llamaindex_pipeline.py` | System H in a LlamaIndex `VectorStoreIndex`, persisted under `.cache/llamaindex`; row K of `run_eval.py` | The retrieval half of the comparison |
+| `frameworks/langgraph_classifier.py`, `prompts/classify_rule.v1.md` | The guide's rule walk: `retrieve_for_rule` → `decide` → `submit`, with the agent's `Classification` and `accept()`; `run_classifier.py --agent langgraph` | The classifier half |
+| `src/actwise/evaluation/classifier_eval.py` | `classify_scenarios(classifier=)`; each row records seconds and tokens | One harness for both classifiers |
+| `src/actwise/agent/classifier.py` | `uncited()`, split out of `accept()` | The graph checks each rule's citations with it |
+| `src/actwise/llm/wrappers.py` | `CountingLLM`: the tokens of every reply in a run | Cost per classification |
+| `frameworks/loc.py`, `frameworks/COMPARISON.md` | Lines of code, and the measured table | |
+| `pyproject.toml`, `Makefile` | The `frameworks` extra (not in CI or the image); the editable install puts `frameworks/` on the path, and the wheel stays `actwise` only; `make compare` | |
+| `docs/decisions/013-frameworks.md`, `docs/ablations.md` | The choice, and row K | |
+
+**Results (dev):**
+- **LlamaIndex:** the same Recall@5 (0.849) and MRR@10 (0.712) as H, with the same top 10 for all 76 questions. It takes 103 ms per query against 20, because `SimpleVectorStore` scores each passage in Python. 40 lines of code against 131, and 60 MB of new packages.
+- **LangGraph:** 16 of 17 clear and 3 of 3 ambiguous scenarios, against 17 and 3. It misses s29, an Art. 6(3) exception. 2.90 model calls per run against 3.55, but 11,312 input tokens against 8,714. 15 of its 58 calls were retries, because the model sent an enum as a list. 3 ms of framework overhead per run, 122 lines against 97, 12 MB of new packages.
+- **Kept in the API:** our own retriever and agent.
+
+---
+
+## 2026-11-11: Tracing plan, LangSmith instead of Langfuse
+
+| File | What | Why |
+|---|---|---|
+| `docs/decisions/012-tracing.md` | Step 12 will trace with LangSmith (`@traceable`, `wrap_openai`, `wrap_anthropic`) instead of Langfuse | It also traces step 10's LangGraph classifier with no extra code |
+| `TODO.md`, `docs/ROADMAP.md`, `.env.example` | The account, the step 12 items and the `LANGSMITH_*` variables | No code used Langfuse yet |
+
+**Cost:** the free plan holds 5,000 traces a month, a tenth of Langfuse's, so tracing stays off unless `LANGSMITH_TRACING=true`.
+
+---
+
+## 2026-11-09: Step 9, our own embedder, fine-tuned and int8
+
+**Goal:** a retrieval model of our own that beats its base on unseen articles, and an int8 ONNX version small enough for the free-tier cloud image (decision 011).
+**Branch:** `step-9-embedder`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/prompts/pairs.v1.md`, `src/actwise/training/pairs.py`, `evals/make_pairs.py` | `make pairs`: one EN and one FR question for each of 800 train passages, each paired with the passage in its own language. Rules and a 50-pair review sheet drop bad pairs | Training data from train articles only |
+| `data/train/pairs.jsonl`, `pairs_review.csv` | 1,428 pairs (799 EN, 629 FR); the review kept 49 of 50 | |
+| `src/actwise/evaluation/synthetic.py` | `pick_chunks(fr_share=)` and `screen_question()`, split out of step 6's code | Reused by the pairs |
+| `evals/train_embedder.py`, `notebooks/train_embedder.ipynb` | MNRL, 3 epochs, batch 32, one language per batch; `training.json` records the pairs' hash, commit and versions | Runs on a free Colab or Kaggle GPU |
+| `evals/export_onnx.py` | ONNX export, then int8 per channel with reduced range | Per tensor, the worst cosine to PyTorch was 0.973 |
+| `src/actwise/retrieval/embedders.py` | `OnnxEmbedder` (onnxruntime and tokenizers, no torch), `mean_pool()`, `MINILM`. A local model folder is fingerprinted by its weights | The cloud image has no torch; a retrained model never reuses old cached vectors |
+| `src/actwise/retrieval/systems.py` | Rows G `minilm`, H `minilm-ft`, I `minilm-ft-int8` and J `hybrid-binding-int8` | |
+| `src/actwise/retrieval/stores.py`, `index.py` | `NumpyStore.save()` / `load()`; `index.py` loads `.env` and takes `--embedder` and `--npz`; every payload field gets a keyword index | `make index-cloud`. Qdrant Cloud refuses filters on unindexed fields |
+| `evals/publish_model.py`, `docs/embedder_card.md` | `make publish-model`: the int8 model and its card to the Hugging Face Hub, as `Youssef-ADOUIRI/actwise-minilm-l12-ft-int8` | Step 13's image downloads it |
+| `src/actwise/retrieval/embedders.py`, `systems.py`, `index.py` | `MINILM_HUB` pins the published commit; I, J and `make index-cloud` load it with `hub_snapshot()` | Reproducible without training; the same model as the image |
+| `pyproject.toml` | `train` extra; `cloud` gains `huggingface-hub` | |
+| `docs/decisions/011-embedder.md`, `docs/ablations.md` | The numbers and the choice | |
+
+**Results:**
+- **Fine-tuning, Recall@5:** dev 0.691 → 0.849, test 0.720 → 0.917 (run once). On hand-written questions: dev 0.525 → 0.775, test 0.675 → 0.850.
+- **int8:** 471 → 119 MB, a query embeds in 12.6 ms instead of 21.1. Recall@5 moves by one question: +1.3 points on dev, −1.2 on test, which misses the 1-point target by that question.
+- **J, the cloud retriever:** test Recall@5 0.988 against E's 0.976, MRR 0.902 against 0.924, 15 ms per query on dev against 196.
+- **Qdrant Cloud:** `actwise_ft_int8` holds 3,799 passages and returns the same top 5 as `NumpyStore` for 20 of 20 dev questions.
+- **Hub:** the published `model.onnx` has the same hash as the local export (`test_the_published_model_is_the_export`).
+- **Checks:** 260 tests pass, coverage is 97 %, and ruff and mypy are clean.
+
+---
+
+## 2026-11-04: Step 8b, better answer context
+
+**Goal:** answer the questions that two live tests exposed. A ("can a non-EU startup face fines?") was refused, and B (live facial recognition for a trafficking suspect) was answered on the wrong legal basis. Every change is measured against a new hard set first.
+**Branch:** `step-8b-answer-context`
+
+| File | What | Why |
+|---|---|---|
+| `data/eval/hard_questions.csv`, `golden.jsonl` | 24 hard questions (`source: hard`), verified by the user: everyday words, two-article answers, exceptions. 18 are for tuning; the 6 on test articles stay held out | The dev metrics missed both A and B |
+| `data/eval/hard_verdicts.csv` | Right/wrong verdict for each hard answer that a phase changed | Correctness against a reference answer, which the judge doesn't measure |
+| `src/actwise/evaluation/generation.py`, `answers.py` | `gold_in_context`, `gold_cited` and `retried` | Is a gold article in the context, and is it cited |
+| `src/actwise/generation/context.py` | `ParagraphContext`: the first 5 distinct paragraphs, whole, in the question's language, under 2,000 words. It adds up to 3 units that they name (annex points, one-unit annexes, same-article paragraphs) and, for a retry, each article's first paragraph | Windows split Art. 5(1)(h) for B, and Annex II was missing |
+| `src/actwise/generation/rewrite.py`, `prompts/rewrite.v1.md`, `retrieval/fusion.py` | `rewrite_queries()`: 1–3 queries in the law's words. `fuse_hits()` fuses their rankings with RRF | A's words ("non-EU", "presence") are not the law's ("third country") |
+| `src/actwise/generation/rag.py` | `RagPipeline(context=, rewrite=)`: a refused question is retried once, with the rewritten queries alone, under the same deadline | Answered questions never pay for it or drift |
+| `src/actwise/generation/citations.py` | `normalise_citations()`: an id that differs from a retrieved one only in case is corrected | h015 was refused over `[GDpr-Art3-2]` |
+| `src/actwise/prompts/answer.v3.md` | `answer.v2` without "You give legal information, not legal advice." | 15 of 94 answers repeated it; the API shows its own disclaimer |
+| `src/actwise/api/app.py` | `/ask` reads whole paragraphs, follows named units, retries refusals and answers with `answer.v3` | |
+| `evals/run_eval.py`, `evals/merge_candidates.py` | `--context` (`windows`, `paragraphs`, `references` or `rewrite`) and `--name`. The hard questions are merged into the golden set | One report per phase |
+| `docs/decisions/010-answer-context.md`, `docs/generation.md`, `docs/failure_cases.md` | What was kept and dropped, with the numbers; A, B and what is still wrong | |
+
+**Results:**
+- **Hard tuning set (18):** right answers go from 11 to 16, and none became wrong. Refusals fall from 7 to 1, and a gold article is in the context for all 18, against 72 % before.
+- **Dev (83), as served with `answer.v3`:** the M3 targets hold. False refusals fall from 2.8 % to 0 %, faithfulness is 0.982 [0.96, 1.00], citation precision 0.923 strict and 0.945 lenient, and out-of-scope refusals stay at 12 / 12.
+- **Dropped, with the reports kept:**
+  - rewriting every question (dev precision 0.840);
+  - fusing the retry with the question's own search, which missed A's Art. 2(1);
+  - merging the searches in turns, which missed Art. 113 for q050;
+  - the first `answer.v3` wording, `v3a`.
+- **Live:** A and B are answered on the right articles, and so is the step 8 emotion-recognition question.
+- **Cost:** dev input tokens +48 %. A refused question costs two more model calls.
+- **Checks:** 241 tests pass, coverage is 95 %, and ruff and mypy are clean.
+
+---
+
 ## 2026-10-28: Step 8, the API and the UI
 
 **Goal:** serve the cited answers and the classifier over HTTP, with cost guards, and add a small UI.

@@ -53,12 +53,16 @@ OUT_OF_SCOPE_TOPICS = [
 
 
 def pick_chunks(
-    chunks: list[Chunk], article_split: dict[str, str], split: str, n: int
+    chunks: list[Chunk],
+    article_split: dict[str, str],
+    split: str,
+    n: int,
+    fr_share: float = FR_SHARE,
 ) -> list[Chunk]:
     """`n` article or annex paragraphs of `split`, spread over as many articles as possible.
 
     Paragraphs are drawn round-robin over the articles, so every article gets one before
-    any gets two; about `FR_SHARE` of them come in their French version.
+    any gets two; about `fr_share` of them come in their French version.
     """
     rng = random.Random(f"{SEED}-{split}")
     by_article: dict[str, list[str]] = defaultdict(list)
@@ -81,7 +85,7 @@ def pick_chunks(
                 picked.append(by_article[a].pop())
     by_key = {(c.id, c.lang): c for c in chunks}
     return [
-        by_key.get((i, "fr" if rng.random() < FR_SHARE else "en"), by_key[i, "en"]) for i in picked
+        by_key.get((i, "fr" if rng.random() < fr_share else "en"), by_key[i, "en"]) for i in picked
     ]
 
 
@@ -90,9 +94,8 @@ def normalise(question: str) -> str:
     return " ".join(re.findall(r"\w+", question.lower()))
 
 
-def screen(candidate: dict[str, Any], seen: set[str]) -> list[str]:
-    """Rule-based reasons to drop a candidate; `seen` holds normalised questions so far."""
-    question = candidate["question"]
+def screen_question(question: str, seen: set[str]) -> list[str]:
+    """Rule-based reasons to drop a question; `seen` holds normalised questions so far."""
     if not question:
         return ["unreadable reply"]
     reasons = []
@@ -102,7 +105,13 @@ def screen(candidate: dict[str, Any], seen: set[str]) -> list[str]:
         reasons.append("duplicate")
     if len(question.split()) < 5:
         reasons.append("too short")
-    if candidate["gold"] and candidate["type"] not in IN_SCOPE_TYPES:
+    return reasons
+
+
+def screen(candidate: dict[str, Any], seen: set[str]) -> list[str]:
+    """`screen_question()`, plus a type check for an in-scope candidate."""
+    reasons = screen_question(candidate["question"], seen)
+    if candidate["question"] and candidate["gold"] and candidate["type"] not in IN_SCOPE_TYPES:
         reasons.append(f"unknown type {candidate['type']!r}")
     return reasons
 

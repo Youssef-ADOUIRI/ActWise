@@ -100,14 +100,21 @@ def search_ai_act(search: Search, query: str, top_k: object) -> list[dict[str, s
     return [{"id": pid, "text": text} for pid, text in list(found.items())[:k]]
 
 
+def uncited(citations: list[str], retrieved: set[str]) -> str | None:
+    """What to tell the model when it cites an id it never read or searched."""
+    if unknown := [c for c in citations if paragraph_id(c) not in retrieved]:
+        return f"Cite only ids that you read or searched. Unknown: {unknown}"
+    return None
+
+
 def accept(arguments: dict[str, Any], retrieved: set[str]) -> Classification | str:
     """The classification if it is valid and grounded, else what to tell the model."""
     try:
         result = Classification.model_validate(arguments)
     except ValidationError as exc:
         return f"Invalid classification: {exc.errors(include_url=False)}"
-    if unknown := [c for c in result.citations if paragraph_id(c) not in retrieved]:
-        return f"Cite only ids that you read or searched. Unknown: {unknown}"
+    if error := uncited(result.citations, retrieved):
+        return error
     needed = TIER_ARTICLES.get(result.tier)
     if needed and not any(article_id(c) in needed for c in result.citations):
         return f"A {result.tier} classification must cite {' or '.join(needed)}."

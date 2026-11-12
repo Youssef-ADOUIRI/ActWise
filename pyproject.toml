@@ -22,8 +22,12 @@ dependencies = [
 
 [project.optional-dependencies]
 local = ["sentence-transformers", "qdrant-client"]
-cloud = ["onnxruntime", "tokenizers", "qdrant-client"]
+cloud = ["onnxruntime", "tokenizers", "qdrant-client", "huggingface-hub"]
+# Step 9: fine-tune (on Colab, see notebooks/), export to ONNX and quantize to int8
+train = ["sentence-transformers[train]", "onnx", "onnxruntime", "onnxscript"]
 ui = ["streamlit"]
+# Step 10: the framework versions compared in frameworks/COMPARISON.md (not in the image)
+frameworks = ["llama-index-core", "llama-index-embeddings-huggingface", "langgraph"]
 
 [dependency-groups]
 dev = [
@@ -40,6 +44,9 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build]
+dev-mode-dirs = ["src", "."]  # the editable install also puts frameworks/ (step 10) on the path
 
 [tool.ruff]
 line-length = 100
