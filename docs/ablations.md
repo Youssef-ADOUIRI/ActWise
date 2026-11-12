@@ -39,3 +39,33 @@ On the 71 questions of step 6b the choice stands: E keeps the best Recall@5 of t
 | A neighbouring article wins | q002, q009, q011, q013, q014 | q011 and q013 rank first; q009 and q014 rank 2 (first with the reranker); q002 is in the next row |
 | Annex lists rank low | q001, q002 | q001 ranks 2, behind the article that cites the annex; q002 ranks 9 |
 | Cross-law questions find one law | q019, q020 | q019 finds both laws in the top 5; q020 still misses GDPR Art. 80 |
+
+## Step 9: the cloud embedder (base → fine-tuned → int8)
+
+The fine-tuned MiniLM-L12 and its int8 export ([decision 011](decisions/011-embedder.md)), against E with BGE-M3. Since step 8b, dev has **76 scored questions**: the 71 above and 5 hard ones (decision 010). E was run again on them as `hybrid-binding-dev-76q`. The test split was run once, after every choice was made on dev.
+
+**Dev (76):**
+
+| Row | System | Embedder | Recall@5 | MRR@10 | nDCG@10 | Hand-written (20): R@5 / MRR | Synthetic (51): R@5 / MRR | Hard (5): R@5 | ms/query |
+|---|---|---|---|---|---|---|---|---|---|
+| G | `minilm` | MiniLM-L12, base | 0.691 [0.58, 0.79] | 0.568 [0.47, 0.66] | 0.612 | 0.525 / 0.446 | 0.804 / 0.662 | 0.200 | 17 |
+| H | `minilm-ft` | fine-tuned, PyTorch fp32 | 0.849 [0.76, 0.92] | 0.712 [0.63, 0.79] | 0.765 | 0.775 / 0.596 | 0.922 / 0.800 | 0.400 | 36 |
+| I | `minilm-ft-int8` | fine-tuned, ONNX int8 | 0.862 [0.78, 0.93] | 0.702 [0.61, 0.79] | 0.749 | 0.775 / 0.565 | 0.941 / 0.798 | 0.400 | 8 |
+| J | `hybrid-binding-int8` | as E, with I's model | **0.961** [0.91, 1.00] | 0.810 [0.73, 0.88] | 0.847 | **1.000** / 0.746 | 1.000 / 0.890 | 0.400 | 15 |
+| E | `hybrid-binding` | BGE-M3 | 0.954 [0.91, 0.99] | **0.878** [0.82, 0.93] | **0.899** | 0.925 / **0.806** | 1.000 / **0.943** | **0.600** | 196 |
+
+**Test (84), run once:**
+
+| Row | Recall@5 | MRR@10 | nDCG@10 | Hand-written (20): R@5 / MRR | Synthetic (58): R@5 / MRR | Hard (6): R@5 |
+|---|---|---|---|---|---|---|
+| G | 0.720 [0.62, 0.81] | 0.579 [0.49, 0.67] | 0.620 | 0.675 / 0.480 | 0.810 / 0.668 | 0.000 |
+| H | 0.917 [0.85, 0.96] | 0.803 [0.73, 0.87] | 0.834 | 0.850 / 0.738 | 0.966 / 0.870 | 0.667 |
+| I | 0.905 [0.84, 0.96] | 0.817 [0.74, 0.88] | 0.848 | 0.850 / 0.730 | 0.966 / 0.891 | 0.500 |
+| J | **0.988** [0.97, 1.00] | 0.902 [0.85, 0.95] | 0.922 | **0.950** / **0.912** | 1.000 / 0.932 | 1.000 |
+| E | 0.976 [0.95, 1.00] | **0.924** [0.88, 0.97] | **0.936** | 0.900 / 0.900 | 1.000 / **0.938** | 1.000 |
+
+The test runs shared the CPU with the Qdrant Cloud upload, so their ms/query are left out. Dev times come from runs on an otherwise idle laptop, and they are noisy at this scale: G and H are the same network, yet they show 17 and 36 ms. Timed alone, one query embeds in a median 21.1 ms with PyTorch and 12.6 ms with int8. The reports and `training.json` record commit `4e66661`. The step 9 commit messages were rewritten afterwards, without changing any file, so that commit is now `e5f56ae`, with the same tree. G's dev row ran on the same code before it was committed.
+
+- **Fine-tuning (G → H): +16 points of Recall@5 on dev and +20 on test.** The hand-written questions gain at least as much as the synthetic ones.
+- **int8 (H → I):** the model is 4 times smaller (471 → 119 MB) and Recall@5 differs by one question on each split, +1.3 points on dev and −1.2 on test. The test drop misses the 1-point target by that one question.
+- **J against E:** the same Recall@5 or better on both splits, without torch and at a thirteenth of the search time, but a lower MRR. J is the cloud profile's retriever, and the local profile keeps E.

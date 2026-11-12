@@ -11,6 +11,7 @@ def row(**fields):
         "refused": False,
         "reason": "",
         "citations": ["AIA-Art5-1"],
+        "sources": [{"id": "AIA-Art5-1"}],
         "invented": [],
         "model": "m",
         "input_tokens": 10,
@@ -51,6 +52,21 @@ def test_citation_precision_strict_and_lenient():
 
     assert s["citation_precision_strict"] == round(2 / 3, 4)
     assert s["citation_precision_lenient"] == round(2 / 3, 4)
+
+
+def test_gold_in_context_and_gold_cited():
+    """Per in-scope question: was a gold article in the context, and did the answer cite one?"""
+    refused = {"citations": [], "refused": True, "reason": "not_covered", "answer": "refusal"}
+    rows = [
+        row(),  # read and cited
+        row(**refused),  # read, not cited
+        row(sources=[{"id": "AIA-Art99-1"}], **refused),  # neither: retrieval missed it
+        row(gold=[], sources=[]),  # out of scope: not counted
+    ]
+
+    s = summarise_answers(rows)
+
+    assert (s["gold_in_context"], s["gold_cited"]) == (round(2 / 3, 4), round(1 / 3, 4))
 
 
 def test_faithfulness_and_judge_failures():

@@ -11,10 +11,10 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] GitHub public repo `actwise`
 - [x] Google AI Studio: Gemini key in a project with **no billing account**
 - [x] Groq console key
-- [ ] Qdrant Cloud account
-- [ ] Langfuse Cloud (Hobby plan)
-- [ ] Hugging Face account
-- [ ] Colab or Kaggle (GPU)
+- [x] Qdrant Cloud account
+- [ ] LangSmith (Developer plan; decision 012)
+- [x] Hugging Face account
+- [x] Colab or Kaggle (GPU)
 - [ ] Free Slack workspace
 - [ ] Google Cloud project for Cloud Run (billing linked, kept separate from the Gemini project)
 - [ ] Local tools: Python 3.12, uv, Docker Desktop, git, Ollama (optional)
@@ -170,8 +170,8 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [x] Confirm the A/B winner on the grown dev set: **v2** (2.8 % false refusals against 7.0 %, faithfulness 0.971 against 0.992)
 - [x] Hit the dev targets with v2: 0 invented · faithfulness 0.971 · citation precision 0.944 lenient · refusals 12/12 · kappa 0.739
 - [x] Plain baseline on the grown dev set: refuses 0/12 out of scope, faithfulness 0.991, no citations
-- [ ] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev); the UI's source list shows them twice too
-- [ ] Optional: `answer.v3` against v2's wrong "not covered" sentences (q061, q085)
+- [x] Optional: drop repeated passages from the context (parts of one paragraph, EN and FR copies: 11 of 110 slots on dev); the UI's source list shows them twice too (step 8b: whole paragraphs, one copy each)
+- [ ] Optional: a prompt against v2's wrong "not covered" sentences (q061, q085). `answer.v3` (step 8b) only drops the copied disclaimer
 
 ---
 
@@ -206,22 +206,34 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] Optional: SSE streaming for `/ask` (skipped in step 8)
 - [x] `ui/app.py` (Streamlit: ask tab + classify tab; `make ui`, `ui` extra)
 
+### Step 8b: Better answer context (not in the guide; decision 010)
+
+- [x] 24 hard questions (`source: hard`), verified by the user; 18 for tuning, 6 on test articles held out
+- [x] `gold_in_context` and `gold_cited` in `evaluation/generation.py`; right/wrong verdicts in `data/eval/hard_verdicts.csv`
+- [x] `[test]` `test_context.py`, `test_rewrite.py`, `normalise_citations`
+- [x] Phase 1: whole paragraphs (`generation/context.py`)
+- [x] Phase 2: follow the annexes and same-article paragraphs a paragraph names
+- [x] Phase 3: a refusal is retried with rewritten queries (`rewrite.v1`) and each article's first paragraph. Hard set: 11 → 16 of 18 right, none lost
+- [x] `answer.v3` (drops the copied legal-advice sentence): judged on dev, holds the M3 targets, served by `/ask`
+- [x] `/ask` uses the new context (`api/app.py`)
+- [x] Live: A and B answered on the right articles; the step 8 emotion-recognition question too (`docs/failure_cases.md`)
+
 ---
 
 ## M5 Own model and framework comparison (week 6)
 
 ### Step 9: Fine-tune and shrink the embedder
 
-- [ ] ~800 train chunks → EN + FR questions (cached) → read 50, drop bad pairs → 1,000–1,600 pairs
-- [ ] `[test]` `test_no_split_leakage`
-- [ ] `[test]` `test_pooling_ignores_padding`
-- [ ] `[test]` `test_onnx_parity` (slow, cosine ≥ 0.98)
-- [ ] Train MiniLM-L12 on Colab/Kaggle (MNRL, 3 epochs, `max_seq_length=256`)
-- [ ] Evaluate base vs FT on the **test** split with your own harness (hand-written and synthetic separately)
-- [ ] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query
-- [ ] `retrieval/embedders.py` (SentenceTransformer, ONNX)
-- [ ] Publish the int8 model and model card on the HF Hub
-- [ ] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply)
+- [x] ~800 train chunks → EN + FR questions (cached) → read 50, drop bad pairs → 1,000–1,600 pairs: 1,428 (799 EN, 629 FR), 1 of 50 dropped in review
+- [x] `[test]` `test_no_split_leakage`
+- [x] `[test]` `test_pooling_ignores_padding`
+- [x] `[test]` `test_onnx_parity` (slow, cosine ≥ 0.98): worst 0.989
+- [x] Train MiniLM-L12 on Colab/Kaggle (MNRL, 3 epochs, `max_seq_length=256`): 33 s on a T4
+- [x] Evaluate base vs FT on the **test** split with your own harness (hand-written and synthetic separately): Recall@5 0.720 → 0.917 (dev 0.691 → 0.849)
+- [x] Export to ONNX → int8 quantization; Recall@5 loss ≤ 1 point; record size and ms/query: 471 → 119 MB, 21 → 13 ms; Recall@5 −1.2 on test (one question), +1.3 on dev (decision 011)
+- [x] `retrieval/embedders.py` (SentenceTransformer, ONNX)
+- [x] Publish the int8 model and model card on the HF Hub: `Youssef-ADOUIRI/actwise-minilm-l12-ft-int8`, pinned at `8f2058b`
+- [x] `make index-cloud` → `index.npz` + Qdrant `actwise_ft_int8` (load `.env` in `retrieval/index.py`, so `QDRANT_URL` and `QDRANT_API_KEY` apply): 3,799 passages, same top 5 as NumPy
 
 ### Step 10: Frameworks (first to cut)
 
@@ -250,10 +262,11 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 12: Observability
 
-- [ ] `[test]` `test_observe_is_noop_without_langfuse`
+- [ ] `[test]` `test_traceable_is_noop_without_langsmith`
 - [ ] `[test]` `test_log_event_is_valid_json`
-- [ ] `observability/tracing.py` (optional Langfuse); `@observe` on `ask` and `classify`
-- [ ] Langfuse OpenAI drop-in inside `OpenAICompatLLM`; no input capture on `/classify`; `redact_pii`
+- [ ] `observability/tracing.py` (optional LangSmith, off unless `LANGSMITH_TRACING=true`); `@traceable` on `ask` and `classify`
+- [ ] `wrap_openai` inside `OpenAICompatLLM`, `wrap_anthropic` inside `AnthropicLLM`; no inputs sent for `/classify` (`process_inputs`); `redact_pii`
+- [ ] Free tier: 5,000 traces a month, so evals, tests and the step 14 load test run with tracing off
 - [ ] JSON structured logs, one line per request
 - [ ] Cost per query at paid prices → README
 - [ ] Trace screenshot in `docs/`
@@ -268,7 +281,7 @@ Tick a box only when the work is **committed**. Commit after every step.
 - [ ] GCP project, enabled APIs, Artifact Registry `actwise` (europe-west1)
 - [ ] Secrets: gemini, groq, qdrant, gsheets; grant `secretAccessor`
 - [ ] **EUR 1 budget alert** (50 / 90 / 100 %)
-- [ ] Qdrant Cloud cluster + `make index-cloud`
+- [x] Qdrant Cloud cluster + `make index-cloud` (step 9)
 - [ ] `api/app.py`: the cloud profile (the ONNX embedder of step 9, Qdrant Cloud)
 - [ ] `requirements-cloud.txt`, multi-stage `Dockerfile`, image **< 450 MB** compressed
 - [ ] `deploy/env.yaml`

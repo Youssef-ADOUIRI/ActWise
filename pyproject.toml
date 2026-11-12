@@ -22,7 +22,9 @@ dependencies = [
 
 [project.optional-dependencies]
 local = ["sentence-transformers", "qdrant-client"]
-cloud = ["onnxruntime", "tokenizers", "qdrant-client"]
+cloud = ["onnxruntime", "tokenizers", "qdrant-client", "huggingface-hub"]
+# Step 9: fine-tune (on Colab, see notebooks/), export to ONNX and quantize to int8
+train = ["sentence-transformers[train]", "onnx", "onnxruntime", "onnxscript"]
 ui = ["streamlit"]
 
 [dependency-groups]

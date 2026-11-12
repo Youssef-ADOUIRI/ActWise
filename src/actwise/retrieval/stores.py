@@ -2,8 +2,10 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import uuid
+from pathlib import Path
 from typing import Any, Protocol
 
 import numpy as np
@@ -42,6 +44,18 @@ class NumpyStore:
             rows = [i for i in rows if all(self.payloads[i][f] == v for f, v in where.items())]
         return [(self.payloads[i]["key"], float(scores[i])) for i in rows[:k]]
 
+    def save(self, path: Path) -> None:
+        """Write vectors and payloads to one .npz file, so an image needn't embed the corpus."""
+        np.savez_compressed(
+            path, vectors=self.vectors, payloads=np.array(json.dumps(self.payloads))
+        )
+
+    @classmethod
+    def load(cls, path: Path) -> NumpyStore:
+        """The store `save()` wrote; no pickle is involved."""
+        with np.load(path) as data:
+            return cls(json.loads(str(data["payloads"])), data["vectors"])
+
 
 class QdrantStore:
     """Vectors in a Qdrant collection, with the same `search()` as `NumpyStore`."""
@@ -58,12 +72,14 @@ class QdrantStore:
     def index(
         self, payloads: list[dict[str, str]], vectors: np.ndarray, batch_size: int = 256
     ) -> None:
-        """Create the collection if needed, then upsert one point per vector."""
-        from qdrant_client.models import Distance, PointStruct, VectorParams
+        """Create the collection if needed, index each payload field, then upsert the points."""
+        from qdrant_client.models import Distance, PayloadSchemaType, PointStruct, VectorParams
 
         if not self.client.collection_exists(self.collection):
             config = VectorParams(size=vectors.shape[1], distance=Distance.COSINE)
             self.client.create_collection(self.collection, vectors_config=config)
+        for field in payloads[0] if payloads else []:  # Qdrant Cloud won't filter unindexed fields
+            self.client.create_payload_index(self.collection, field, PayloadSchemaType.KEYWORD)
         points = [
             PointStruct(id=self.point_id(p["key"]), vector=v.tolist(), payload=p)
             for p, v in zip(payloads, vectors, strict=True)
