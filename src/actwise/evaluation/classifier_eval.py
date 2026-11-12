@@ -1,4 +1,4 @@
-"""Run the risk classifier over scenarios and score it: accuracy, confusion, downgrades."""
+"""Run the risk classifier over scenarios and score it: accuracy, recall, confusion, downgrades."""
 
 from __future__ import annotations
 
@@ -17,6 +17,7 @@ from actwise.llm.base import LLM
 from actwise.llm.wrappers import CountingLLM
 
 FAILED = "failed"  # the predicted tier of a run that hit the step budget
+COSTLY = ("prohibited", "high_risk")  # the tiers where under-classifying is the costly mistake
 Classifier = Callable[[LLM, Search, Articles, str], ClassifyOutcome]
 
 
@@ -55,29 +56,31 @@ def classify_scenarios(
 
 
 def summarise_classifications(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """Accuracy on clear and ambiguous scenarios apart, the confusion matrix and the downgrades.
+    """Accuracy on clear and ambiguous scenarios apart, recall on the costly tiers, the downgrades.
 
+    The 5×5 confusion matrix (gold → predicted) and the recalls count every scenario, clear
+    or ambiguous. A failed run is left out of the matrix and counts as a miss in the recalls.
     Every accepted result cites only ids the agent read or retrieved: the guard in
     `agent.classifier.accept` refuses anything else, so there is nothing to measure.
     """
     clear = [r for r in rows if not r["ambiguous"]]
     ran = [r for r in rows if r["predicted"] != FAILED]
-    confusion = {
-        gold: dict(Counter(r["predicted"] for r in clear if r["gold"] == gold))
-        for gold in TIERS
-        if any(r["gold"] == gold for r in clear)
-    }
+    counts = Counter((r["gold"], r["predicted"]) for r in ran)
+    confusion = {gold: {tier: counts[gold, tier] for tier in TIERS} for gold in TIERS}
     return {
         "n": len(rows),
         "clear": len(clear),
         "accuracy": share([r["predicted"] == r["gold"] for r in clear]),
         "accuracy_ambiguous": share([r["predicted"] == r["gold"] for r in rows if r["ambiguous"]]),
+        **{
+            f"recall_{tier}": share([r["predicted"] == tier for r in rows if r["gold"] == tier])
+            for tier in COSTLY
+        },
         "prohibited_as_minimal": sum(
             r["gold"] == "prohibited" and r["predicted"] == "minimal_risk" for r in rows
         ),
         "dangerous_downgrades": sum(
-            r["gold"] in ("prohibited", "high_risk") and r["predicted"] == "minimal_risk"
-            for r in rows
+            r["gold"] in COSTLY and r["predicted"] == "minimal_risk" for r in rows
         ),
         "failed": len(rows) - len(ran),
         "steps": round(mean([r["steps"] for r in ran]), 2),

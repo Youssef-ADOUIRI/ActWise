@@ -86,10 +86,10 @@ def fingerprint(path: Path) -> str:
     return file_hash(path)[:12]
 
 
-def write_report(report: dict[str, Any], markdown: str) -> Path:
-    """Write evals/reports/<name>.json and .md; returns the path without a suffix."""
+def write_report(report: dict[str, Any], markdown: str, out: Path | None = None) -> Path:
+    """Write <out>.json and .md, by default evals/reports/<name>; returns `out`."""
     REPORTS.mkdir(parents=True, exist_ok=True)
-    out = REPORTS / report["name"]  # names like answer.v1 hold a dot: add suffixes by hand
+    out = out or REPORTS / report["name"]  # names like answer.v1 hold a dot: add suffixes by hand
     json_text = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
     Path(f"{out}.json").write_text(json_text, encoding="utf-8", newline="\n")
     Path(f"{out}.md").write_text(markdown, encoding="utf-8", newline="\n")
