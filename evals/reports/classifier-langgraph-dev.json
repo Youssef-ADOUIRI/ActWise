@@ -45,6 +45,8 @@
     "clear": 17,
     "accuracy": 0.9412,
     "accuracy_ambiguous": 1.0,
+    "recall_prohibited": 1.0,
+    "recall_high_risk": 1.0,
     "prohibited_as_minimal": 0,
     "dangerous_downgrades": 0,
     "failed": 0,
@@ -54,19 +56,38 @@
     "input_tokens": 11312,
     "confusion": {
       "prohibited": {
-        "prohibited": 4
+        "prohibited": 4,
+        "high_risk": 0,
+        "transparency_only": 0,
+        "minimal_risk": 0,
+        "needs_more_info": 0
       },
       "high_risk": {
-        "high_risk": 5
+        "prohibited": 0,
+        "high_risk": 6,
+        "transparency_only": 0,
+        "minimal_risk": 0,
+        "needs_more_info": 0
       },
       "transparency_only": {
-        "transparency_only": 3
+        "prohibited": 0,
+        "high_risk": 0,
+        "transparency_only": 3,
+        "minimal_risk": 0,
+        "needs_more_info": 0
       },
       "minimal_risk": {
-        "minimal_risk": 2,
-        "high_risk": 1
+        "prohibited": 0,
+        "high_risk": 1,
+        "transparency_only": 0,
+        "minimal_risk": 4,
+        "needs_more_info": 0
       },
       "needs_more_info": {
+        "prohibited": 0,
+        "high_risk": 0,
+        "transparency_only": 0,
+        "minimal_risk": 0,
         "needs_more_info": 2
       }
     },
@@ -562,5 +583,9 @@
       "input_tokens": 16559,
       "output_tokens": 470
     }
-  ]
+  ],
+  "rescored": {
+    "date": "2026-11-12",
+    "git_commit": "afe4c97"
+  }
 }

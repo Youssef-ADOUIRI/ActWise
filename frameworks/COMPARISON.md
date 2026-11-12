@@ -45,6 +45,7 @@ It walks Art. 5, then Art. 6 with Annexes I and III, then Art. 50, and stops at 
 | | Hand-written agent | LangGraph rule walk |
 |---|---|---|
 | Accuracy, clear / ambiguous (dev, 17 + 3) | **17/17**, 3/3 | 16/17, 3/3 |
+| Recall, prohibited / high risk (all 20) | **1.0** (4 of 4) / **1.0** (6 of 6) | **1.0** / **1.0**: its one miss, s29, puts a minimal-risk tool in high risk, the safe direction |
 | Dangerous downgrades / failed runs | 0 / 0 | 0 / 0 |
 | Model calls per run | 3.55 | **2.90**, of which 0.75 are retries (see below) |
 | Input tokens per run | **8,714** | 11,312: every run reads Art. 5 whole, and many read Art. 6 with both annexes |

@@ -2,10 +2,14 @@
 
 Classifier `langgraph`, prompt `classify_rule.v1`, retrieval `hybrid-binding`, split `dev`: 20 scenarios (17 clear, 3 ambiguous).
 
+Scored again from the saved runs on 2026-11-12, at commit `afe4c97`; no model was called.
+
 | Metric | Value |
 |---|---|
 | **Accuracy, clear scenarios** | **0.9412** |
 | Accuracy, ambiguous scenarios | 1.0 |
+| **Recall, prohibited (all scenarios)** | **1.0** (4 of 4) |
+| **Recall, high risk (all scenarios)** | **1.0** (6 of 6) |
 | Prohibited labelled minimal risk | 0 |
 | Prohibited or high risk labelled minimal risk | 0 |
 | Runs that hit the step budget | 0 |
@@ -13,13 +17,17 @@ Classifier `langgraph`, prompt `classify_rule.v1`, retrieval `hybrid-binding`, s
 | Seconds / input tokens per run | 0.006 / 11312 |
 | Accuracy by language (clear) | {'en': 0.9167, 'fr': 1.0} |
 
-## Confusion (clear scenarios: gold → predicted)
+## Confusion matrix (all scenarios: gold rows, predicted columns)
 
-- **prohibited**: {'prohibited': 4}
-- **high_risk**: {'high_risk': 5}
-- **transparency_only**: {'transparency_only': 3}
-- **minimal_risk**: {'minimal_risk': 2, 'high_risk': 1}
-- **needs_more_info**: {'needs_more_info': 2}
+In the first two rows, a count right of the diagonal is an under-classified system, except in `needs_more_info`, which asks for the missing facts. Failed runs are not in the matrix.
+
+| Gold \ predicted | prohibited | high_risk | transparency_only | minimal_risk | needs_more_info |
+|---|---|---|---|---|---|
+| **prohibited** | 4 | 0 | 0 | 0 | 0 |
+| **high_risk** | 0 | 6 | 0 | 0 | 0 |
+| **transparency_only** | 0 | 0 | 3 | 0 | 0 |
+| **minimal_risk** | 0 | 1 | 0 | 4 | 0 |
+| **needs_more_info** | 0 | 0 | 0 | 0 | 2 |
 
 ## Misses
 

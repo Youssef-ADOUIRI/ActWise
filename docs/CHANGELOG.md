@@ -5,6 +5,21 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-12: Classifier eval, recall on the costly tiers
+
+**Branch:** `classifier-confusion-recall`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/evaluation/classifier_eval.py` | Recall on prohibited and high risk, over clear and ambiguous scenarios, a failed run counting as a miss; the confusion matrix is 5×5 over every scenario, zeros included | Under-classifying risk is the costly mistake |
+| `evals/run_classifier.py` | The recalls with their counts, the matrix as a table; `--rescore` scores saved reports again without calling the model | |
+| `evals/reports/classifier-*dev*.json`, `.md` | The three dev reports, rescored from their saved runs | The predictions, seconds and tokens are unchanged |
+| `docs/decisions/008-classifier.md`, `frameworks/COMPARISON.md` | The recalls | |
+
+**Results (dev):** recall 1.0 on prohibited (4 of 4) and high risk (6 of 6), for the agent and for the LangGraph rule walk. The graph's one miss, s29, over-classifies.
+
+---
+
 ## 2026-11-12: Commit messages rewritten
 
 | File | What | Why |
