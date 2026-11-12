@@ -11,7 +11,7 @@
 - **Measured:**
   - **Pairs:** 1,431 drafted from train articles and annexes. Rules dropped 2 unreadable replies. A sample of 50 was reviewed, and 1 was dropped as too vague (`data/train/pairs_review.csv`). That leaves 1,428 pairs: 799 English, 629 French. `test_no_split_leakage` passes.
   - **Training:** 135 steps in 33 s on a Colab T4, final loss 0.26 (`models/minilm-ft/training.json`).
-  - **Commits:** the model and the reports record commit `4e66661`. The step 9 commit messages were rewritten later without changing any file, so it is now `e5f56ae`, with the same tree `8f82719`.
+  - **Commits:** the model and the reports record commit `4e66661`. The commit messages were rewritten twice later without changing any file, so it is now `30e667e`, with the same tree `8f82719` ([rewritten commits](../rewritten-commits.md)).
   - **int8 parity:** on 20 corpus passages, the worst cosine to PyTorch is 0.973 per tensor and 0.989 per channel with reduced range. `test_onnx_parity` needs 0.98.
   - **Retrieval:** dev (76 questions) for every choice, then test (84), run once. Recall@5 [95 % interval] / MRR@10:
 

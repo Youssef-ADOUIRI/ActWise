@@ -5,6 +5,15 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-12: Commit messages rewritten
+
+| File | What | Why |
+|---|---|---|
+| `docs/rewritten-commits.md` | Every branch's old commit hash and its new one | The co-author trailers were dropped from all commit messages. Files, authors and dates are unchanged, but every hash changed, and the reports and the HF Hub card record the old ones |
+| `docs/ablations.md`, `docs/decisions/011-embedder.md` | Step 9's commit `4e66661` is now `30e667e` | |
+
+---
+
 ## 2026-11-11: Step 10, LlamaIndex and LangGraph against our own code
 
 **Goal:** rebuild retrieval with LlamaIndex and the classifier with LangGraph, and compare each with our own version on the same data, model and guards (decision 013).
