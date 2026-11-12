@@ -7,7 +7,8 @@ One JSON object per line in data/eval/golden.jsonl:
 
 A question belongs to the split of its gold articles. Out-of-scope questions
 have no gold article ("gold": []), so they carry an explicit "split" instead.
-"source" says who wrote the question: "hand", or "synthetic" (LLM-drafted, then reviewed).
+"source" says who wrote the question: "hand", "synthetic" (LLM-drafted, then reviewed), or
+"hard" (step 8b: everyday wording, two-article answers and exceptions, verified by a person).
 """
 
 from __future__ import annotations
@@ -35,7 +36,7 @@ class Question:
     gold: tuple[str, ...]  # article-level ids, such as "AIA-Art5"; empty if out of scope
     reference: str  # one-sentence reference answer, used for generation metrics later
     split: str | None = None  # only for out-of-scope questions
-    source: str = "hand"  # "hand" or "synthetic"
+    source: str = "hand"  # "hand", "synthetic" or "hard"
 
 
 def load_golden(path: Path = GOLDEN_FILE) -> list[Question]:

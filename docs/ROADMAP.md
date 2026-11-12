@@ -32,7 +32,7 @@
 | P5  | Versioned prompts, A/B on dev, LLM judge calibrated with Cohen's kappa                          | M3        |
 | P6  | Embedder fine-tune (MiniLM) followed by int8 ONNX, served without PyTorch                       | M5        |
 | P7  | Framework comparison: LlamaIndex and LangGraph against hand-written code                        | M5        |
-| P8  | Observability: Langfuse traces, JSON logs, cost per query                                       | M6        |
+| P8  | Observability: LangSmith traces, JSON logs, cost per query                                      | M6        |
 | P9  | Cloud Run + Secret Manager + keyless GitHub Actions deploy with a candidate-revision smoke test | M7        |
 | P10 | Hardening: OWASP-mapped safety suite, load test, failure drills, model card                     | M8        |
 
@@ -99,7 +99,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done (exit criteria met a
 
 ### M6 Integrations and observability
 
-**Delivers:** the Slack slash command, the MCP server, the Sheets register, the upload demo, Langfuse traces, JSON logs and cost per query.
+**Delivers:** the Slack slash command, the MCP server, the Sheets register, the upload demo, LangSmith traces, JSON logs and cost per query.
 **Exit criteria:** a screen capture of each integration, plus a trace screenshot in `docs/`.
 
 ### M7 Production on Cloud Run

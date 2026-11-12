@@ -1,6 +1,6 @@
 # Classifier report: classifier-dev
 
-Prompt `classify.v1`, retrieval `hybrid-binding`, split `dev`: 20 scenarios (17 clear, 3 ambiguous).
+Classifier `agent`, prompt `classify.v1`, retrieval `hybrid-binding`, split `dev`: 20 scenarios (17 clear, 3 ambiguous).
 
 | Metric | Value |
 |---|---|
@@ -10,6 +10,7 @@ Prompt `classify.v1`, retrieval `hybrid-binding`, split `dev`: 20 scenarios (17 
 | Prohibited or high risk labelled minimal risk | 0 |
 | Runs that hit the step budget | 0 |
 | Steps / lookups (reads and searches) per run | 3.55 / 3.05 |
+| Seconds / input tokens per run | 1.163 / 8714 |
 | Accuracy by language (clear) | {'en': 1.0, 'fr': 1.0} |
 
 ## Confusion (clear scenarios: gold → predicted)

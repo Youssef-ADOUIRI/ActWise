@@ -6,6 +6,7 @@ from actwise.evaluation.synthetic import (
     normalise,
     pick_chunks,
     screen,
+    screen_question,
 )
 from actwise.ingest.chunk import Chunk
 from actwise.llm.base import LLMResponse
@@ -45,6 +46,20 @@ def test_pick_chunks_spreads_over_articles_first():
 def test_pick_chunks_is_seeded():
     """The same call draws the same paragraphs in the same languages."""
     assert pick_chunks(CHUNKS, SPLIT, "dev", 3) == pick_chunks(CHUNKS, SPLIT, "dev", 3)
+
+
+def test_pick_chunks_without_french_returns_english_chunks():
+    """`fr_share=0` keeps every pick in English, the same paragraphs as the default draw."""
+    picked = pick_chunks(CHUNKS, SPLIT, "dev", 3, fr_share=0)
+
+    assert {c.lang for c in picked} == {"en"}
+    assert [c.id for c in picked] == [c.id for c in pick_chunks(CHUNKS, SPLIT, "dev", 3)]
+
+
+def test_screen_question_needs_no_candidate():
+    """The question rules alone, as the embedder's training pairs use them."""
+    assert screen_question("Who must keep the logs of a system?", set()) == []
+    assert screen_question("Annex III lists what?", set()) == ["names its article", "too short"]
 
 
 @pytest.mark.parametrize(

@@ -1,0 +1,27 @@
+# 013: Frameworks: measured, and kept out of the API
+
+- **Options:**
+  - **Retrieval:** our dense retriever (system H), or the same model and passages in a LlamaIndex `VectorStoreIndex` (K).
+  - **Classifier:** our tool-calling agent (decision 008), or a LangGraph workflow that walks Art. 5, Art. 6 and Art. 50 in order and asks the model one rule at a time.
+  - **For each:** serve it from the API, or keep it as a measured comparison.
+- **Measured:** on dev, with the same chunks, embedder, model and guards. The full table is in [frameworks/COMPARISON.md](../../frameworks/COMPARISON.md).
+  - **LlamaIndex:**
+    - **Same results:** the same Recall@5 (0.849) and MRR@10 (0.712), and the same top 10 for all 76 questions.
+    - **Slower:** 103 ms per query against H's 20. About 80 ms of that is `SimpleVectorStore`, which rebuilds an array from Python lists and scores each passage separately.
+    - **Smaller:** 40 lines against 131.
+    - **Heavier:** 23 packages and 60 MB more.
+  - **LangGraph:**
+    - **Accuracy:** 16 of 17 clear and 3 of 3 ambiguous scenarios, against the agent's 17 and 3. No dangerous downgrade and no failed run.
+    - **Cost:** 2.90 model calls per run against 3.55, but 11,312 input tokens against 8,714.
+    - **Retries:** 15 of the 58 calls were spent on the model sending `"applies": ["no"]` as a list.
+    - **Size:** 122 lines against 97, and 16 packages, 12 MB, for 3 ms of overhead per run.
+- **Chosen:**
+  - **The API keeps** system E and the agent, as before.
+  - **The framework versions stay** in `frameworks/`, behind the `frameworks` extra, which neither CI nor the image installs. Their smoke tests skip without it.
+- **Why:**
+  - **LlamaIndex** returned the same answers, more slowly, with 60 MB more in an image capped at 450 MB (step 13). Its strength is its integrations, and ActWise already has its store and loaders.
+  - **LangGraph's overhead is negligible,** but here it took more code than the loop it replaces. Its result, fewer calls, more tokens and the s29 miss, comes from the rule-walk design, not from the framework.
+- **Revisit if:**
+  - **The classifier needs checkpoints,** a human-in-the-loop pause, or many branching steps. That is where a graph framework pays for itself.
+  - **A new store or source** needs a connector that LlamaIndex already has.
+  - **Step 12's LangSmith tracing** would be simpler on a LangGraph graph. LangGraph traces graph runs with no extra code.

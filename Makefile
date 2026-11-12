@@ -1,5 +1,5 @@
-.PHONY: install lint test ingest splits index eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet eval-classifier serve ui deploy
+.PHONY: install lint test ingest splits index index-cloud publish-model eval eval-retrieval eval-answers ablations llm-smoke \
+	candidates label-sheet pairs compare eval-classifier serve ui deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -12,7 +12,7 @@ install:
 lint:
 	uv run ruff check .
 	uv run ruff format --check .
-	uv run mypy src evals
+	uv run mypy src evals frameworks
 
 test:
 	uv run pytest --cov=src --cov-fail-under=80
@@ -26,6 +26,15 @@ splits:
 # Needs Qdrant: docker compose up -d qdrant. Vectors come from the embedding cache.
 index:
 	uv run --extra local python -m actwise.retrieval.index
+
+# Step 9: the int8 MiniLM into Qdrant Cloud (QDRANT_URL, QDRANT_API_KEY in .env), plus
+# data/processed/index.npz for the image. The model comes from the Hub at MINILM_HUB.
+index-cloud:
+	uv run --extra local --extra train python -m actwise.retrieval.index --embedder ft-int8 --npz
+
+# Step 9: the int8 MiniLM and docs/embedder_card.md to the HF Hub (HF_TOKEN with write access).
+publish-model:
+	uv run --extra local --extra train python evals/publish_model.py
 
 # Retrieval metrics on the golden set. First run downloads the embedder;
 # vectors are cached in .cache/embeddings, so an interrupted run resumes.
@@ -54,6 +63,10 @@ candidates:
 label-sheet:
 	uv run python evals/make_calibration.py
 
+# Step 9 training pairs from train paragraphs (LLM calls cached in .cache/llm).
+pairs:
+	uv run python evals/make_pairs.py
+
 eval: eval-retrieval
 
 # One prompt through each LLM provider configured in .env, then through the cached chain.
@@ -71,3 +84,9 @@ ui:
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"
+
+# Step 10: H rebuilt with LlamaIndex and the classifier as a LangGraph rule walk, on dev
+# (frameworks/COMPARISON.md). The first run embeds the corpus and calls the model.
+compare:
+	uv run --extra local --extra frameworks python evals/run_eval.py --system llamaindex-ft --split dev
+	uv run --extra local --extra frameworks python evals/run_classifier.py --agent langgraph --split dev

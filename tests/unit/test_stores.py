@@ -23,6 +23,16 @@ def test_numpy_store_returns_best_matches_first():
     ]
 
 
+def test_numpy_store_round_trips_through_a_file(tmp_path):
+    """`load()` gives back the payloads and vectors that `save()` wrote."""
+    NumpyStore(PAYLOADS, VECTORS).save(tmp_path / "index.npz")
+
+    store = NumpyStore.load(tmp_path / "index.npz")
+
+    assert store.payloads == PAYLOADS
+    assert np.array_equal(store.vectors, VECTORS)
+
+
 def test_numpy_store_needs_one_payload_per_vector():
     """A store with fewer payloads than vectors is refused."""
     with pytest.raises(ValueError):
@@ -65,6 +75,32 @@ def test_point_ids_keep_languages_apart():
     assert en == QdrantStore.point_id("AIA-Art5-1@en")
 
 
+class RecordingQdrant:
+    """An in-process Qdrant that records the payload indexes it is asked for."""
+
+    def __init__(self, client):
+        """Wrap `client`; `indexed` collects the field names."""
+        self.client, self.indexed = client, set()
+
+    def create_payload_index(self, collection, field, schema):
+        """Record the field instead of indexing it (in-process Qdrant ignores indexes)."""
+        self.indexed.add(field)
+
+    def __getattr__(self, name):
+        """Everything else goes to the real client."""
+        return getattr(self.client, name)
+
+
+def test_index_makes_every_payload_field_filterable():
+    """Qdrant Cloud filters only on indexed fields, so `index()` gives each field one."""
+    qdrant_client = pytest.importorskip("qdrant_client")
+    client = RecordingQdrant(qdrant_client.QdrantClient(":memory:"))
+
+    QdrantStore(client, "actwise_test").index(PAYLOADS, VECTORS)
+
+    assert client.indexed == set(PAYLOADS[0])
+
+
 @pytest.fixture(params=["memory", pytest.param("server", marks=pytest.mark.integration)])
 def qdrant(request):
     """Qdrant in process (always) and the Docker server (when one is running)."""
@@ -82,6 +118,7 @@ def qdrant(request):
     client.close()
 
 
+@pytest.mark.filterwarnings("ignore:Payload indexes have no effect")  # in-process Qdrant
 def test_gdpr_filter(qdrant):
     """A query filtered on law == "gdpr" returns no AI Act chunks; re-indexing adds no points."""
     store = QdrantStore(qdrant, f"actwise_test_{uuid.uuid4().hex[:8]}")
