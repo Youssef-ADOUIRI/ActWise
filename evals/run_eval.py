@@ -33,13 +33,22 @@ from actwise.evaluation.golden import GOLDEN_FILE, Question, load_golden, questi
 from actwise.evaluation.judge import JUDGE_PROMPT
 from actwise.evaluation.runner import SearchFn, evaluate, to_markdown
 from actwise.evaluation.splits import SPLIT_FILE, load_splits, split_of
+from actwise.generation.context import MAX_REFERENCES, ParagraphContext
 from actwise.generation.prompts import answer_prompts, load_prompt
 from actwise.generation.rag import RagPipeline
+from actwise.generation.rewrite import REWRITE_PROMPT
 from actwise.llm.factory import OFFLINE, build_judge, build_llm
 from actwise.retrieval.hybrid import HybridRetriever
+from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SYSTEMS
 
 REPORTS = Path("evals/reports")
+CONTEXTS: dict[str, dict[str, Any] | None] = {  # step 8b, one phase per entry
+    "windows": None,
+    "paragraphs": {},
+    "references": {"max_references": MAX_REFERENCES},
+    "rewrite": {"max_references": MAX_REFERENCES},  # a refusal is retried, rewritten
+}
 
 
 def in_two_passes(hybrid: HybridRetriever, questions: list[Question]) -> tuple[SearchFn, float]:
@@ -99,12 +108,23 @@ def main() -> None:
     )
     parser.add_argument("--system", choices=SYSTEMS, default="baseline")
     parser.add_argument("--split", choices=["train", "dev", "test"], default="dev")
-    parser.add_argument("--name", help="report name (default: <system>-<split>[-<prompt>])")
+    parser.add_argument(
+        "--name", help="report name (default: <system>-<split>[-<prompt>][-<context>])"
+    )
     parser.add_argument("--prompt", choices=["plain", *answer_prompts()], help="answer too")
     parser.add_argument("--judge", action="store_true", help="score the answers (with --prompt)")
+    parser.add_argument(
+        "--context",
+        choices=CONTEXTS,
+        default="windows",
+        help="what the model reads (step 8b): the top windows; whole paragraphs; plus the "
+        "units they name; plus rewritten queries and each article's first paragraph",
+    )
     args = parser.parse_args()
     if args.judge and not args.prompt:
         parser.error("--judge needs --prompt")
+    if args.context != "windows" and args.prompt in (None, "plain"):
+        parser.error(f"--context {args.context} needs an answer.vN prompt")
     logging.basicConfig(level=logging.WARNING, format="%(message)s")
     logging.getLogger("actwise").setLevel(logging.INFO)  # our progress, not every HTTP call
     load_dotenv()  # .env fills in what the environment doesn't set
@@ -125,8 +145,9 @@ def main() -> None:
         retriever.search("warm-up", 1)  # keep one-off start-up costs (model loading) out of timings
         search, first_ms = (lambda query, n: [hit.id for hit in retriever.search(query, n)]), 0.0
 
+    suffix = None if args.context == "windows" else args.context
     report = {
-        "name": args.name or "-".join(filter(None, [args.system, args.split, args.prompt])),
+        "name": args.name or "-".join(filter(None, [args.system, args.split, args.prompt, suffix])),
         "created": datetime.now(UTC).isoformat(timespec="seconds"),
         "git_commit": git_commit(),
         "split": args.split,
@@ -145,15 +166,20 @@ def main() -> None:
 
     markdown = to_markdown(report)
     if llm is not None:
+        options = CONTEXTS[args.context]
+        context = None if options is None else ParagraphContext(paragraph_passages(), **options)
+        rewrite = load_prompt(REWRITE_PROMPT) if args.context == "rewrite" else None
         ask: Ask = (
             partial(plain_ask, llm, retriever.search)
             if args.prompt == "plain"
-            else RagPipeline(llm, retriever.search, load_prompt(args.prompt)).ask
+            else RagPipeline(llm, retriever.search, load_prompt(args.prompt), context, rewrite).ask
         )
         rows = answer_questions(ask, questions, judge)
         cache = {"answers": [llm.hits, llm.misses], "judge": judge and [judge.hits, judge.misses]}
         answers = {
             "prompt": args.prompt,
+            "context": args.context,
+            "rewrite": REWRITE_PROMPT if rewrite else None,
             "judge": judge and {**judge.config, "prompt": JUDGE_PROMPT},
             "summary": summarise_answers(rows) | {"cache_hits_misses": cache},
             "by_source": by_source(rows),
