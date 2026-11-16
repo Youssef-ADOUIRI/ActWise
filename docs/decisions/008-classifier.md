@@ -7,7 +7,7 @@
 - **Measured:** 40 scenarios written by Claude, each label verified by a person against the quoted article text. Dev has 17 clear and 3 ambiguous scenarios:
   - **Search only:** 15/17. It missed s17 (an AI medical device): seven searches never returned Art. 6(1), because queries that name an article miss it, and the agent ran out of steps.
   - **Plus `read_ai_act_article`:** 16/17. It missed s29: the agent found the Art. 6(3) exception, then kept searching for confirming recitals.
-  - **Plus a warning three steps before the budget ends:** 17/17 clear and 3/3 ambiguous. That leaves 0 prohibited or high-risk systems labelled minimal risk, 0 runs out of steps, and 3.55 model calls per run (commit `f3670f9`).
+  - **Plus a warning three steps before the budget ends:** 17/17 clear and 3/3 ambiguous. That leaves recall 1.0 on prohibited (4 of 4) and high risk (6 of 6), 0 prohibited or high-risk systems labelled minimal risk, 0 runs out of steps, and 3.55 model calls per run (commit `f3670f9`).
   - **Live, Gemini 3 needs its thought signature** sent back with each function call. Without it, the second turn fails with a 400.
 - **Chosen:**
   - **Tools:** `read_ai_act_article` (an enum of Art. 5, 6, 50 and Annexes I and III), `search_ai_act` (AI Act passages only, one per paragraph) and `submit_classification` (its schema comes from the `Classification` model).

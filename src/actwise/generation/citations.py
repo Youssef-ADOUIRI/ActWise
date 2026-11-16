@@ -29,6 +29,27 @@ def extract_citations(answer: str) -> list[str]:
     return found
 
 
+def normalise_citations(answer: str, retrieved: set[str]) -> str:
+    """Write each cited id that differs from a retrieved one only in case exactly as retrieved.
+
+    [GDpr-Art3-2] becomes [GDPR-Art3-2]; anything else is left to the checks that follow.
+    """
+    exact = {pid.casefold(): pid for pid in retrieved}
+
+    def exact_form(token: str) -> str:
+        """The retrieved id this token means, if only its case is wrong; else the token."""
+        cited = paragraph_id(token)
+        return token if cited in retrieved else exact.get(cited.casefold(), token)
+
+    def fix(match: re.Match[str]) -> str:
+        """The group with each id that differs only in case written exactly."""
+        space, tokens = match.group(1), _tokens(match.group(2))
+        fixed = [exact_form(t) for t in tokens]
+        return match.group(0) if fixed == tokens else f"{space}[{', '.join(fixed)}]"
+
+    return BRACKET.sub(fix, answer)
+
+
 def invented_citations(answer: str, retrieved: set[str]) -> list[str]:
     """Cited ids that are not among the retrieved passages."""
     return [cited for cited in extract_citations(answer) if cited not in retrieved]

@@ -86,6 +86,29 @@ class CachedLLM:
         return response
 
 
+class CountingLLM:
+    """The tokens of every reply added up, cached ones included: the cost of one run."""
+
+    def __init__(self, inner: LLM):
+        """Wrap `inner`; nothing counted yet."""
+        self.inner, self.config = inner, inner.config
+        self.input_tokens = self.output_tokens = 0
+
+    def chat(
+        self,
+        messages: list[Message],
+        tools: list[Tool] | None = None,
+        temperature: float | None = None,
+        max_tokens: int = MAX_TOKENS,
+        deadline: float | None = None,
+    ) -> LLMResponse:
+        """Ask `inner` and count what its reply cost."""
+        response = self.inner.chat(messages, tools, temperature, max_tokens, deadline=deadline)
+        self.input_tokens += response.input_tokens
+        self.output_tokens += response.output_tokens
+        return response
+
+
 class RetryingLLM:
     """Retry rate limits and server errors with exponential backoff, and space calls out."""
 

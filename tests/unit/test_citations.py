@@ -1,6 +1,7 @@
 from actwise.generation.citations import (
     extract_citations,
     invented_citations,
+    normalise_citations,
     strip_citations,
     uncited_sentences,
 )
@@ -49,3 +50,17 @@ def test_strip_removes_only_the_exact_invented_id():
 def test_strip_matches_the_paragraph_of_a_cited_part():
     """An invented paragraph is removed even when the model cites one of its parts."""
     assert strip_citations("Fines [GDPR-Art99-1#2].", {"GDPR-Art99-1"}) == "Fines."
+
+
+def test_ids_in_the_wrong_case_are_written_exactly():
+    """[GDpr-Art3-2] means a retrieved GDPR-Art3-2; exact ids and unknown ones are left alone."""
+    retrieved = {"GDPR-Art3-2", "AIA-Art3-12"}
+    answer = "It applies [GDpr-Art3-2]. Purpose [AIA-Art3-12#2, aia-art3-12]. Fines [GDPR-Art83-5]."
+
+    fixed = normalise_citations(answer, retrieved)
+
+    assert (
+        fixed
+        == "It applies [GDPR-Art3-2]. Purpose [AIA-Art3-12#2, AIA-Art3-12]. Fines [GDPR-Art83-5]."
+    )
+    assert invented_citations(fixed, retrieved) == ["GDPR-Art83-5"]

@@ -12,6 +12,6 @@ jobs:
       - uses: astral-sh/setup-uv@v6
         with:
           python-version: "3.12"
-      - run: uv sync --extra cloud
+      - run: uv sync --extra cloud --extra integrations
       - run: make lint
       - run: make test

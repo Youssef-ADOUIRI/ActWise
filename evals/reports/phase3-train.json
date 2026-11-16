@@ -1,0 +1,1989 @@
+{
+  "name": "phase3-train",
+  "created": "2026-11-02T10:18:13+00:00",
+  "git_commit": "5a61caa",
+  "split": "train",
+  "system": {
+    "name": "hybrid-binding",
+    "description": "E: as C, with articles and annexes ranked before recitals",
+    "embedder": {
+      "model": "BAAI/bge-m3",
+      "revision": "9a0624b896d81da7492a910ffa53731274b6cf3d",
+      "max_len": 512,
+      "prefix": {
+        "query": "",
+        "passage": ""
+      }
+    },
+    "passages": 3799,
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "fusion": {
+      "method": "rrf",
+      "k": 60,
+      "k_each": 30
+    },
+    "reranker": null,
+    "rerank_pool": null,
+    "binding_first": true
+  },
+  "inputs": {
+    "golden": "99c07fff6bff",
+    "splits": "fa7e857e8544"
+  },
+  "questions": {
+    "total": 19,
+    "scored": 19,
+    "skipped_no_gold": 0
+  },
+  "metrics": {
+    "n": 19,
+    "recall@1": 0.3421,
+    "recall@5": 0.8684,
+    "recall@10": 0.9211,
+    "recall@20": 0.9737,
+    "mrr@10": 0.5798,
+    "ndcg@10": 0.6608,
+    "ms_per_query": 147.5
+  },
+  "ci95": {
+    "recall@5": [
+      0.7105,
+      1.0
+    ],
+    "mrr@10": [
+      0.4272,
+      0.7412
+    ]
+  },
+  "by_lang": {
+    "en": {
+      "n": 13,
+      "recall@1": 0.3462,
+      "recall@5": 0.8077,
+      "recall@10": 0.8846,
+      "recall@20": 0.9615,
+      "mrr@10": 0.559,
+      "ndcg@10": 0.6338
+    },
+    "fr": {
+      "n": 6,
+      "recall@1": 0.3333,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.625,
+      "ndcg@10": 0.7194
+    }
+  },
+  "by_type": {
+    "definition": {
+      "n": 2,
+      "recall@1": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.75,
+      "ndcg@10": 0.8155
+    },
+    "lookup": {
+      "n": 5,
+      "recall@1": 0.4,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.6167,
+      "ndcg@10": 0.7109
+    },
+    "obligation": {
+      "n": 12,
+      "recall@1": 0.2917,
+      "recall@5": 0.7917,
+      "recall@10": 0.875,
+      "recall@20": 0.9583,
+      "mrr@10": 0.5361,
+      "ndcg@10": 0.6141
+    }
+  },
+  "by_source": {
+    "hand": {
+      "n": 6,
+      "recall@1": 0.3333,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.6389,
+      "ndcg@10": 0.731
+    },
+    "hard": {
+      "n": 13,
+      "recall@1": 0.3462,
+      "recall@5": 0.8077,
+      "recall@10": 0.8846,
+      "recall@20": 0.9615,
+      "mrr@10": 0.5526,
+      "ndcg@10": 0.6284
+    }
+  },
+  "per_question": [
+    {
+      "id": "q045",
+      "lang": "en",
+      "type": "definition",
+      "source": "hand",
+      "gold": [
+        "AIA-Art3"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art3",
+        "AIA-Art25",
+        "AIA-Art26",
+        "AIA-Art7",
+        "AIA-Art71",
+        "AIA-Art73",
+        "AIA-Art13",
+        "AIA-Art27",
+        "AIA-AnnexV",
+        "AIA-Art86"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q046",
+      "lang": "fr",
+      "type": "lookup",
+      "source": "hand",
+      "gold": [
+        "AIA-AnnexIII",
+        "AIA-Art6"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art25",
+        "AIA-Art6",
+        "AIA-Art9",
+        "AIA-Art14",
+        "AIA-AnnexIII",
+        "AIA-Art23",
+        "AIA-Art15",
+        "AIA-Art24",
+        "AIA-Art16",
+        "AIA-Art72"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6240505200038379
+    },
+    {
+      "id": "q047",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hand",
+      "gold": [
+        "AIA-Art50"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art14",
+        "AIA-Art50",
+        "AIA-Art78",
+        "AIA-Art17",
+        "AIA-Art16",
+        "AIA-Art60",
+        "AIA-Art51",
+        "AIA-Art31",
+        "AIA-Art7",
+        "AIA-Art26"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q048",
+      "lang": "en",
+      "type": "lookup",
+      "source": "hand",
+      "gold": [
+        "GDPR-Art17"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "GDPR-Art17",
+        "GDPR-Art19",
+        "GDPR-Art13",
+        "GDPR-Art58",
+        "GDPR-Art34",
+        "AIA-Art78",
+        "AIA-Art60",
+        "GDPR-Art18",
+        "GDPR-Art4",
+        "GDPR-Art15"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "q049",
+      "lang": "fr",
+      "type": "definition",
+      "source": "hand",
+      "gold": [
+        "GDPR-Art4"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art25",
+        "GDPR-Art4",
+        "GDPR-Art93",
+        "AIA-Art24",
+        "AIA-Art63",
+        "AIA-Art106",
+        "GDPR-Art32",
+        "AIA-Art98",
+        "AIA-Art102",
+        "GDPR-Art6"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "q050",
+      "lang": "en",
+      "type": "lookup",
+      "source": "hand",
+      "gold": [
+        "AIA-Art113"
+      ],
+      "first_hit_rank": 3,
+      "top_articles": [
+        "AIA-Art5",
+        "AIA-Art111",
+        "AIA-Art113",
+        "AIA-Art81",
+        "AIA-Art79",
+        "AIA-Art3",
+        "AIA-Art66",
+        "AIA-Art99",
+        "AIA-Art74",
+        "AIA-Art100"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.3333333333333333,
+      "ndcg@10": 0.5
+    },
+    {
+      "id": "h001",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art2",
+        "AIA-Art99"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "AIA-Art100",
+        "AIA-Art99",
+        "AIA-Art3",
+        "AIA-AnnexI",
+        "AIA-Art110",
+        "AIA-Art81",
+        "AIA-Art57",
+        "AIA-Art74",
+        "AIA-Art58",
+        "AIA-Art60"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 0.5,
+      "recall@10": 0.5,
+      "recall@20": 0.5,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.38685280723454163
+    },
+    {
+      "id": "h002",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art2"
+      ],
+      "first_hit_rank": 10,
+      "top_articles": [
+        "AIA-Art50",
+        "AIA-Art53",
+        "AIA-Art41",
+        "AIA-Art7",
+        "AIA-Art13",
+        "AIA-Art55",
+        "AIA-Art44",
+        "AIA-Art60",
+        "AIA-Art8",
+        "AIA-Art2"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.1,
+      "ndcg@10": 0.2890648263178879
+    },
+    {
+      "id": "h003",
+      "lang": "fr",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art2"
+      ],
+      "first_hit_rank": 4,
+      "top_articles": [
+        "AIA-Art82",
+        "AIA-Art3",
+        "AIA-Art9",
+        "AIA-Art2",
+        "AIA-Art5",
+        "AIA-Art8",
+        "AIA-Art50",
+        "GDPR-Art9",
+        "AIA-Art86",
+        "AIA-Art25"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.25,
+      "ndcg@10": 0.43067655807339306
+    },
+    {
+      "id": "h004",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art22"
+      ],
+      "first_hit_rank": 4,
+      "top_articles": [
+        "AIA-Art49",
+        "AIA-Art24",
+        "AIA-Art25",
+        "AIA-Art22",
+        "AIA-Art16",
+        "AIA-Art60",
+        "AIA-Art75",
+        "AIA-Art14",
+        "AIA-Art26",
+        "AIA-Art82"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.25,
+      "ndcg@10": 0.43067655807339306
+    },
+    {
+      "id": "h005",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art50"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art50",
+        "AIA-Art41",
+        "GDPR-Art14",
+        "AIA-Art31",
+        "AIA-Art14",
+        "AIA-Art17",
+        "AIA-Art43",
+        "AIA-Art63",
+        "GDPR-Art11",
+        "GDPR-Art83"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "h006",
+      "lang": "fr",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art50"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art50",
+        "AIA-Art3",
+        "AIA-Art57",
+        "GDPR-Art57",
+        "AIA-Art79",
+        "GDPR-Art9",
+        "AIA-Art5",
+        "AIA-Art14",
+        "AIA-Art7",
+        "AIA-Art73"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "h007",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art6",
+        "AIA-AnnexIII"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-AnnexIII",
+        "AIA-Art6",
+        "AIA-Art48",
+        "AIA-Art27",
+        "AIA-Art23",
+        "AIA-Art75",
+        "AIA-Art9",
+        "AIA-Art7",
+        "AIA-Art15",
+        "AIA-Art49"
+      ],
+      "recall@1": 0.5,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "h008",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art6",
+        "AIA-AnnexIII"
+      ],
+      "first_hit_rank": 3,
+      "top_articles": [
+        "AIA-AnnexIV",
+        "AIA-AnnexXII",
+        "AIA-AnnexIII",
+        "AIA-Art6",
+        "AIA-AnnexXI",
+        "AIA-Art9",
+        "AIA-Art26",
+        "AIA-Art3",
+        "AIA-Art25",
+        "GDPR-Art12"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.3333333333333333,
+      "ndcg@10": 0.5706417189553201
+    },
+    {
+      "id": "h009",
+      "lang": "fr",
+      "type": "lookup",
+      "source": "hard",
+      "gold": [
+        "AIA-Art99"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art99",
+        "AIA-Art101",
+        "AIA-Art79",
+        "AIA-Art47",
+        "AIA-Art25",
+        "AIA-Art100",
+        "AIA-Art75",
+        "AIA-Art13",
+        "AIA-Art53",
+        "AIA-Art20"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "h010",
+      "lang": "en",
+      "type": "lookup",
+      "source": "hard",
+      "gold": [
+        "AIA-Art99"
+      ],
+      "first_hit_rank": 4,
+      "top_articles": [
+        "AIA-Art100",
+        "AIA-Art101",
+        "AIA-Art57",
+        "AIA-Art99",
+        "AIA-Art58",
+        "AIA-Art60",
+        "AIA-Art6",
+        "AIA-Art112",
+        "AIA-Art62",
+        "AIA-Art91"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.25,
+      "ndcg@10": 0.43067655807339306
+    },
+    {
+      "id": "h011",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "AIA-Art24"
+      ],
+      "first_hit_rank": 1,
+      "top_articles": [
+        "AIA-Art24",
+        "AIA-Art6",
+        "AIA-Art14",
+        "AIA-Art49",
+        "AIA-Art72",
+        "AIA-Art17",
+        "AIA-Art43",
+        "AIA-Art3",
+        "AIA-Art25",
+        "AIA-Art20"
+      ],
+      "recall@1": 1.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 1.0,
+      "ndcg@10": 1.0
+    },
+    {
+      "id": "h012",
+      "lang": "fr",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "GDPR-Art17"
+      ],
+      "first_hit_rank": 2,
+      "top_articles": [
+        "GDPR-Art47",
+        "GDPR-Art17",
+        "GDPR-Art61",
+        "GDPR-Art29",
+        "GDPR-Art4",
+        "GDPR-Art49",
+        "AIA-Art5",
+        "GDPR-Art11",
+        "GDPR-Art18",
+        "GDPR-Art5"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 1.0,
+      "recall@10": 1.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.5,
+      "ndcg@10": 0.6309297535714575
+    },
+    {
+      "id": "h013",
+      "lang": "en",
+      "type": "obligation",
+      "source": "hard",
+      "gold": [
+        "GDPR-Art9"
+      ],
+      "first_hit_rank": 20,
+      "top_articles": [
+        "AIA-Art5",
+        "AIA-Art99",
+        "AIA-Art70",
+        "AIA-Art23",
+        "GDPR-Art65",
+        "GDPR-Art70",
+        "GDPR-Art90",
+        "GDPR-Art84",
+        "GDPR-Art51",
+        "AIA-Art26"
+      ],
+      "recall@1": 0.0,
+      "recall@5": 0.0,
+      "recall@10": 0.0,
+      "recall@20": 1.0,
+      "mrr@10": 0.0,
+      "ndcg@10": 0.0
+    }
+  ],
+  "llm": {
+    "fallback": [
+      {
+        "provider": "gemini",
+        "model": "gemini-3.5-flash-lite"
+      }
+    ]
+  },
+  "answers": {
+    "prompt": "answer.v2",
+    "context": "rewrite",
+    "rewrite": "rewrite.v1",
+    "judge": null,
+    "summary": {
+      "n": 19,
+      "in_scope": 19,
+      "out_of_scope": 0,
+      "refusal_rate": null,
+      "false_refusal_rate": 0.1053,
+      "refusal_reasons": {
+        "not_covered": 1,
+        "uncited": 1
+      },
+      "invented_citations": 0,
+      "invented_shown": 0,
+      "citation_precision_strict": 0.9545,
+      "gold_in_context": 1.0,
+      "gold_cited": 0.8947,
+      "citation_precision_lenient": null,
+      "faithfulness": null,
+      "fully_supported": null,
+      "faithfulness_ci95": null,
+      "judged": 0,
+      "judge_failed": 0,
+      "uncited_sentences": 1.12,
+      "models": {
+        "gemini-3.5-flash-lite": 19
+      },
+      "input_tokens": 30541,
+      "output_tokens": 2283,
+      "cache_hits_misses": {
+        "answers": [
+          0,
+          38
+        ],
+        "judge": null
+      }
+    },
+    "by_source": {
+      "hand": {
+        "n": 6,
+        "in_scope": 6,
+        "out_of_scope": 0,
+        "refusal_rate": null,
+        "false_refusal_rate": 0.0,
+        "refusal_reasons": {},
+        "invented_citations": 0,
+        "invented_shown": 0,
+        "citation_precision_strict": 1.0,
+        "gold_in_context": 1.0,
+        "gold_cited": 1.0,
+        "citation_precision_lenient": null,
+        "faithfulness": null,
+        "fully_supported": null,
+        "faithfulness_ci95": null,
+        "judged": 0,
+        "judge_failed": 0,
+        "uncited_sentences": 0.67,
+        "models": {
+          "gemini-3.5-flash-lite": 6
+        },
+        "input_tokens": 9895,
+        "output_tokens": 819
+      },
+      "hard": {
+        "n": 13,
+        "in_scope": 13,
+        "out_of_scope": 0,
+        "refusal_rate": null,
+        "false_refusal_rate": 0.1538,
+        "refusal_reasons": {
+          "not_covered": 1,
+          "uncited": 1
+        },
+        "invented_citations": 0,
+        "invented_shown": 0,
+        "citation_precision_strict": 0.9333,
+        "gold_in_context": 1.0,
+        "gold_cited": 0.8462,
+        "citation_precision_lenient": null,
+        "faithfulness": null,
+        "fully_supported": null,
+        "faithfulness_ci95": null,
+        "judged": 0,
+        "judge_failed": 0,
+        "uncited_sentences": 1.36,
+        "models": {
+          "gemini-3.5-flash-lite": 13
+        },
+        "input_tokens": 20646,
+        "output_tokens": 1464
+      }
+    },
+    "per_question": [
+      {
+        "id": "q045",
+        "lang": "en",
+        "type": "definition",
+        "source": "hand",
+        "question": "Who counts as a deployer of an AI system?",
+        "gold": [
+          "AIA-Art3"
+        ],
+        "answer": "A 'deployer' means a natural or legal person, public authority, agency or other body using an AI system under its authority, except where the AI system is used in the course of a personal non-professional activity [AIA-Art3-4].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art3-4"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art3-4@en",
+            "id": "AIA-Art3-4",
+            "label": "AI Act, Art. 3(4)",
+            "text": "AI Act Article 3(4): Definitions\n‘deployer’ means a natural or legal person, public authority, agency or other body using an AI system under its authority except where the AI system is used in the course of a personal non-professional activity;"
+          },
+          {
+            "key": "AIA-Art26-4@en",
+            "id": "AIA-Art26-4",
+            "label": "AI Act, Art. 26(4)",
+            "text": "AI Act Article 26(4): Obligations of deployers of high-risk AI systems\nWithout prejudice to paragraphs 1 and 2, to the extent the deployer exercises control over the input data, that deployer shall ensure that input data is relevant and sufficiently representative in view of the intended purpose of the high-risk AI system."
+          },
+          {
+            "key": "AIA-Art26-5@en",
+            "id": "AIA-Art26-5",
+            "label": "AI Act, Art. 26(5)",
+            "text": "AI Act Article 26(5): Obligations of deployers of high-risk AI systems\nDeployers shall monitor the operation of the high-risk AI system on the basis of the instructions for use and, where relevant, inform providers in accordance with Article 72. Where deployers have reason to consider that the use of the high-risk AI system in accordance with the instructions may result in that AI system presenting a risk within the meaning of Article 79(1), they shall, without undue delay, inform the provider or distributor and the relevant market surveillance authority, and shall suspend the use of that system. Where deployers have identified a serious incident, they shall also immediately inform first the provider, and then the importer or distributor and the relevant market surveillance authorities of that incident. If the deployer is not able to reach the provider, Article 73 shall apply mutatis mutandis . This obligation shall not cover sensitive operational data of deployers of AI systems which are law enforcement authorities. For deployers that are financial institutions subject to requirements regarding their internal governance, arrangements or processes under Union financial services law, the monitoring obligation set out in the first subparagraph shall be deemed to be fulfilled by complying with the rules on internal governance arrangements, processes and mechanisms pursuant to the relevant financial service law."
+          },
+          {
+            "key": "AIA-Art3-11@en",
+            "id": "AIA-Art3-11",
+            "label": "AI Act, Art. 3(11)",
+            "text": "AI Act Article 3(11): Definitions\n‘putting into service’ means the supply of an AI system for first use directly to the deployer or for own use in the Union for its intended purpose;"
+          },
+          {
+            "key": "AIA-Art3-15@en",
+            "id": "AIA-Art3-15",
+            "label": "AI Act, Art. 3(15)",
+            "text": "AI Act Article 3(15): Definitions\n‘instructions for use’ means the information provided by the provider to inform the deployer of, in particular, an AI system’s intended purpose and proper use;"
+          },
+          {
+            "key": "AIA-Art3-1@en",
+            "id": "AIA-Art3-1",
+            "label": "AI Act, Art. 3(1)",
+            "text": "AI Act Article 3(1): Definitions\n‘AI system’ means a machine-based system that is designed to operate with varying levels of autonomy and that may exhibit adaptiveness after deployment, and that, for explicit or implicit objectives, infers, from the input it receives, how to generate outputs such as predictions, content, recommendations, or decisions that can influence physical or virtual environments;"
+          },
+          {
+            "key": "AIA-Art26-1@en",
+            "id": "AIA-Art26-1",
+            "label": "AI Act, Art. 26(1)",
+            "text": "AI Act Article 26(1): Obligations of deployers of high-risk AI systems\nDeployers of high-risk AI systems shall take appropriate technical and organisational measures to ensure they use such systems in accordance with the instructions for use accompanying the systems, pursuant to paragraphs 3 and 6."
+          },
+          {
+            "key": "AIA-Art26-2@en",
+            "id": "AIA-Art26-2",
+            "label": "AI Act, Art. 26(2)",
+            "text": "AI Act Article 26(2): Obligations of deployers of high-risk AI systems\nDeployers shall assign human oversight to natural persons who have the necessary competence, training and authority, as well as the necessary support."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 949,
+        "output_tokens": 53
+      },
+      {
+        "id": "q046",
+        "lang": "fr",
+        "type": "lookup",
+        "source": "hand",
+        "question": "Un logiciel d'IA qui trie automatiquement les CV des candidats est-il un système d'IA à haut risque ?",
+        "gold": [
+          "AIA-AnnexIII",
+          "AIA-Art6"
+        ],
+        "answer": "Un système d'IA destiné à être utilisé pour analyser et filtrer les candidatures est considéré comme un système d'IA à haut risque relevant de l'emploi, de la gestion de la main-d'œuvre et de l'accès à l'emploi indépendant [AIA-AnnexIII-4]. \n\nCependant, les sources ne précisent pas si cette classification s'applique automatiquement ou si des dérogations spécifiques (telles que l'absence de risque important de préjudice lorsque le système accomplit une tâche procédurale étroite) pourraient s'appliquer dans un cas particulier [AIA-Art6-3].\n\n*Note: Je donne des informations juridiques et non des conseils juridiques.*",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-AnnexIII-4",
+          "AIA-Art6-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-AnnexIII-4@fr",
+            "id": "AIA-AnnexIII-4",
+            "label": "Règlement IA, Annexe III, point 4",
+            "text": "Règlement IA Annexe III(4): Systèmes d'IA à haut risque visés à l'article 6, paragraphe 2\nEmploi, gestion de la main-d'œuvre et accès à l'emploi indépendant: a) systèmes d'IA destinés à être utilisés pour le recrutement ou la sélection de personnes physiques, en particulier pour publier des offres d'emploi ciblées, analyser et filtrer les candidatures et évaluer les candidats; b) systèmes d'IA destinés à être utilisés pour prendre des décisions influant sur les conditions des relations professionnelles, la promotion ou le licenciement dans le cadre de relations professionnelles contractuelles, pour attribuer des tâches sur la base du comportement individuel, de traits de personnalité ou de caractéristiques personnelles ou pour suivre et évaluer les performances et le comportement de personnes dans le cadre de telles relations."
+          },
+          {
+            "key": "AIA-Art80-1@fr",
+            "id": "AIA-Art80-1",
+            "label": "Règlement IA, Art. 80(1)",
+            "text": "Règlement IA Article 80(1): Procédure applicable aux systèmes d’IA classés par le fournisseur comme n’étant pas à haut risque en application de l’annexe III\nLorsqu’une autorité de surveillance du marché a des raisons suffisantes de considérer qu’un système d’IA classé par le fournisseur comme n’étant pas à haut risque en application de l’article 6, paragraphe 3, est en réalité à haut risque, elle procède à une évaluation du système d’IA concerné quant à la question de sa classification en tant que système d’IA à haut risque sur la base des conditions énoncées à l’article 6, paragraphe 3, et dans les lignes directrices de la Commission."
+          },
+          {
+            "key": "AIA-Art6-3@fr",
+            "id": "AIA-Art6-3",
+            "label": "Règlement IA, Art. 6(3)",
+            "text": "Règlement IA Article 6(3): Règles relatives à la classification de systèmes d’IA comme systèmes à haut risque\nPar dérogation au paragraphe 2, un système d’IA visé à l’annexe III n’est pas considéré comme étant à haut risque lorsqu’il ne présente pas de risque important de préjudice pour la santé, la sécurité ou les droits fondamentaux des personnes physiques, y compris en n’ayant pas d’incidence significative sur le résultat de la prise de décision. Le premier alinéa s’applique lorsqu’une des conditions suivantes est remplie: a) le système d’IA est destiné à accomplir un tâche procédurale étroite; b) le système d’IA est destiné à améliorer le résultat d’une activité humaine préalablement réalisée; c) le système d’IA est destiné à détecter les constantes en matière de prise de décision ou les écarts par rapport aux constantes habituelles antérieures et n’est pas destiné à se substituer à l’évaluation humaine préalablement réalisée, ni à influencer celle-ci, sans examen humain approprié; ou d) le système d’IA est destiné à exécuter une tâche préparatoire en vue d’une évaluation pertinente aux fins des cas d’utilisation visés à l’annexe III. Nonobstant le premier alinéa, un système d’IA visé à l’annexe III est toujours considéré comme étant à haut risque lorsqu’il effectue un profilage de personnes physiques."
+          },
+          {
+            "key": "AIA-Art25-4@fr",
+            "id": "AIA-Art25-4",
+            "label": "Règlement IA, Art. 25(4)",
+            "text": "Règlement IA Article 25(4): Responsabilités tout au long de la chaîne de valeur de l’IA\nLe fournisseur d’un système d’IA à haut risque et le tiers qui fournit un système d’IA, des outils, services, composants ou processus qui sont utilisés ou intégrés dans un système d’IA à haut risque précisent, par accord écrit, les informations, les capacités, l’accès technique et toute autre assistance nécessaire, sur la base de l’état de la technique généralement reconnu, pour permettre au fournisseur du système d’IA à haut risque de se conformer pleinement aux obligations prévues dans le présent règlement. Le présent paragraphe ne s’applique pas aux tiers qui rendent accessibles au public des outils, services, processus ou composants, autres que des modèles d’IA à usage général, dans le cadre d’une licence libre et ouverte. Le Bureau de l’IA peut élaborer et recommander des clauses types volontaires pour les contrats entre les fournisseurs de systèmes d’IA à haut risque et les tiers qui fournissent des outils, des services, des composants ou des processus qui sont utilisés ou intégrés dans les systèmes d’IA à haut risque. Lorsqu’il élabore des clauses types volontaires, le Bureau de l’IA tient compte des éventuelles exigences contractuelles applicables dans des secteurs ou des activités spécifiques. Les clauses types volontaires sont publiées et mises à disposition gratuitement dans un format électronique facile d’utilisation."
+          },
+          {
+            "key": "AIA-Art14-4@fr",
+            "id": "AIA-Art14-4",
+            "label": "Règlement IA, Art. 14(4)",
+            "text": "Règlement IA Article 14(4): Contrôle humain\nAux fins de la mise en œuvre des dispositions des paragraphes 1, 2 et 3, le système d’IA à haut risque est fourni au déployeur de telle manière que les personnes physiques chargées d’effectuer un contrôle humain, dans la mesure où cela est approprié et proportionné, ont la possibilité: a) de comprendre correctement les capacités et les limites pertinentes du système d’IA à haut risque et d’être en mesure de surveiller correctement son fonctionnement, y compris en vue de détecter et de traiter les anomalies, les dysfonctionnements et les performances inattendues; b) d’avoir conscience d’une éventuelle tendance à se fier automatiquement ou excessivement aux sorties produites par un système d’IA à haut risque (biais d’automatisation), en particulier pour les systèmes d’IA à haut risque utilisés pour fournir des informations ou des recommandations concernant les décisions à prendre par des personnes physiques; c) d’interpréter correctement les sorties du système d’IA à haut risque, compte tenu par exemple des outils et méthodes d’interprétation disponibles; d) de décider, dans une situation particulière, de ne pas utiliser le système d’IA à haut risque ou d’ignorer, remplacer ou inverser la sortie du système d’IA à haut risque; e) d’intervenir dans le fonctionnement du système d’IA à haut risque ou d’interrompre le système au moyen d’un bouton d’arrêt ou d’une procédure similaire permettant au système de s’arrêter de manière sécurisée."
+          },
+          {
+            "key": "AIA-Art6-1@fr",
+            "id": "AIA-Art6-1",
+            "label": "Règlement IA, Art. 6(1)",
+            "text": "Règlement IA Article 6(1): Règles relatives à la classification de systèmes d’IA comme systèmes à haut risque\nUn système d’IA mis sur le marché ou mis en service, qu’il soit ou non indépendant des produits visés aux points a) et b), est considéré comme étant à haut risque lorsque les deux conditions suivantes sont remplies: a) le système d’IA est destiné à être utilisé comme composant de sécurité d’un produit couvert par la législation d’harmonisation de l’Union dont la liste figure à l’annexe I, ou le système d’IA constitue lui-même un tel produit; b) le produit dont le composant de sécurité visé au point a) est le système d’IA, ou le système d’IA lui-même en tant que produit, est soumis à une évaluation de conformité par un tiers en vue de la mise sur le marché ou de la mise en service de ce produit conformément à la législation d’harmonisation de l’Union dont la liste figure à l’annexe I."
+          },
+          {
+            "key": "AIA-Art25-1@fr",
+            "id": "AIA-Art25-1",
+            "label": "Règlement IA, Art. 25(1)",
+            "text": "Règlement IA Article 25(1): Responsabilités tout au long de la chaîne de valeur de l’IA\nTout distributeur, importateur, déployeur ou autre tiers est considéré comme un fournisseur d’un système d’IA à haut risque aux fins du présent règlement et est soumis aux obligations incombant au fournisseur au titre de l’article 16 dans toutes les circonstances suivantes: a) il commercialise sous son propre nom ou sa propre marque un système d’IA à haut risque déjà mis sur le marché ou mis en service, sans préjudice des dispositions contractuelles prévoyant une autre répartition des obligations; b) il apporte une modification substantielle à un système d’IA à haut risque qui a déjà été mis sur le marché ou a déjà été mis en service de telle manière qu’il reste un système d’IA à haut risque en application de l’article 6; c) il modifie la destination d’un système d’IA, y compris un système d’IA à usage général, qui n’a pas été classé à haut risque et a déjà été mis sur le marché ou mis en service de telle manière que le système d’IA concerné devient un système d’IA à haut risque conformément l’article 6."
+          },
+          {
+            "key": "AIA-Art14-1@fr",
+            "id": "AIA-Art14-1",
+            "label": "Règlement IA, Art. 14(1)",
+            "text": "Règlement IA Article 14(1): Contrôle humain\nLa conception et le développement des systèmes d’IA à haut risque permettent, notamment au moyen d’interfaces homme-machine appropriées, un contrôle effectif par des personnes physiques pendant leur période d’utilisation."
+          },
+          {
+            "key": "AIA-Art6-2@fr",
+            "id": "AIA-Art6-2",
+            "label": "Règlement IA, Art. 6(2)",
+            "text": "Règlement IA Article 6(2): Règles relatives à la classification de systèmes d’IA comme systèmes à haut risque\nOutre les systèmes d’IA à haut risque visés au paragraphe 1, les systèmes d’IA visés à l’annexe III sont considérés comme étant à haut risque."
+          },
+          {
+            "key": "AIA-Art14-2@fr",
+            "id": "AIA-Art14-2",
+            "label": "Règlement IA, Art. 14(2)",
+            "text": "Règlement IA Article 14(2): Contrôle humain\nLe contrôle humain vise à prévenir ou à réduire au minimum les risques pour la santé, la sécurité ou les droits fondamentaux qui peuvent apparaître lorsqu’un système d’IA à haut risque est utilisé conformément à sa destination ou dans des conditions de mauvaise utilisation raisonnablement prévisible, en particulier lorsque de tels risques persistent malgré l’application d’autres exigences énoncées dans la présente section."
+          },
+          {
+            "key": "AIA-Art14-3@fr",
+            "id": "AIA-Art14-3",
+            "label": "Règlement IA, Art. 14(3)",
+            "text": "Règlement IA Article 14(3): Contrôle humain\nLes mesures de contrôle sont proportionnées aux risques, au niveau d’autonomie et au contexte d’utilisation du système d’IA à haut risque, et sont assurées au moyen d’un ou des deux types de mesures suivants: a) des mesures identifiées et, lorsque cela est techniquement possible, intégrées par le fournisseur dans le système d’IA à haut risque avant la mise sur le marché ou la mise en service de ce dernier; b) des mesures identifiées par le fournisseur avant la mise sur le marché ou la mise en service du système d’IA à haut risque et qui se prêtent à une mise en œuvre par le déployeur."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2464,
+        "output_tokens": 146
+      },
+      {
+        "id": "q047",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hand",
+        "question": "Do people have to be told when they are chatting with an AI system rather than a human?",
+        "gold": [
+          "AIA-Art50"
+        ],
+        "answer": "Providers shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system [AIA-Art50-1]. This requirement does not apply if it is obvious from the point of view of a reasonably well-informed, observant, and circumspect natural person, taking into account the circumstances and the context of use [AIA-Art50-1]. Furthermore, this obligation does not apply to AI systems authorised by law to detect, prevent, investigate, or prosecute criminal offences, provided appropriate safeguards for the rights and freedoms of third parties are in place, unless those systems are available for the public to report a criminal offence [AIA-Art50-1]. The provided sources do not cover whether other specific exceptions or rules apply to this transparency obligation.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art50-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art50-1@en",
+            "id": "AIA-Art50-1",
+            "label": "AI Act, Art. 50(1)",
+            "text": "AI Act Article 50(1): Transparency obligations for providers and deployers of certain AI systems\nProviders shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence."
+          },
+          {
+            "key": "AIA-Art50-4@en",
+            "id": "AIA-Art50-4",
+            "label": "AI Act, Art. 50(4)",
+            "text": "AI Act Article 50(4): Transparency obligations for providers and deployers of certain AI systems\nDeployers of an AI system that generates or manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offence. Where the content forms part of an evidently artistic, creative, satirical, fictional or analogous work or programme, the transparency obligations set out in this paragraph are limited to disclosure of the existence of such generated or manipulated content in an appropriate manner that does not hamper the display or enjoyment of the work. Deployers of an AI system that generates or manipulates text which is published with the purpose of informing the public on matters of public interest shall disclose that the text has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offences or where the AI-generated content has undergone a process of human review or editorial control and where a natural or legal person holds editorial responsibility for the publication of the content."
+          },
+          {
+            "key": "AIA-Art50-2@en",
+            "id": "AIA-Art50-2",
+            "label": "AI Act, Art. 50(2)",
+            "text": "AI Act Article 50(2): Transparency obligations for providers and deployers of certain AI systems\nProviders of AI systems, including general-purpose AI systems, generating synthetic audio, image, video or text content, shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. Providers shall ensure their technical solutions are effective, interoperable, robust and reliable as far as this is technically feasible, taking into account the specificities and limitations of various types of content, the costs of implementation and the generally acknowledged state of the art, as may be reflected in relevant technical standards. This obligation shall not apply to the extent the AI systems perform an assistive function for standard editing or do not substantially alter the input data provided by the deployer or the semantics thereof, or where authorised by law to detect, prevent, investigate or prosecute criminal offences."
+          },
+          {
+            "key": "AIA-Art50-3@en",
+            "id": "AIA-Art50-3",
+            "label": "AI Act, Art. 50(3)",
+            "text": "AI Act Article 50(3): Transparency obligations for providers and deployers of certain AI systems\nDeployers of an emotion recognition system or a biometric categorisation system shall inform the natural persons exposed thereto of the operation of the system, and shall process the personal data in accordance with Regulations (EU) 2016/679 and (EU) 2018/1725 and Directive (EU) 2016/680, as applicable. This obligation shall not apply to AI systems used for biometric categorisation and emotion recognition, which are permitted by law to detect, prevent or investigate criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, and in accordance with Union law."
+          },
+          {
+            "key": "AIA-Art13-1@en",
+            "id": "AIA-Art13-1",
+            "label": "AI Act, Art. 13(1)",
+            "text": "AI Act Article 13(1): Transparency and provision of information to deployers\nHigh-risk AI systems shall be designed and developed in such a way as to ensure that their operation is sufficiently transparent to enable deployers to interpret a system’s output and use it appropriately. An appropriate type and degree of transparency shall be ensured with a view to achieving compliance with the relevant obligations of the provider and deployer set out in Section 3."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1060,
+        "output_tokens": 176
+      },
+      {
+        "id": "q048",
+        "lang": "en",
+        "type": "lookup",
+        "source": "hand",
+        "question": "When can I ask a company to delete the personal data it holds about me?",
+        "gold": [
+          "GDPR-Art17"
+        ],
+        "answer": "You have the right to obtain the erasure of personal data concerning you without undue delay from the controller when one of the following grounds applies:\n- The personal data are no longer necessary in relation to the purposes for which they were collected or otherwise processed [GDPR-Art17-1].\n- You withdraw consent on which the processing is based (according to point (a) of Article 6(1) or point (a) of Article 9(2)), and there is no other legal ground for the processing [GDPR-Art17-1].\n- You object to the processing pursuant to Article 21(1) and there are no overriding legitimate grounds for the processing, or you object to the processing pursuant to Article 21(2) [GDPR-Art17-1].\n- The personal data have been unlawfully processed [GDPR-Art17-1].\n- The personal data have to be erased to comply with a legal obligation in Union or Member State law to which the controller is subject [GDPR-Art17-1].\n- The personal data have been collected in relation to the offer of information society services referred to in Article 8(1) [GDPR-Art17-1].\n\nThe provided sources do not cover any potential conditions or limitations outside of these specific grounds.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art17-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art17-1@en",
+            "id": "GDPR-Art17-1",
+            "label": "GDPR, Art. 17(1)",
+            "text": "GDPR Article 17(1): Right to erasure (‘right to be forgotten’)\nThe data subject shall have the right to obtain from the controller the erasure of personal data concerning him or her without undue delay and the controller shall have the obligation to erase personal data without undue delay where one of the following grounds applies: (a) the personal data are no longer necessary in relation to the purposes for which they were collected or otherwise processed; (b) the data subject withdraws consent on which the processing is based according to point (a) of Article 6(1), or point (a) of Article 9(2), and where there is no other legal ground for the processing; (c) the data subject objects to the processing pursuant to Article 21(1) and there are no overriding legitimate grounds for the processing, or the data subject objects to the processing pursuant to Article 21(2); (d) the personal data have been unlawfully processed; (e) the personal data have to be erased for compliance with a legal obligation in Union or Member State law to which the controller is subject; (f) the personal data have been collected in relation to the offer of information society services referred to in Article 8(1)."
+          },
+          {
+            "key": "GDPR-Art17-2@en",
+            "id": "GDPR-Art17-2",
+            "label": "GDPR, Art. 17(2)",
+            "text": "GDPR Article 17(2): Right to erasure (‘right to be forgotten’)\nWhere the controller has made the personal data public and is obliged pursuant to paragraph 1 to erase the personal data, the controller, taking account of available technology and the cost of implementation, shall take reasonable steps, including technical measures, to inform controllers which are processing the personal data that the data subject has requested the erasure by such controllers of any links to, or copy or replication of, those personal data."
+          },
+          {
+            "key": "GDPR-Art19@en",
+            "id": "GDPR-Art19",
+            "label": "GDPR, Art. 19",
+            "text": "GDPR Article 19: Notification obligation regarding rectification or erasure of personal data or restriction of processing\nThe controller shall communicate any rectification or erasure of personal data or restriction of processing carried out in accordance with Article 16, Article 17(1) and Article 18 to each recipient to whom the personal data have been disclosed, unless this proves impossible or involves disproportionate effort. The controller shall inform the data subject about those recipients if the data subject requests it."
+          },
+          {
+            "key": "GDPR-Art17-3@en",
+            "id": "GDPR-Art17-3",
+            "label": "GDPR, Art. 17(3)",
+            "text": "GDPR Article 17(3): Right to erasure (‘right to be forgotten’)\nParagraphs 1 and 2 shall not apply to the extent that processing is necessary: (a) for exercising the right of freedom of expression and information; (b) for compliance with a legal obligation which requires processing by Union or Member State law to which the controller is subject or for the performance of a task carried out in the public interest or in the exercise of official authority vested in the controller; (c) for reasons of public interest in the area of public health in accordance with points (h) and (i) of Article 9(2) as well as Article 9(3); (d) for archiving purposes in the public interest, scientific or historical research purposes or statistical purposes in accordance with Article 89(1) in so far as the right referred to in paragraph 1 is likely to render impossible or seriously impair the achievement of the objectives of that processing; or (e) for the establishment, exercise or defence of legal claims."
+          },
+          {
+            "key": "GDPR-Art18-1@en",
+            "id": "GDPR-Art18-1",
+            "label": "GDPR, Art. 18(1)",
+            "text": "GDPR Article 18(1): Right to restriction of processing\nThe data subject shall have the right to obtain from the controller restriction of processing where one of the following applies: (a) the accuracy of the personal data is contested by the data subject, for a period enabling the controller to verify the accuracy of the personal data; (b) the processing is unlawful and the data subject opposes the erasure of the personal data and requests the restriction of their use instead; (c) the controller no longer needs the personal data for the purposes of the processing, but they are required by the data subject for the establishment, exercise or defence of legal claims; (d) the data subject has objected to processing pursuant to Article 21(1) pending the verification whether the legitimate grounds of the controller override those of the data subject."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1092,
+        "output_tokens": 278
+      },
+      {
+        "id": "q049",
+        "lang": "fr",
+        "type": "definition",
+        "source": "hand",
+        "question": "Qu'est-ce que la pseudonymisation au sens du RGPD ?",
+        "gold": [
+          "GDPR-Art4"
+        ],
+        "answer": "Au sens du RGPD, la « pseudonymisation » désigne le traitement de données à caractère personnel de telle façon que celles-ci ne puissent plus être attribuées à une personne concernée précise sans avoir recours à des informations supplémentaires [GDPR-Art4-5]. Pour ce faire, ces informations supplémentaires doivent être conservées séparément et soumises à des mesures techniques et organisationnelles afin de garantir que les données à caractère personnel ne sont pas attribuées à une personne physique identifiée ou identifiable [GDPR-Art4-5]. Les sources fournies ne couvrent pas d'autres aspects ou définitions de la pseudonymisation.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art4-5"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art4-5@fr",
+            "id": "GDPR-Art4-5",
+            "label": "RGPD, Art. 4(5)",
+            "text": "RGPD Article 4(5): Définitions\n«pseudonymisation», le traitement de données à caractère personnel de telle façon que celles-ci ne puissent plus être attribuées à une personne concernée précise sans avoir recours à des informations supplémentaires, pour autant que ces informations supplémentaires soient conservées séparément et soumises à des mesures techniques et organisationnelles afin de garantir que les données à caractère personnel ne sont pas attribuées à une personne physique identifiée ou identifiable;"
+          },
+          {
+            "key": "GDPR-Art25-1@fr",
+            "id": "GDPR-Art25-1",
+            "label": "RGPD, Art. 25(1)",
+            "text": "RGPD Article 25(1): Protection des données dès la conception et protection des données par défaut\nCompte tenu de l'état des connaissances, des coûts de mise en œuvre et de la nature, de la portée, du contexte et des finalités du traitement ainsi que des risques, dont le degré de probabilité et de gravité varie, que présente le traitement pour les droits et libertés des personnes physiques, le responsable du traitement met en œuvre, tant au moment de la détermination des moyens du traitement qu'au moment du traitement lui-même, des mesures techniques et organisationnelles appropriées, telles que la pseudonymisation, qui sont destinées à mettre en œuvre les principes relatifs à la protection des données, par exemple la minimisation des données, de façon effective et à assortir le traitement des garanties nécessaires afin de répondre aux exigences du présent règlement et de protéger les droits de la personne concernée."
+          },
+          {
+            "key": "GDPR-Art6-4@fr",
+            "id": "GDPR-Art6-4",
+            "label": "RGPD, Art. 6(4)",
+            "text": "RGPD Article 6(4): Licéité du traitement\nLorsque le traitement à une fin autre que celle pour laquelle les données ont été collectées n'est pas fondé sur le consentement de la personne concernée ou sur le droit de l'Union ou le droit d'un État membre qui constitue une mesure nécessaire et proportionnée dans une société démocratique pour garantir les objectifs visés à l'article 23, paragraphe 1, le responsable du traitement, afin de déterminer si le traitement à une autre fin est compatible avec la finalité pour laquelle les données à caractère personnel ont été initialement collectées, tient compte, entre autres: a) de l'existence éventuelle d'un lien entre les finalités pour lesquelles les données à caractère personnel ont été collectées et les finalités du traitement ultérieur envisagé; b) du contexte dans lequel les données à caractère personnel ont été collectées, en particulier en ce qui concerne la relation entre les personnes concernées et le responsable du traitement; c) de la nature des données à caractère personnel, en particulier si le traitement porte sur des catégories particulières de données à caractère personnel, en vertu de l'article 9, ou si des données à caractère personnel relatives à des condamnations pénales et à des infractions sont traitées, en vertu de l'article 10; d) des conséquences possibles du traitement ultérieur envisagé pour les personnes concernées; e) de l'existence de garanties appropriées, qui peuvent comprendre le chiffrement ou la pseudonymisation."
+          },
+          {
+            "key": "GDPR-Art32-1@fr",
+            "id": "GDPR-Art32-1",
+            "label": "RGPD, Art. 32(1)",
+            "text": "RGPD Article 32(1): Sécurité du traitement\nCompte tenu de l'état des connaissances, des coûts de mise en œuvre et de la nature, de la portée, du contexte et des finalités du traitement ainsi que des risques, dont le degré de probabilité et de gravité varie, pour les droits et libertés des personnes physiques, le responsable du traitement et le sous-traitant mettent en œuvre les mesures techniques et organisationnelles appropriées afin de garantir un niveau de sécurité adapté au risque, y compris entre autres, selon les besoins: a) la pseudonymisation et le chiffrement des données à caractère personnel; b) des moyens permettant de garantir la confidentialité, l'intégrité, la disponibilité et la résilience constantes des systèmes et des services de traitement; c) des moyens permettant de rétablir la disponibilité des données à caractère personnel et l'accès à celles-ci dans des délais appropriés en cas d'incident physique ou technique; d) une procédure visant à tester, à analyser et à évaluer régulièrement l'efficacité des mesures techniques et organisationnelles pour assurer la sécurité du traitement."
+          },
+          {
+            "key": "GDPR-Art89-1@fr",
+            "id": "GDPR-Art89-1",
+            "label": "RGPD, Art. 89(1)",
+            "text": "RGPD Article 89(1): Garanties et dérogations applicables au traitement à des fins archivistiques dans l'intérêt public, à des fins de recherche scientifique ou historique ou à des fins statistiques\nLe traitement à des fins archivistiques dans l'intérêt public, à des fins de recherche scientifique ou historique, ou à des fins statistiques est soumis, conformément au présent règlement, à des garanties appropriées pour les droits et libertés de la personne concernée. Ces garanties garantissent la mise en place de mesures techniques et organisationnelles, en particulier pour assurer le respect du principe de minimisation des données. Ces mesures peuvent comprendre la pseudonymisation, dans la mesure où ces finalités peuvent être atteintes de cette manière. Chaque fois que ces finalités peuvent être atteintes par un traitement ultérieur ne permettant pas ou plus l'identification des personnes concernées, il convient de procéder de cette manière."
+          },
+          {
+            "key": "GDPR-Art4-1@fr",
+            "id": "GDPR-Art4-1",
+            "label": "RGPD, Art. 4(1)",
+            "text": "RGPD Article 4(1): Définitions\n«données à caractère personnel», toute information se rapportant à une personne physique identifiée ou identifiable (ci-après dénommée «personne concernée»); est réputée être une «personne physique identifiable» une personne physique qui peut être identifiée, directement ou indirectement, notamment par référence à un identifiant, tel qu'un nom, un numéro d'identification, des données de localisation, un identifiant en ligne, ou à un ou plusieurs éléments spécifiques propres à son identité physique, physiologique, génétique, psychique, économique, culturelle ou sociale;"
+          },
+          {
+            "key": "GDPR-Art6-1@fr",
+            "id": "GDPR-Art6-1",
+            "label": "RGPD, Art. 6(1)",
+            "text": "RGPD Article 6(1): Licéité du traitement\nLe traitement n'est licite que si, et dans la mesure où, au moins une des conditions suivantes est remplie: a) la personne concernée a consenti au traitement de ses données à caractère personnel pour une ou plusieurs finalités spécifiques; b) le traitement est nécessaire à l'exécution d'un contrat auquel la personne concernée est partie ou à l'exécution de mesures précontractuelles prises à la demande de celle-ci; c) le traitement est nécessaire au respect d'une obligation légale à laquelle le responsable du traitement est soumis; d) le traitement est nécessaire à la sauvegarde des intérêts vitaux de la personne concernée ou d'une autre personne physique; e) le traitement est nécessaire à l'exécution d'une mission d'intérêt public ou relevant de l'exercice de l'autorité publique dont est investi le responsable du traitement; f) le traitement est nécessaire aux fins des intérêts légitimes poursuivis par le responsable du traitement ou par un tiers, à moins que ne prévalent les intérêts ou les libertés et droits fondamentaux de la personne concernée qui exigent une protection des données à caractère personnel, notamment lorsque la personne concernée est un enfant. Le point f) du premier alinéa ne s'applique pas au traitement effectué par les autorités publiques dans l'exécution de leurs missions."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1712,
+        "output_tokens": 129
+      },
+      {
+        "id": "q050",
+        "lang": "en",
+        "type": "lookup",
+        "source": "hand",
+        "question": "From what date do the AI Act's bans on prohibited AI practices apply?",
+        "gold": [
+          "AIA-Art113"
+        ],
+        "answer": "The bans on prohibited AI practices, which are contained in Chapter II of the AI Act, apply from 2 February 2025 [AIA-Art113].",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art113"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art5-5@en",
+            "id": "AIA-Art5-5",
+            "label": "AI Act, Art. 5(5)",
+            "text": "AI Act Article 5(5): Prohibited AI practices\nA Member State may decide to provide for the possibility to fully or partially authorise the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement within the limits and under the conditions listed in paragraph 1, first subparagraph, point (h), and paragraphs 2 and 3. Member States concerned shall lay down in their national law the necessary detailed rules for the request, issuance and exercise of, as well as supervision and reporting relating to, the authorisations referred to in paragraph 3. Those rules shall also specify in respect of which of the objectives listed in paragraph 1, first subparagraph, point (h), including which of the criminal offences referred to in point (h)(iii) thereof, the competent authorities may be authorised to use those systems for the purposes of law enforcement. Member States shall notify those rules to the Commission at the latest 30 days following the adoption thereof. Member States may introduce, in accordance with Union law, more restrictive laws on the use of remote biometric identification systems."
+          },
+          {
+            "key": "AIA-Art5-1@en",
+            "id": "AIA-Art5-1",
+            "label": "AI Act, Art. 5(1)",
+            "text": "AI Act Article 5(1): Prohibited AI practices\nThe following AI practices shall be prohibited: (a) the placing on the market, the putting into service or the use of an AI system that deploys subliminal techniques beyond a person’s consciousness or purposefully manipulative or deceptive techniques, with the objective, or the effect of materially distorting the behaviour of a person or a group of persons by appreciably impairing their ability to make an informed decision, thereby causing them to take a decision that they would not have otherwise taken in a manner that causes or is reasonably likely to cause that person, another person or group of persons significant harm; (b) the placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm; (c) the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity; (d) the placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity; (e) the placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage; (f) the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on biometric data or categorizing of biometric data in the area of law enforcement; (h) the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, unless and in so far as such use is strictly necessary for one of the following objectives: (i) the targeted search for specific victims of abduction, trafficking in human beings or sexual exploitation of human beings, as well as the search for missing persons; (ii) the prevention of a specific, substantial and imminent threat to the life or physical safety of natural persons or a genuine and present or genuine and foreseeable threat of a terrorist attack; (iii) the localisation or identification of a person suspected of having committed a criminal offence, for the purpose of conducting a criminal investigation or prosecution or executing a criminal penalty for offences referred to in Annex II and punishable in the Member State concerned by a custodial sentence or a detention order for a maximum period of at least four years. Point (h) of the first subparagraph is without prejudice to Article 9 of Regulation (EU) 2016/679 for the processing of biometric data for purposes other than law enforcement."
+          },
+          {
+            "key": "AIA-Art5-3@en",
+            "id": "AIA-Art5-3",
+            "label": "AI Act, Art. 5(3)",
+            "text": "AI Act Article 5(3): Prohibited AI practices\nFor the purposes of paragraph 1, first subparagraph, point (h) and paragraph 2, each use for the purposes of law enforcement of a ‘real-time’ remote biometric identification system in publicly accessible spaces shall be subject to a prior authorisation granted by a judicial authority or an independent administrative authority whose decision is binding of the Member State in which the use is to take place, issued upon a reasoned request and in accordance with the detailed rules of national law referred to in paragraph 5. However, in a duly justified situation of urgency, the use of such system may be commenced without an authorisation provided that such authorisation is requested without undue delay, at the latest within 24 hours. If such authorisation is rejected, the use shall be stopped with immediate effect and all the data, as well as the results and outputs of that use shall be immediately discarded and deleted. The competent judicial authority or an independent administrative authority whose decision is binding shall grant the authorisation only where it is satisfied, on the basis of objective evidence or clear indications presented to it, that the use of the ‘real-time’ remote biometric identification system concerned is necessary for, and proportionate to, achieving one of the objectives specified in paragraph 1, first subparagraph, point (h), as identified in the request and, in particular, remains limited to what is strictly necessary concerning the period of time as well as the geographic and personal scope. In deciding on the request, that authority shall take into account the elements referred to in paragraph 2. No decision that produces an adverse legal effect on a person may be taken based solely on the output of the ‘real-time’ remote biometric identification system."
+          },
+          {
+            "key": "AIA-Art5-4@en",
+            "id": "AIA-Art5-4",
+            "label": "AI Act, Art. 5(4)",
+            "text": "AI Act Article 5(4): Prohibited AI practices\nWithout prejudice to paragraph 3, each use of a ‘real-time’ remote biometric identification system in publicly accessible spaces for law enforcement purposes shall be notified to the relevant market surveillance authority and the national data protection authority in accordance with the national rules referred to in paragraph 5. The notification shall, as a minimum, contain the information specified under paragraph 6 and shall not include sensitive operational data."
+          },
+          {
+            "key": "AIA-Art113@en",
+            "id": "AIA-Art113",
+            "label": "AI Act, Art. 113",
+            "text": "AI Act Article 113: Entry into force and application\nThis Regulation shall enter into force on the twentieth day following that of its publication in the Official Journal of the European Union . It shall apply from 2 August 2026. However: (a) Chapters I and II shall apply from 2 February 2025; (b) Chapter III Section 4, Chapter V, Chapter VII and Chapter XII and Article 78 shall apply from 2 August 2025, with the exception of Article 101; (c) Article 6(1) and the corresponding obligations in this Regulation shall apply from 2 August 2027."
+          },
+          {
+            "key": "AIA-Art5-2@en",
+            "id": "AIA-Art5-2",
+            "label": "AI Act, Art. 5(2)",
+            "text": "AI Act Article 5(2): Prohibited AI practices\nThe use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), shall be deployed for the purposes set out in that point only to confirm the identity of the specifically targeted individual, and it shall take into account the following elements: (a) the nature of the situation giving rise to the possible use, in particular the seriousness, probability and scale of the harm that would be caused if the system were not used; (b) the consequences of the use of the system for the rights and freedoms of all persons concerned, in particular the seriousness, probability and scale of those consequences. In addition, the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), of this Article shall comply with necessary and proportionate safeguards and conditions in relation to the use in accordance with the national law authorising the use thereof, in particular as regards the temporal, geographic and personal limitations. The use of the ‘real-time’ remote biometric identification system in publicly accessible spaces shall be authorised only if the law enforcement authority has completed a fundamental rights impact assessment as provided for in Article 27 and has registered the system in the EU database according to Article 49. However, in duly justified cases of urgency, the use of such systems may be commenced without the registration in the EU database, provided that such registration is completed without undue delay."
+          },
+          {
+            "key": "AIA-AnnexII@en",
+            "id": "AIA-AnnexII",
+            "label": "AI Act, Annex II",
+            "text": "AI Act Annex II: List of criminal offences referred to in Article 5(1), first subparagraph, point (h)(iii)\nCriminal offences referred to in Article 5(1), first subparagraph, point (h)(iii): — terrorism, — trafficking in human beings, — sexual exploitation of children, and child pornography, — illicit trafficking in narcotic drugs or psychotropic substances, — illicit trafficking in weapons, munitions or explosives, — murder, grievous bodily injury, — illicit trade in human organs or tissue, — illicit trafficking in nuclear or radioactive materials, — kidnapping, illegal restraint or hostage-taking, — crimes within the jurisdiction of the International Criminal Court, — unlawful seizure of aircraft or ships, — rape, — environmental crime, — organised or armed robbery, — sabotage, — participation in a criminal organisation involved in one or more of the offences listed above."
+          },
+          {
+            "key": "AIA-Art5-6@en",
+            "id": "AIA-Art5-6",
+            "label": "AI Act, Art. 5(6)",
+            "text": "AI Act Article 5(6): Prohibited AI practices\nNational market surveillance authorities and the national data protection authorities of Member States that have been notified of the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for law enforcement purposes pursuant to paragraph 4 shall submit to the Commission annual reports on such use. For that purpose, the Commission shall provide Member States and national market surveillance and data protection authorities with a template, including information on the number of the decisions taken by competent judicial authorities or an independent administrative authority whose decision is binding upon requests for authorisations in accordance with paragraph 3 and their result."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2618,
+        "output_tokens": 37
+      },
+      {
+        "id": "h001",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Can a non-EU startup with no office or presence in Europe face fines under the EU AI Act?",
+        "gold": [
+          "AIA-Art2",
+          "AIA-Art99"
+        ],
+        "answer": "I can't answer this from the text of the AI Act or the GDPR that I have. Please rephrase the question, or ask a lawyer.",
+        "refused": true,
+        "reason": "not_covered",
+        "citations": [],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art99-4@en",
+            "id": "AIA-Art99-4",
+            "label": "AI Act, Art. 99(4)",
+            "text": "AI Act Article 99(4): Penalties\nNon-compliance with any of the following provisions related to operators or notified bodies, other than those laid down in Articles 5, shall be subject to administrative fines of up to EUR 15 000 000 or, if the offender is an undertaking, up to 3 % of its total worldwide annual turnover for the preceding financial year, whichever is higher: (a) obligations of providers pursuant to Article 16; (b) obligations of authorised representatives pursuant to Article 22; (c) obligations of importers pursuant to Article 23; (d) obligations of distributors pursuant to Article 24; (e) obligations of deployers pursuant to Article 26; (f) requirements and obligations of notified bodies pursuant to Article 31, Article 33(1), (3) and (4) or Article 34; (g) transparency obligations for providers and deployers pursuant to Article 50."
+          },
+          {
+            "key": "AIA-Art100-3@en",
+            "id": "AIA-Art100-3",
+            "label": "AI Act, Art. 100(3)",
+            "text": "AI Act Article 100(3): Administrative fines on Union institutions, bodies, offices and agencies\nThe non-compliance of the AI system with any requirements or obligations under this Regulation, other than those laid down in Article 5, shall be subject to administrative fines of up to EUR 750 000."
+          },
+          {
+            "key": "AIA-Art100-2@en",
+            "id": "AIA-Art100-2",
+            "label": "AI Act, Art. 100(2)",
+            "text": "AI Act Article 100(2): Administrative fines on Union institutions, bodies, offices and agencies\nNon-compliance with the prohibition of the AI practices referred to in Article 5 shall be subject to administrative fines of up to EUR 1 500 000."
+          },
+          {
+            "key": "AIA-Art99-3@en",
+            "id": "AIA-Art99-3",
+            "label": "AI Act, Art. 99(3)",
+            "text": "AI Act Article 99(3): Penalties\nNon-compliance with the prohibition of the AI practices referred to in Article 5 shall be subject to administrative fines of up to EUR 35 000 000 or, if the offender is an undertaking, up to 7 % of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+          },
+          {
+            "key": "AIA-Art100-1@en",
+            "id": "AIA-Art100-1",
+            "label": "AI Act, Art. 100(1)",
+            "text": "AI Act Article 100(1): Administrative fines on Union institutions, bodies, offices and agencies\nThe European Data Protection Supervisor may impose administrative fines on Union institutions, bodies, offices and agencies falling within the scope of this Regulation. When deciding whether to impose an administrative fine and when deciding on the amount of the administrative fine in each individual case, all relevant circumstances of the specific situation shall be taken into account and due regard shall be given to the following: (a) the nature, gravity and duration of the infringement and of its consequences, taking into account the purpose of the AI system concerned, as well as, where appropriate, the number of affected persons and the level of damage suffered by them; (b) the degree of responsibility of the Union institution, body, office or agency, taking into account technical and organisational measures implemented by them; (c) any action taken by the Union institution, body, office or agency to mitigate the damage suffered by affected persons; (d) the degree of cooperation with the European Data Protection Supervisor in order to remedy the infringement and mitigate the possible adverse effects of the infringement, including compliance with any of the measures previously ordered by the European Data Protection Supervisor against the Union institution, body, office or agency concerned with regard to the same subject matter; (e) any similar previous infringements by the Union institution, body, office or agency; (f) the manner in which the infringement became known to the European Data Protection Supervisor, in particular whether, and if so to what extent, the Union institution, body, office or agency notified the infringement; (g) the annual budget of the Union institution, body, office or agency."
+          },
+          {
+            "key": "AIA-Art99-1@en",
+            "id": "AIA-Art99-1",
+            "label": "AI Act, Art. 99(1)",
+            "text": "AI Act Article 99(1): Penalties\nIn accordance with the terms and conditions laid down in this Regulation, Member States shall lay down the rules on penalties and other enforcement measures, which may also include warnings and non-monetary measures, applicable to infringements of this Regulation by operators, and shall take all measures necessary to ensure that they are properly and effectively implemented, thereby taking into account the guidelines issued by the Commission pursuant to Article 96. The penalties provided for shall be effective, proportionate and dissuasive. They shall take into account the interests of SMEs, including start-ups, and their economic viability."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1160,
+        "output_tokens": 4
+      },
+      {
+        "id": "h002",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Do I have to comply with the AI Act if I use an AI image generator at home for fun?",
+        "gold": [
+          "AIA-Art2"
+        ],
+        "answer": "I can't answer this from the text of the AI Act or the GDPR that I have. Please rephrase the question, or ask a lawyer.",
+        "refused": true,
+        "reason": "uncited",
+        "citations": [],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art5-1@en",
+            "id": "AIA-Art5-1",
+            "label": "AI Act, Art. 5(1)",
+            "text": "AI Act Article 5(1): Prohibited AI practices\nThe following AI practices shall be prohibited: (a) the placing on the market, the putting into service or the use of an AI system that deploys subliminal techniques beyond a person’s consciousness or purposefully manipulative or deceptive techniques, with the objective, or the effect of materially distorting the behaviour of a person or a group of persons by appreciably impairing their ability to make an informed decision, thereby causing them to take a decision that they would not have otherwise taken in a manner that causes or is reasonably likely to cause that person, another person or group of persons significant harm; (b) the placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm; (c) the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity; (d) the placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity; (e) the placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage; (f) the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on biometric data or categorizing of biometric data in the area of law enforcement; (h) the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, unless and in so far as such use is strictly necessary for one of the following objectives: (i) the targeted search for specific victims of abduction, trafficking in human beings or sexual exploitation of human beings, as well as the search for missing persons; (ii) the prevention of a specific, substantial and imminent threat to the life or physical safety of natural persons or a genuine and present or genuine and foreseeable threat of a terrorist attack; (iii) the localisation or identification of a person suspected of having committed a criminal offence, for the purpose of conducting a criminal investigation or prosecution or executing a criminal penalty for offences referred to in Annex II and punishable in the Member State concerned by a custodial sentence or a detention order for a maximum period of at least four years. Point (h) of the first subparagraph is without prejudice to Article 9 of Regulation (EU) 2016/679 for the processing of biometric data for purposes other than law enforcement."
+          },
+          {
+            "key": "AIA-Art2-10@en",
+            "id": "AIA-Art2-10",
+            "label": "AI Act, Art. 2(10)",
+            "text": "AI Act Article 2(10): Scope\nThis Regulation does not apply to obligations of deployers who are natural persons using AI systems in the course of a purely personal non-professional activity."
+          },
+          {
+            "key": "AIA-AnnexIII-5@en",
+            "id": "AIA-AnnexIII-5",
+            "label": "AI Act, Annex III, point 5",
+            "text": "AI Act Annex III(5): High-risk AI systems referred to in Article 6(2)\nAccess to and enjoyment of essential private services and essential public services and benefits: (a) AI systems intended to be used by public authorities or on behalf of public authorities to evaluate the eligibility of natural persons for essential public assistance benefits and services, including healthcare services, as well as to grant, reduce, revoke, or reclaim such benefits and services; (b) AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud; (c) AI systems intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance; (d) AI systems intended to evaluate and classify emergency calls by natural persons or to be used to dispatch, or to establish priority in the dispatching of, emergency first response services, including by police, firefighters and medical aid, as well as of emergency healthcare patient triage systems."
+          },
+          {
+            "key": "AIA-Art50-1@en",
+            "id": "AIA-Art50-1",
+            "label": "AI Act, Art. 50(1)",
+            "text": "AI Act Article 50(1): Transparency obligations for providers and deployers of certain AI systems\nProviders shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence."
+          },
+          {
+            "key": "AIA-Art50-4@en",
+            "id": "AIA-Art50-4",
+            "label": "AI Act, Art. 50(4)",
+            "text": "AI Act Article 50(4): Transparency obligations for providers and deployers of certain AI systems\nDeployers of an AI system that generates or manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offence. Where the content forms part of an evidently artistic, creative, satirical, fictional or analogous work or programme, the transparency obligations set out in this paragraph are limited to disclosure of the existence of such generated or manipulated content in an appropriate manner that does not hamper the display or enjoyment of the work. Deployers of an AI system that generates or manipulates text which is published with the purpose of informing the public on matters of public interest shall disclose that the text has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offences or where the AI-generated content has undergone a process of human review or editorial control and where a natural or legal person holds editorial responsibility for the publication of the content."
+          },
+          {
+            "key": "AIA-Art2-1@en",
+            "id": "AIA-Art2-1",
+            "label": "AI Act, Art. 2(1)",
+            "text": "AI Act Article 2(1): Scope\nThis Regulation applies to: (a) providers placing on the market or putting into service AI systems or placing on the market general-purpose AI models in the Union, irrespective of whether those providers are established or located within the Union or in a third country; (b) deployers of AI systems that have their place of establishment or are located within the Union; (c) providers and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union; (d) importers and distributors of AI systems; (e) product manufacturers placing on the market or putting into service an AI system together with their product and under their own name or trademark; (f) authorised representatives of providers, which are not established in the Union; (g) affected persons that are located in the Union."
+          },
+          {
+            "key": "AIA-AnnexII@en",
+            "id": "AIA-AnnexII",
+            "label": "AI Act, Annex II",
+            "text": "AI Act Annex II: List of criminal offences referred to in Article 5(1), first subparagraph, point (h)(iii)\nCriminal offences referred to in Article 5(1), first subparagraph, point (h)(iii): — terrorism, — trafficking in human beings, — sexual exploitation of children, and child pornography, — illicit trafficking in narcotic drugs or psychotropic substances, — illicit trafficking in weapons, munitions or explosives, — murder, grievous bodily injury, — illicit trade in human organs or tissue, — illicit trafficking in nuclear or radioactive materials, — kidnapping, illegal restraint or hostage-taking, — crimes within the jurisdiction of the International Criminal Court, — unlawful seizure of aircraft or ships, — rape, — environmental crime, — organised or armed robbery, — sabotage, — participation in a criminal organisation involved in one or more of the offences listed above."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2161,
+        "output_tokens": 79
+      },
+      {
+        "id": "h003",
+        "lang": "fr",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Une armée qui développe un système d'IA uniquement pour la défense doit-elle respecter le règlement sur l'IA ?",
+        "gold": [
+          "AIA-Art2"
+        ],
+        "answer": "Le règlement sur l'intelligence artificielle ne s'applique pas aux systèmes d'IA si et dans la mesure où ils sont mis sur le marché, mis en service ou utilisés exclusivement à des fins militaires, de défense ou de sécurité nationale, quel que soit le type d'entité exerçant ces activités [AIA-Art2-3]. \n\nLes sources fournies ne permettent pas de déterminer si d'autres conditions spécifiques ou obligations indirectes pourraient s'appliquer en dehors de cette exclusion d'usage exclusif.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art2-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art2-3@fr",
+            "id": "AIA-Art2-3",
+            "label": "Règlement IA, Art. 2(3)",
+            "text": "Règlement IA Article 2(3): Champ d’application\nLe présent règlement ne s’applique pas aux domaines qui ne relèvent pas du champ d’application du droit de l’Union et, en tout état de cause, ne porte pas atteinte aux compétences des États membres en matière de sécurité nationale, quel que soit le type d’entité chargée par les États membres d’exécuter des tâches liées à ces compétences. Le présent règlement ne s’applique pas aux systèmes d’IA si et dans la mesure où ils sont mis sur le marché, mis en service ou utilisés avec ou sans modifications exclusivement à des fins militaires, de défense ou de sécurité nationale, quel que soit le type d’entité exerçant ces activités. Le présent règlement ne s’applique pas aux systèmes d’IA qui ne sont pas mis sur le marché ou mis en service dans l’Union, lorsque les sorties sont utilisées dans l’Union exclusivement à des fins militaires, de défense ou de sécurité nationale, quel que soit le type d’entité exerçant ces activités."
+          },
+          {
+            "key": "AIA-Art108-1@fr",
+            "id": "AIA-Art108-1",
+            "label": "Règlement IA, Art. 108(1)",
+            "text": "Règlement IA Article 108(1): Modifications du règlement (UE) 2018/1139\nÀ l’article 17, le paragraphe suivant est ajouté: «3. Sans préjudice du paragraphe 2, lors de l’adoption d’actes d’exécution conformément au paragraphe 1 en ce qui concerne les systèmes d’intelligence artificielle qui sont des composants de sécurité au sens du règlement (UE) 2024/1689 du Parlement européen et du Conseil, il est tenu compte des exigences énoncées au chapitre III, section 2, dudit règlement. Règlement (UE) 2024/1689 du Parlement européen et du Conseil du 13 juin 2024 établissant des règles harmonisées concernant l’intelligence artificielle et modifiant les règlements (CE) n o 300/2008, (UE) n o 167/2013, (UE) n o 168/2013, (UE) 2018/858, (UE) 2018/1139 et (UE) 2019/2144 et les directives 2014/90/UE, (UE) 2016/797 et (UE) 2020/1828 (règlement sur l’intelligence artificielle) ( JO L, 2024/1689, 12.7.2024, ELI: http://data.europa.eu/eli/reg/2024/1689/oj ).».\""
+          },
+          {
+            "key": "AIA-Art2-6@fr",
+            "id": "AIA-Art2-6",
+            "label": "Règlement IA, Art. 2(6)",
+            "text": "Règlement IA Article 2(6): Champ d’application\nLe présent règlement ne s’applique pas aux systèmes d’IA ou aux modèles d’IA spécifiquement développés et mis en service uniquement à des fins de recherche et développement scientifiques, ni à leurs sorties."
+          },
+          {
+            "key": "AIA-Art65-1@fr",
+            "id": "AIA-Art65-1",
+            "label": "Règlement IA, Art. 65(1)",
+            "text": "Règlement IA Article 65(1): Création et structure du Comité européen de l’intelligence artificielle\nUn Comité européen de l’intelligence artificielle (ci-après dénommé «Comité IA») est créé."
+          },
+          {
+            "key": "AIA-Art108-5@fr",
+            "id": "AIA-Art108-5",
+            "label": "Règlement IA, Art. 108(5)",
+            "text": "Règlement IA Article 108(5): Modifications du règlement (UE) 2018/1139\nÀ l’article 57, le paragraphe suivant est ajouté: «Lors de l’adoption de ces actes d’exécution en ce qui concerne les systèmes d’intelligence artificielle qui sont des composants de sécurité au sens du règlement (UE) 2024/1689, il est tenu compte des exigences énoncées au chapitre III, section 2, dudit règlement.»."
+          },
+          {
+            "key": "AIA-Art2-1@fr",
+            "id": "AIA-Art2-1",
+            "label": "Règlement IA, Art. 2(1)",
+            "text": "Règlement IA Article 2(1): Champ d’application\nLe présent règlement s’applique: a) aux fournisseurs établis ou situés dans l’Union ou dans un pays tiers qui mettent sur le marché ou mettent en service des systèmes d’IA ou qui mettent sur le marché des modèles d’IA à usage général dans l’Union; b) aux déployeurs de systèmes d’IA qui ont leur lieu d’établissement ou sont situés dans l’Union; c) aux fournisseurs et aux déployeurs de systèmes d’IA qui ont leur lieu d’établissement ou sont situés dans un pays tiers, lorsque les sorties produites par le système d’IA sont utilisées dans l’Union; d) aux importateurs et aux distributeurs de systèmes d’IA; e) aux fabricants de produits qui mettent sur le marché ou mettent en service un système d’IA en même temps que leur produit et sous leur propre nom ou leur propre marque; f) aux mandataires des fournisseurs qui ne sont pas établis dans l’Union; g) aux personnes concernées qui sont situées dans l’Union."
+          },
+          {
+            "key": "AIA-Art108-2@fr",
+            "id": "AIA-Art108-2",
+            "label": "Règlement IA, Art. 108(2)",
+            "text": "Règlement IA Article 108(2): Modifications du règlement (UE) 2018/1139\nÀ l’article 19, le paragraphe suivant est ajouté: «4. Lors de l’adoption d’actes délégués conformément aux paragraphes 1 et 2 en ce qui concerne les systèmes d’intelligence artificielle qui sont des composants de sécurité au sens du règlement (UE) 2024/1689, il est tenu compte des exigences énoncées au chapitre III, section 2, dudit règlement.»."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1444,
+        "output_tokens": 106
+      },
+      {
+        "id": "h004",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "A US company with no office in Europe wants to sell a high-risk AI system there. Who does it need to name in the EU before it can?",
+        "gold": [
+          "AIA-Art22"
+        ],
+        "answer": "Prior to making their high-risk AI systems available on the Union market, providers established in third countries shall, by written mandate, appoint an authorised representative which is established in the Union [AIA-Art22-1]. \n\nThe sources do not cover whether the US company must name anyone else besides an authorised representative. \n\n*Disclaimer: You are receiving legal information, not legal advice.*",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art22-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art22-1@en",
+            "id": "AIA-Art22-1",
+            "label": "AI Act, Art. 22(1)",
+            "text": "AI Act Article 22(1): Authorised representatives of providers of high-risk AI systems\nPrior to making their high-risk AI systems available on the Union market, providers established in third countries shall, by written mandate, appoint an authorised representative which is established in the Union."
+          },
+          {
+            "key": "AIA-Art25-1@en",
+            "id": "AIA-Art25-1",
+            "label": "AI Act, Art. 25(1)",
+            "text": "AI Act Article 25(1): Responsibilities along the AI value chain\nAny distributor, importer, deployer or other third-party shall be considered to be a provider of a high-risk AI system for the purposes of this Regulation and shall be subject to the obligations of the provider under Article 16, in any of the following circumstances: (a) they put their name or trademark on a high-risk AI system already placed on the market or put into service, without prejudice to contractual arrangements stipulating that the obligations are otherwise allocated; (b) they make a substantial modification to a high-risk AI system that has already been placed on the market or has already been put into service in such a way that it remains a high-risk AI system pursuant to Article 6; (c) they modify the intended purpose of an AI system, including a general-purpose AI system, which has not been classified as high-risk and has already been placed on the market or put into service in such a way that the AI system concerned becomes a high-risk AI system in accordance with Article 6."
+          },
+          {
+            "key": "AIA-Art49-1@en",
+            "id": "AIA-Art49-1",
+            "label": "AI Act, Art. 49(1)",
+            "text": "AI Act Article 49(1): Registration\nBefore placing on the market or putting into service a high-risk AI system listed in Annex III, with the exception of high-risk AI systems referred to in point 2 of Annex III, the provider or, where applicable, the authorised representative shall register themselves and their system in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art49-2@en",
+            "id": "AIA-Art49-2",
+            "label": "AI Act, Art. 49(2)",
+            "text": "AI Act Article 49(2): Registration\nBefore placing on the market or putting into service an AI system for which the provider has concluded that it is not high-risk according to Article 6(3), that provider or, where applicable, the authorised representative shall register themselves and that system in the EU database referred to in Article 71."
+          },
+          {
+            "key": "AIA-Art25-3@en",
+            "id": "AIA-Art25-3",
+            "label": "AI Act, Art. 25(3)",
+            "text": "AI Act Article 25(3): Responsibilities along the AI value chain\nIn the case of high-risk AI systems that are safety components of products covered by the Union harmonisation legislation listed in Section A of Annex I, the product manufacturer shall be considered to be the provider of the high-risk AI system, and shall be subject to the obligations under Article 16 under either of the following circumstances: (a) the high-risk AI system is placed on the market together with the product under the name or trademark of the product manufacturer; (b) the high-risk AI system is put into service under the name or trademark of the product manufacturer after the product has been placed on the market."
+          },
+          {
+            "key": "AIA-AnnexIII-2@en",
+            "id": "AIA-AnnexIII-2",
+            "label": "AI Act, Annex III, point 2",
+            "text": "AI Act Annex III(2): High-risk AI systems referred to in Article 6(2)\nCritical infrastructure: AI systems intended to be used as safety components in the management and operation of critical digital infrastructure, road traffic, or in the supply of water, gas, heating or electricity."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 925,
+        "output_tokens": 81
+      },
+      {
+        "id": "h005",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Our website chatbot answers customers. Do we have to tell them they are not chatting with a human?",
+        "gold": [
+          "AIA-Art50"
+        ],
+        "answer": "Providers shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system [AIA-Art50-1]. This obligation does not apply if it is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use, or to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences (unless those systems are available for the public to report a criminal offence) [AIA-Art50-1]. This information must be provided to the natural persons concerned in a clear and distinguishable manner at the latest at the time of the first interaction or exposure, and must conform to applicable accessibility requirements [AIA-Art50-5]. \n\nThe sources do not cover whether your specific website chatbot meets the criteria of being \"obvious\" to a reasonably well-informed, observant, and circumspect person in its particular context of use. \n\nPlease note that this is legal information and not legal advice.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art50-1",
+          "AIA-Art50-5"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art50-1@en",
+            "id": "AIA-Art50-1",
+            "label": "AI Act, Art. 50(1)",
+            "text": "AI Act Article 50(1): Transparency obligations for providers and deployers of certain AI systems\nProviders shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence."
+          },
+          {
+            "key": "AIA-Art50-4@en",
+            "id": "AIA-Art50-4",
+            "label": "AI Act, Art. 50(4)",
+            "text": "AI Act Article 50(4): Transparency obligations for providers and deployers of certain AI systems\nDeployers of an AI system that generates or manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offence. Where the content forms part of an evidently artistic, creative, satirical, fictional or analogous work or programme, the transparency obligations set out in this paragraph are limited to disclosure of the existence of such generated or manipulated content in an appropriate manner that does not hamper the display or enjoyment of the work. Deployers of an AI system that generates or manipulates text which is published with the purpose of informing the public on matters of public interest shall disclose that the text has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offences or where the AI-generated content has undergone a process of human review or editorial control and where a natural or legal person holds editorial responsibility for the publication of the content."
+          },
+          {
+            "key": "AIA-Art50-3@en",
+            "id": "AIA-Art50-3",
+            "label": "AI Act, Art. 50(3)",
+            "text": "AI Act Article 50(3): Transparency obligations for providers and deployers of certain AI systems\nDeployers of an emotion recognition system or a biometric categorisation system shall inform the natural persons exposed thereto of the operation of the system, and shall process the personal data in accordance with Regulations (EU) 2016/679 and (EU) 2018/1725 and Directive (EU) 2016/680, as applicable. This obligation shall not apply to AI systems used for biometric categorisation and emotion recognition, which are permitted by law to detect, prevent or investigate criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, and in accordance with Union law."
+          },
+          {
+            "key": "AIA-Art50-2@en",
+            "id": "AIA-Art50-2",
+            "label": "AI Act, Art. 50(2)",
+            "text": "AI Act Article 50(2): Transparency obligations for providers and deployers of certain AI systems\nProviders of AI systems, including general-purpose AI systems, generating synthetic audio, image, video or text content, shall ensure that the outputs of the AI system are marked in a machine-readable format and detectable as artificially generated or manipulated. Providers shall ensure their technical solutions are effective, interoperable, robust and reliable as far as this is technically feasible, taking into account the specificities and limitations of various types of content, the costs of implementation and the generally acknowledged state of the art, as may be reflected in relevant technical standards. This obligation shall not apply to the extent the AI systems perform an assistive function for standard editing or do not substantially alter the input data provided by the deployer or the semantics thereof, or where authorised by law to detect, prevent, investigate or prosecute criminal offences."
+          },
+          {
+            "key": "AIA-Art50-5@en",
+            "id": "AIA-Art50-5",
+            "label": "AI Act, Art. 50(5)",
+            "text": "AI Act Article 50(5): Transparency obligations for providers and deployers of certain AI systems\nThe information referred to in paragraphs 1 to 4 shall be provided to the natural persons concerned in a clear and distinguishable manner at the latest at the time of the first interaction or exposure. The information shall conform to the applicable accessibility requirements."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1040,
+        "output_tokens": 230
+      },
+      {
+        "id": "h006",
+        "lang": "fr",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Si notre média publie une fausse vidéo d'un homme politique créée avec une IA, devons-nous le signaler ?",
+        "gold": [
+          "AIA-Art50"
+        ],
+        "answer": "Les déployeurs d’un système d’IA qui génère ou manipule des images ou des contenus audio ou vidéo constituant un hypertrucage (dééfini comme une image ou un contenu audio ou vidéo généré ou manipulé par l’IA, présentant une ressemblance avec des personnes, des objets, des lieux, des entités ou événements existants et pouvant être perçu à tort par une personne comme authentiques ou véridiques) doivent indiquer que les contenus ont été générés ou manipulés par une IA [AIA-Art50-4, AIA-Art3-60]. \n\nCependant, les sources ne précisent pas les règles spécifiques applicables aux médias en dehors de cette obligation générale concernant les hypertrucages [AIA-Art50-4]. \n\n*Note : Ces informations constituent des données juridiques et non un conseil juridique.*",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art50-4",
+          "AIA-Art3-60"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art50-4@fr",
+            "id": "AIA-Art50-4",
+            "label": "Règlement IA, Art. 50(4)",
+            "text": "Règlement IA Article 50(4): Obligations de transparence pour les fournisseurs et les déployeurs de certains systèmes d’IA\nLes déployeurs d’un système d’IA qui génère ou manipule des images ou des contenus audio ou vidéo constituant un hypertrucage indiquent que les contenus ont été générés ou manipulés par une IA. Cette obligation ne s’applique pas lorsque l’utilisation est autorisée par la loi à des fins de prévention ou de détection des infractions pénales, d’enquêtes ou de poursuites en la matière. Lorsque le contenu fait partie d’une œuvre ou d’un programme manifestement artistique, créatif, satirique, fictif ou analogue, les obligations de transparence énoncées au présent paragraphe se limitent à la divulgation de l’existence de tels contenus générés ou manipulés d’une manière appropriée qui n’entrave pas l’affichage ou la jouissance de l’œuvre. Les déployeurs d’un système d’IA qui génère ou manipule des textes publiés dans le but d’informer le public sur des questions d’intérêt public indiquent que le texte a été généré ou manipulé par une IA. Cette obligation ne s’applique pas lorsque l’utilisation est autorisée par la loi à des fins de prévention ou de détection des infractions pénales, d’enquêtes ou de poursuites en la matière, ou lorsque le contenu généré par l’IA a fait l’objet d’un processus d’examen humain ou de contrôle éditorial et lorsqu’une personne physique ou morale assume la responsabilité éditoriale de la publication du contenu."
+          },
+          {
+            "key": "AIA-Art3-60@fr",
+            "id": "AIA-Art3-60",
+            "label": "Règlement IA, Art. 3(60)",
+            "text": "Règlement IA Article 3(60): Définitions\n«hypertrucage», une image ou un contenu audio ou vidéo généré ou manipulé par l’IA, présentant une ressemblance avec des personnes, des objets, des lieux, des entités ou événements existants et pouvant être perçu à tort par une personne comme authentiques ou véridiques;"
+          },
+          {
+            "key": "AIA-Art50-2@fr",
+            "id": "AIA-Art50-2",
+            "label": "Règlement IA, Art. 50(2)",
+            "text": "Règlement IA Article 50(2): Obligations de transparence pour les fournisseurs et les déployeurs de certains systèmes d’IA\nLes fournisseurs de systèmes d’IA, y compris de systèmes d’IA à usage général, qui génèrent des contenus de synthèse de type audio, image, vidéo ou texte, veillent à ce que les sorties des systèmes d’IA soient marquées dans un format lisible par machine et identifiables comme ayant été générées ou manipulées par une IA. Les fournisseurs veillent à ce que leurs solutions techniques soient aussi efficaces, interopérables, solides et fiables que la technologie le permet, compte tenu des spécificités et des limites des différents types de contenus, des coûts de mise en œuvre et de l’état de la technique généralement reconnu, comme cela peut ressortir des normes techniques pertinentes. Cette obligation ne s’applique pas dans la mesure où les systèmes d’IA remplissent une fonction d’assistance pour la mise en forme standard ou ne modifient pas de manière substantielle les données d’entrée fournies par le déployeur ou leur sémantique, ou lorsque leur utilisation est autorisée par la loi à des fins de prévention ou de détection des infractions pénales, d’enquêtes ou de poursuites en la matière."
+          },
+          {
+            "key": "AIA-Art50-1@fr",
+            "id": "AIA-Art50-1",
+            "label": "Règlement IA, Art. 50(1)",
+            "text": "Règlement IA Article 50(1): Obligations de transparence pour les fournisseurs et les déployeurs de certains systèmes d’IA\nLes fournisseurs veillent à ce que les systèmes d’IA destinés à interagir directement avec des personnes physiques soient conçus et développés de manière que les personnes physiques concernées soient informées qu’elles interagissent avec un système d’IA, sauf si cela ressort clairement du point de vue d’une personne physique normalement informée et raisonnablement attentive et avisée, compte tenu des circonstances et du contexte d’utilisation. Cette obligation ne s’applique pas aux systèmes d’IA dont la loi autorise l’utilisation à des fins de prévention ou de détection des infractions pénales, d’enquêtes ou de poursuites en la matière, sous réserve de garanties appropriées pour les droits et libertés des tiers, sauf si ces systèmes sont mis à la disposition du public pour permettre le signalement d’une infraction pénale."
+          },
+          {
+            "key": "AIA-Art13-3@fr",
+            "id": "AIA-Art13-3",
+            "label": "Règlement IA, Art. 13(3)",
+            "text": "Règlement IA Article 13(3): Transparence et fourniture d’informations aux déployeurs\nLa notice d’utilisation contient au moins les informations suivantes: a) l’identité et les coordonnées du fournisseur et, le cas échéant, de son mandataire; b) les caractéristiques, les capacités et les limites de performance du système d’IA à haut risque, notamment: i) sa destination; ii) le niveau d’exactitude, y compris les indicateurs utilisés, de robustesse et de cybersécurité visé à l’article 15 qui a servi de référence pour les tests et la validation du système d’IA à haut risque et qui peut être attendu, ainsi que toutes circonstances connues et prévisibles susceptibles d’avoir une incidence sur le niveau attendu d’exactitude, de robustesse et de cybersécurité; iii) toutes circonstances connues ou prévisibles liées à l’utilisation du système d’IA à haut risque conformément à sa destination ou dans des conditions de mauvaise utilisation raisonnablement prévisible, susceptibles d’entraîner des risques pour la santé et la sécurité ou pour les droits fondamentaux visés à l’article 9, paragraphe 2; iv) le cas échéant, les capacités et caractéristiques techniques du système d’IA à haut risque à fournir des informations pertinentes pour expliquer ses sorties; v) le cas échéant, sa performance en ce qui concerne des personnes ou groupes de personnes spécifiques à l’égard desquels le système est destiné à être utilisé; vi) le cas échéant, les spécifications relatives aux données d’entrée, ou toute autre information pertinente concernant les jeux de données d’entraînement, de validation et de test utilisés, compte tenu de la destination du système d’IA à haut risque; vii) le cas échéant, les informations permettant aux déployeurs d’interpréter les sorties du système d’IA à haut risque et de les utiliser de manière appropriée; c) les modifications du système d’IA à haut risque et de sa performance qui ont été prédéterminées par le fournisseur au moment de l’évaluation initiale de la conformité, le cas échéant; d) les mesures de contrôle humain visées à l’article 14, notamment les mesures techniques mises en place pour faciliter l’interprétation des sorties des systèmes d’IA à haut risque par les déployeurs; e) les ressources informatiques et matérielles nécessaires, la durée de vie attendue du système d’IA à haut risque et toutes les mesures de maintenance et de suivi, y compris leur fréquence, nécessaires pour assurer le bon fonctionnement de ce système d’IA, notamment en ce qui concerne les mises à jour logicielles; f) le cas échéant, une description des mécanismes compris dans le système d’IA à haut risque qui permet aux déployeurs de collecter, stocker et interpréter correctement les journaux, conformément à l’article 12."
+          },
+          {
+            "key": "AIA-Art3-1@fr",
+            "id": "AIA-Art3-1",
+            "label": "Règlement IA, Art. 3(1)",
+            "text": "Règlement IA Article 3(1): Définitions\n«système d’IA», un système automatisé qui est conçu pour fonctionner à différents niveaux d’autonomie et peut faire preuve d’une capacité d’adaptation après son déploiement, et qui, pour des objectifs explicites ou implicites, déduit, à partir des entrées qu’il reçoit, la manière de générer des sorties telles que des prédictions, du contenu, des recommandations ou des décisions qui peuvent influencer les environnements physiques ou virtuels;"
+          },
+          {
+            "key": "AIA-Art13-1@fr",
+            "id": "AIA-Art13-1",
+            "label": "Règlement IA, Art. 13(1)",
+            "text": "Règlement IA Article 13(1): Transparence et fourniture d’informations aux déployeurs\nLa conception et le développement des systèmes d’IA à haut risque sont tels que le fonctionnement de ces systèmes est suffisamment transparent pour permettre aux déployeurs d’interpréter les sorties d’un système et de les utiliser de manière appropriée. Un type et un niveau adéquats de transparence sont garantis afin de veiller au respect des obligations pertinentes incombant au fournisseur et au déployeur énoncées à la section 3."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2004,
+        "output_tokens": 182
+      },
+      {
+        "id": "h007",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Is an AI tool that only fixes spelling mistakes in job ads high-risk just because it is used in hiring?",
+        "gold": [
+          "AIA-Art6",
+          "AIA-AnnexIII"
+        ],
+        "answer": "An AI system referred to in Annex III shall not be considered to be high-risk where it does not pose a significant risk of harm to the health, safety or fundamental rights of natural persons, including by not materially influencing the outcome of decision making, provided that certain conditions are fulfilled (such as being intended to perform a narrow procedural task or to improve the result of a previously completed human activity) [AIA-Art6-3]. However, an AI system referred to in Annex III shall always be considered to be high-risk where the AI system performs profiling of natural persons, notwithstanding those derogation conditions [AIA-Art6-3]. The provided sources do not cover whether a tool *only fixing spelling mistakes* specifically meets these derogation conditions or the profiling exception.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art6-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-AnnexIII-4@en",
+            "id": "AIA-AnnexIII-4",
+            "label": "AI Act, Annex III, point 4",
+            "text": "AI Act Annex III(4): High-risk AI systems referred to in Article 6(2)\nEmployment, workers’ management and access to self-employment: (a) AI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates; (b) AI systems intended to be used to make decisions affecting terms of work-related relationships, the promotion or termination of work-related contractual relationships, to allocate tasks based on individual behaviour or personal traits or characteristics or to monitor and evaluate the performance and behaviour of persons in such relationships."
+          },
+          {
+            "key": "AIA-AnnexIII-3@en",
+            "id": "AIA-AnnexIII-3",
+            "label": "AI Act, Annex III, point 3",
+            "text": "AI Act Annex III(3): High-risk AI systems referred to in Article 6(2)\nEducation and vocational training: (a) AI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels; (b) AI systems intended to be used to evaluate learning outcomes, including when those outcomes are used to steer the learning process of natural persons in educational and vocational training institutions at all levels; (c) AI systems intended to be used for the purpose of assessing the appropriate level of education that an individual will receive or will be able to access, in the context of or within educational and vocational training institutions at all levels; (d) AI systems intended to be used for monitoring and detecting prohibited behaviour of students during tests in the context of or within educational and vocational training institutions at all levels."
+          },
+          {
+            "key": "AIA-Art6-2@en",
+            "id": "AIA-Art6-2",
+            "label": "AI Act, Art. 6(2)",
+            "text": "AI Act Article 6(2): Classification rules for high-risk AI systems\nIn addition to the high-risk AI systems referred to in paragraph 1, AI systems referred to in Annex III shall be considered to be high-risk."
+          },
+          {
+            "key": "AIA-Art6-3@en",
+            "id": "AIA-Art6-3",
+            "label": "AI Act, Art. 6(3)",
+            "text": "AI Act Article 6(3): Classification rules for high-risk AI systems\nBy derogation from paragraph 2, an AI system referred to in Annex III shall not be considered to be high-risk where it does not pose a significant risk of harm to the health, safety or fundamental rights of natural persons, including by not materially influencing the outcome of decision making. The first subparagraph shall apply where any of the following conditions is fulfilled: (a) the AI system is intended to perform a narrow procedural task; (b) the AI system is intended to improve the result of a previously completed human activity; (c) the AI system is intended to detect decision-making patterns or deviations from prior decision-making patterns and is not meant to replace or influence the previously completed human assessment, without proper human review; or (d) the AI system is intended to perform a preparatory task to an assessment relevant for the purposes of the use cases listed in Annex III. Notwithstanding the first subparagraph, an AI system referred to in Annex III shall always be considered to be high-risk where the AI system performs profiling of natural persons."
+          },
+          {
+            "key": "AIA-AnnexIII-0@en",
+            "id": "AIA-AnnexIII-0",
+            "label": "AI Act, Annex III, point 0",
+            "text": "AI Act Annex III: High-risk AI systems referred to in Article 6(2)\nHigh-risk AI systems pursuant to Article 6(2) are the AI systems listed in any of the following areas:"
+          },
+          {
+            "key": "AIA-Art6-1@en",
+            "id": "AIA-Art6-1",
+            "label": "AI Act, Art. 6(1)",
+            "text": "AI Act Article 6(1): Classification rules for high-risk AI systems\nIrrespective of whether an AI system is placed on the market or put into service independently of the products referred to in points (a) and (b), that AI system shall be considered to be high-risk where both of the following conditions are fulfilled: (a) the AI system is intended to be used as a safety component of a product, or the AI system is itself a product, covered by the Union harmonisation legislation listed in Annex I; (b) the product whose safety component pursuant to point (a) is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment, with a view to the placing on the market or the putting into service of that product pursuant to the Union harmonisation legislation listed in Annex I."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1073,
+        "output_tokens": 157
+      },
+      {
+        "id": "h008",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Is software that scores how likely someone is to repay a loan subject to extra rules under the AI Act?",
+        "gold": [
+          "AIA-Art6",
+          "AIA-AnnexIII"
+        ],
+        "answer": "AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score are considered high-risk AI systems pursuant to Article 6(2), with the exception of those used for detecting financial fraud [AIA-AnnexIII-5, AIA-Art6-2]. The provided sources do not cover what specific extra rules apply to these high-risk AI systems.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-AnnexIII-5",
+          "AIA-Art6-2"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-AnnexIII-5@en",
+            "id": "AIA-AnnexIII-5",
+            "label": "AI Act, Annex III, point 5",
+            "text": "AI Act Annex III(5): High-risk AI systems referred to in Article 6(2)\nAccess to and enjoyment of essential private services and essential public services and benefits: (a) AI systems intended to be used by public authorities or on behalf of public authorities to evaluate the eligibility of natural persons for essential public assistance benefits and services, including healthcare services, as well as to grant, reduce, revoke, or reclaim such benefits and services; (b) AI systems intended to be used to evaluate the creditworthiness of natural persons or establish their credit score, with the exception of AI systems used for the purpose of detecting financial fraud; (c) AI systems intended to be used for risk assessment and pricing in relation to natural persons in the case of life and health insurance; (d) AI systems intended to evaluate and classify emergency calls by natural persons or to be used to dispatch, or to establish priority in the dispatching of, emergency first response services, including by police, firefighters and medical aid, as well as of emergency healthcare patient triage systems."
+          },
+          {
+            "key": "AIA-AnnexIII-8@en",
+            "id": "AIA-AnnexIII-8",
+            "label": "AI Act, Annex III, point 8",
+            "text": "AI Act Annex III(8): High-risk AI systems referred to in Article 6(2)\nAdministration of justice and democratic processes: (a) AI systems intended to be used by a judicial authority or on their behalf to assist a judicial authority in researching and interpreting facts and the law and in applying the law to a concrete set of facts, or to be used in a similar way in alternative dispute resolution; (b) AI systems intended to be used for influencing the outcome of an election or referendum or the voting behaviour of natural persons in the exercise of their vote in elections or referenda. This does not include AI systems to the output of which natural persons are not directly exposed, such as tools used to organise, optimise or structure political campaigns from an administrative or logistical point of view."
+          },
+          {
+            "key": "AIA-AnnexIII-6@en",
+            "id": "AIA-AnnexIII-6",
+            "label": "AI Act, Annex III, point 6",
+            "text": "AI Act Annex III(6): High-risk AI systems referred to in Article 6(2)\nLaw enforcement, in so far as their use is permitted under relevant Union or national law: (a) AI systems intended to be used by or on behalf of law enforcement authorities, or by Union institutions, bodies, offices or agencies in support of law enforcement authorities or on their behalf to assess the risk of a natural person becoming the victim of criminal offences; (b) AI systems intended to be used by or on behalf of law enforcement authorities or by Union institutions, bodies, offices or agencies in support of law enforcement authorities as polygraphs or similar tools; (c) AI systems intended to be used by or on behalf of law enforcement authorities, or by Union institutions, bodies, offices or agencies, in support of law enforcement authorities to evaluate the reliability of evidence in the course of the investigation or prosecution of criminal offences; (d) AI systems intended to be used by law enforcement authorities or on their behalf or by Union institutions, bodies, offices or agencies in support of law enforcement authorities for assessing the risk of a natural person offending or re-offending not solely on the basis of the profiling of natural persons as referred to in Article 3(4) of Directive (EU) 2016/680, or to assess personality traits and characteristics or past criminal behaviour of natural persons or groups; (e) AI systems intended to be used by or on behalf of law enforcement authorities or by Union institutions, bodies, offices or agencies in support of law enforcement authorities for the profiling of natural persons as referred to in Article 3(4) of Directive (EU) 2016/680 in the course of the detection, investigation or prosecution of criminal offences."
+          },
+          {
+            "key": "AIA-Art6-2@en",
+            "id": "AIA-Art6-2",
+            "label": "AI Act, Art. 6(2)",
+            "text": "AI Act Article 6(2): Classification rules for high-risk AI systems\nIn addition to the high-risk AI systems referred to in paragraph 1, AI systems referred to in Annex III shall be considered to be high-risk."
+          },
+          {
+            "key": "AIA-AnnexIII-0@en",
+            "id": "AIA-AnnexIII-0",
+            "label": "AI Act, Annex III, point 0",
+            "text": "AI Act Annex III: High-risk AI systems referred to in Article 6(2)\nHigh-risk AI systems pursuant to Article 6(2) are the AI systems listed in any of the following areas:"
+          },
+          {
+            "key": "AIA-Art6-1@en",
+            "id": "AIA-Art6-1",
+            "label": "AI Act, Art. 6(1)",
+            "text": "AI Act Article 6(1): Classification rules for high-risk AI systems\nIrrespective of whether an AI system is placed on the market or put into service independently of the products referred to in points (a) and (b), that AI system shall be considered to be high-risk where both of the following conditions are fulfilled: (a) the AI system is intended to be used as a safety component of a product, or the AI system is itself a product, covered by the Union harmonisation legislation listed in Annex I; (b) the product whose safety component pursuant to point (a) is the AI system, or the AI system itself as a product, is required to undergo a third-party conformity assessment, with a view to the placing on the market or the putting into service of that product pursuant to the Union harmonisation legislation listed in Annex I."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1277,
+        "output_tokens": 79
+      },
+      {
+        "id": "h009",
+        "lang": "fr",
+        "type": "lookup",
+        "source": "hard",
+        "question": "Quelle amende risque une entreprise qui donne des informations fausses aux autorités sur son système d'IA ?",
+        "gold": [
+          "AIA-Art99"
+        ],
+        "answer": "La fourniture d’informations inexactes, incomplètes ou trompeuses aux organismes notifiés ou aux autorités nationales compétentes en réponse à une demande fait l’objet d’une amende administrative pouvant aller jusqu’à 7 500 000 EUR ou, si l’auteur de l’infraction est une entreprise, jusqu’à 1 % de son chiffre d’affaires annuel mondial total réalisé au cours de l’exercice précédent, le montant le plus élevé étant retenu [AIA-Art99-5]. \n\nLes sources fournies ne traitent pas des sanctions applicables si ces informations fausses sont données à des entités autres que les organismes notifiés ou les autorités nationales compétentes.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art99-5"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art99-5@fr",
+            "id": "AIA-Art99-5",
+            "label": "Règlement IA, Art. 99(5)",
+            "text": "Règlement IA Article 99(5): Sanctions\nLa fourniture d’informations inexactes, incomplètes ou trompeuses aux organismes notifiés ou aux autorités nationales compétentes en réponse à une demande fait l’objet d’une amende administrative pouvant aller jusqu’à 7 500 000 EUR ou, si l’auteur de l’infraction est une entreprise, jusqu’à 1 % de son chiffre d’affaires annuel mondial total réalisé au cours de l’exercice précédent, le montant le plus élevé étant retenu."
+          },
+          {
+            "key": "AIA-Art101-1@fr",
+            "id": "AIA-Art101-1",
+            "label": "Règlement IA, Art. 101(1)",
+            "text": "Règlement IA Article 101(1): Amendes applicables aux fournisseurs de modèles d’IA à usage général\nLa Commission peut infliger aux fournisseurs de modèles d’IA à usage général des amendes n’excédant pas 3 % de leur chiffre d’affaires annuel mondial total réalisé au cours de l’exercice précédent, ou 15 000 000 EUR, le montant le plus élevé étant retenu, lorsque la Commission constate que le fournisseur, de manière délibérée ou par négligence: a) a enfreint les dispositions pertinentes du présent règlement; b) n’a pas donné suite à une demande de document ou d’informations au titre de l’article 91, ou a fourni des informations inexactes, incomplètes ou trompeuses; c) ne s’est pas conformé à une mesure demandée au titre de l’article 93; d) n’a pas donné à la Commission accès au modèle d’IA à usage général ou au modèle d’IA à usage général présentant un risque systémique en vue de procéder à une évaluation conformément à l’article 92. Pour fixer le montant de l’amende ou de l’astreinte, il y a lieu de prendre en considération la nature, la gravité et la durée de la violation, tout en tenant dûment compte des principes de proportionnalité et d’adéquation. La Commission tient également compte des engagements pris conformément à l’article 93, paragraphe 3, ou pris dans les codes de bonne pratique pertinents conformément à l’article 56."
+          },
+          {
+            "key": "AIA-Art91-4@fr",
+            "id": "AIA-Art91-4",
+            "label": "Règlement IA, Art. 91(4)",
+            "text": "Règlement IA Article 91(4): Pouvoir de demander de la documentation et des informations\nLa demande d’informations mentionne la base juridique et l’objet de la demande, précise quelles informations sont requises, fixe un délai dans lequel les informations doivent être fournies, et indique les amendes prévues à l’article 101 en cas de fourniture d’informations inexactes, incomplètes ou trompeuses."
+          },
+          {
+            "key": "AIA-Art100-2@fr",
+            "id": "AIA-Art100-2",
+            "label": "Règlement IA, Art. 100(2)",
+            "text": "Règlement IA Article 100(2): Amendes administratives imposées aux institutions, organes et organismes de l’Union\nLe non-respect de l’interdiction des pratiques en matière d’IA visées à l’article 5 fait l’objet d’une amende administrative pouvant aller jusqu’à 1 500 000 EUR."
+          },
+          {
+            "key": "AIA-Art100-3@fr",
+            "id": "AIA-Art100-3",
+            "label": "Règlement IA, Art. 100(3)",
+            "text": "Règlement IA Article 100(3): Amendes administratives imposées aux institutions, organes et organismes de l’Union\nLa non-conformité du système d’IA avec les exigences ou obligations au titre du présent règlement, autres que celles énoncées à l’article 5, fait l’objet d’une amende administrative pouvant aller jusqu’à 750 000 EUR."
+          },
+          {
+            "key": "AIA-Art99-1@fr",
+            "id": "AIA-Art99-1",
+            "label": "Règlement IA, Art. 99(1)",
+            "text": "Règlement IA Article 99(1): Sanctions\nConformément aux conditions établies dans le présent règlement, les États membres déterminent le régime des sanctions et autres mesures d’exécution, qui peuvent également comprendre des avertissements et des mesures non monétaires, applicables aux violations du présent règlement commises par des opérateurs, et prennent toute mesure nécessaire pour veiller à la mise en œuvre correcte et effective de ces sanctions, tenant ainsi compte des lignes directrices publiées par la Commission en vertu de l’article 96. Ces sanctions doivent être effectives, proportionnées et dissuasives. Elles tiennent compte des intérêts des PME, y compris les jeunes pousses, et de leur viabilité économique."
+          },
+          {
+            "key": "AIA-Art91-1@fr",
+            "id": "AIA-Art91-1",
+            "label": "Règlement IA, Art. 91(1)",
+            "text": "Règlement IA Article 91(1): Pouvoir de demander de la documentation et des informations\nLa Commission peut demander au fournisseur du modèle d’IA à usage général concerné de fournir la documentation établie par le fournisseur conformément aux articles 53 et 55, ou toute information supplémentaire nécessaire pour évaluer la conformité du fournisseur avec le présent règlement."
+          },
+          {
+            "key": "AIA-Art100-1@fr",
+            "id": "AIA-Art100-1",
+            "label": "Règlement IA, Art. 100(1)",
+            "text": "Règlement IA Article 100(1): Amendes administratives imposées aux institutions, organes et organismes de l’Union\nLe Contrôleur européen de la protection des données peut imposer des amendes administratives aux institutions, organes et organismes de l’Union relevant du champ d’application du présent règlement. Pour décider s’il y a lieu d’imposer une amende administrative et pour décider du montant de l’amende administrative dans chaque cas d’espèce, toutes les caractéristiques propres à chaque cas sont prises en considération et il est dûment tenu compte des éléments suivants: a) la nature, la gravité et la durée de la violation et de ses conséquences, compte tenu de la finalité du système d’IA concerné ainsi que, s’il y a lieu, du nombre de personnes touchées et du niveau de dommage qu’elles ont subi; b) le degré de responsabilité de l’institution, organe ou organisme de l’Union, compte tenu des mesures techniques et organisationnelles qu’il a mises en œuvre; c) toute mesure prise par l’institution, organe ou organisme de l’Union pour atténuer les dommages subis par les personnes touchées; d) le niveau de coopération établi avec le Contrôleur européen de la protection des données en vue de remédier à la violation et d’en atténuer les éventuels effets négatifs, y compris le respect de toute mesure précédemment ordonnée par le Contrôleur européen de la protection des données à l’encontre de l’institution, organe ou organisme de l’Union concerné pour le même objet; e) toute violation similaire commise précédemment par l’institution, organe ou organisme de l’Union; f) la manière dont le Contrôleur européen de la protection des données a eu connaissance de la violation, notamment si, et le cas échéant dans quelle mesure, l’institution, organe ou organisme de l’Union a notifié la violation; g) le budget annuel de l’institution, organe ou organisme de l’Union."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1670,
+        "output_tokens": 154
+      },
+      {
+        "id": "h010",
+        "lang": "en",
+        "type": "lookup",
+        "source": "hard",
+        "question": "Are AI Act fines lower for a small startup than for a big company?",
+        "gold": [
+          "AIA-Art99"
+        ],
+        "answer": "Yes, in the case of SMEs, including start-ups, each fine referred to in the relevant Article shall be up to the percentages or amount referred to in the provisions, whichever thereof is lower [AIA-Art99-6]. Additionally, the rules on penalties laid down by Member States shall take into account the interests of SMEs, including start-ups, and their economic viability [AIA-Art99-1]. \n\n*Disclaimer: You are given legal information, not legal advice. Never say whether a specific company or system is compliant.*",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art99-6",
+          "AIA-Art99-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art101-3@en",
+            "id": "AIA-Art101-3",
+            "label": "AI Act, Art. 101(3)",
+            "text": "AI Act Article 101(3): Fines for providers of general-purpose AI models\nFines imposed in accordance with this Article shall be effective, proportionate and dissuasive."
+          },
+          {
+            "key": "AIA-Art100-3@en",
+            "id": "AIA-Art100-3",
+            "label": "AI Act, Art. 100(3)",
+            "text": "AI Act Article 100(3): Administrative fines on Union institutions, bodies, offices and agencies\nThe non-compliance of the AI system with any requirements or obligations under this Regulation, other than those laid down in Article 5, shall be subject to administrative fines of up to EUR 750 000."
+          },
+          {
+            "key": "AIA-Art99-6@en",
+            "id": "AIA-Art99-6",
+            "label": "AI Act, Art. 99(6)",
+            "text": "AI Act Article 99(6): Penalties\nIn the case of SMEs, including start-ups, each fine referred to in this Article shall be up to the percentages or amount referred to in paragraphs 3, 4 and 5, whichever thereof is lower."
+          },
+          {
+            "key": "AIA-Art99-3@en",
+            "id": "AIA-Art99-3",
+            "label": "AI Act, Art. 99(3)",
+            "text": "AI Act Article 99(3): Penalties\nNon-compliance with the prohibition of the AI practices referred to in Article 5 shall be subject to administrative fines of up to EUR 35 000 000 or, if the offender is an undertaking, up to 7 % of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+          },
+          {
+            "key": "AIA-Art100-2@en",
+            "id": "AIA-Art100-2",
+            "label": "AI Act, Art. 100(2)",
+            "text": "AI Act Article 100(2): Administrative fines on Union institutions, bodies, offices and agencies\nNon-compliance with the prohibition of the AI practices referred to in Article 5 shall be subject to administrative fines of up to EUR 1 500 000."
+          },
+          {
+            "key": "AIA-Art101-1@en",
+            "id": "AIA-Art101-1",
+            "label": "AI Act, Art. 101(1)",
+            "text": "AI Act Article 101(1): Fines for providers of general-purpose AI models\nThe Commission may impose on providers of general-purpose AI models fines not exceeding 3 % of their annual total worldwide turnover in the preceding financial year or EUR 15 000 000, whichever is higher., when the Commission finds that the provider intentionally or negligently: (a) infringed the relevant provisions of this Regulation; (b) failed to comply with a request for a document or for information pursuant to Article 91, or supplied incorrect, incomplete or misleading information; (c) failed to comply with a measure requested under Article 93; (d) failed to make available to the Commission access to the general-purpose AI model or general-purpose AI model with systemic risk with a view to conducting an evaluation pursuant to Article 92. In fixing the amount of the fine or periodic penalty payment, regard shall be had to the nature, gravity and duration of the infringement, taking due account of the principles of proportionality and appropriateness. The Commission shall also into account commitments made in accordance with Article 93(3) or made in relevant codes of practice in accordance with Article 56."
+          },
+          {
+            "key": "AIA-Art100-1@en",
+            "id": "AIA-Art100-1",
+            "label": "AI Act, Art. 100(1)",
+            "text": "AI Act Article 100(1): Administrative fines on Union institutions, bodies, offices and agencies\nThe European Data Protection Supervisor may impose administrative fines on Union institutions, bodies, offices and agencies falling within the scope of this Regulation. When deciding whether to impose an administrative fine and when deciding on the amount of the administrative fine in each individual case, all relevant circumstances of the specific situation shall be taken into account and due regard shall be given to the following: (a) the nature, gravity and duration of the infringement and of its consequences, taking into account the purpose of the AI system concerned, as well as, where appropriate, the number of affected persons and the level of damage suffered by them; (b) the degree of responsibility of the Union institution, body, office or agency, taking into account technical and organisational measures implemented by them; (c) any action taken by the Union institution, body, office or agency to mitigate the damage suffered by affected persons; (d) the degree of cooperation with the European Data Protection Supervisor in order to remedy the infringement and mitigate the possible adverse effects of the infringement, including compliance with any of the measures previously ordered by the European Data Protection Supervisor against the Union institution, body, office or agency concerned with regard to the same subject matter; (e) any similar previous infringements by the Union institution, body, office or agency; (f) the manner in which the infringement became known to the European Data Protection Supervisor, in particular whether, and if so to what extent, the Union institution, body, office or agency notified the infringement; (g) the annual budget of the Union institution, body, office or agency."
+          },
+          {
+            "key": "AIA-Art99-1@en",
+            "id": "AIA-Art99-1",
+            "label": "AI Act, Art. 99(1)",
+            "text": "AI Act Article 99(1): Penalties\nIn accordance with the terms and conditions laid down in this Regulation, Member States shall lay down the rules on penalties and other enforcement measures, which may also include warnings and non-monetary measures, applicable to infringements of this Regulation by operators, and shall take all measures necessary to ensure that they are properly and effectively implemented, thereby taking into account the guidelines issued by the Commission pursuant to Article 96. The penalties provided for shall be effective, proportionate and dissuasive. They shall take into account the interests of SMEs, including start-ups, and their economic viability."
+          },
+          {
+            "key": "AIA-Art99-4@en",
+            "id": "AIA-Art99-4",
+            "label": "AI Act, Art. 99(4)",
+            "text": "AI Act Article 99(4): Penalties\nNon-compliance with any of the following provisions related to operators or notified bodies, other than those laid down in Articles 5, shall be subject to administrative fines of up to EUR 15 000 000 or, if the offender is an undertaking, up to 3 % of its total worldwide annual turnover for the preceding financial year, whichever is higher: (a) obligations of providers pursuant to Article 16; (b) obligations of authorised representatives pursuant to Article 22; (c) obligations of importers pursuant to Article 23; (d) obligations of distributors pursuant to Article 24; (e) obligations of deployers pursuant to Article 26; (f) requirements and obligations of notified bodies pursuant to Article 31, Article 33(1), (3) and (4) or Article 34; (g) transparency obligations for providers and deployers pursuant to Article 50."
+          },
+          {
+            "key": "AIA-Art99-5@en",
+            "id": "AIA-Art99-5",
+            "label": "AI Act, Art. 99(5)",
+            "text": "AI Act Article 99(5): Penalties\nThe supply of incorrect, incomplete or misleading information to notified bodies or national competent authorities in reply to a request shall be subject to administrative fines of up to EUR 7 500 000 or, if the offender is an undertaking, up to 1 % of its total worldwide annual turnover for the preceding financial year, whichever is higher."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1631,
+        "output_tokens": 114
+      },
+      {
+        "id": "h011",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "We only resell an AI system that another company built. Do we have anything to check before selling it?",
+        "gold": [
+          "AIA-Art24"
+        ],
+        "answer": "Before making a high-risk AI system available on the market, distributors shall verify that it bears the required CE marking, that it is accompanied by a copy of the EU declaration of conformity and instructions for use, and that the provider and the importer (as applicable) have complied with their respective obligations laid down in Article 16, points (b) and (c) and Article 23(3) [AIA-Art24-1]. \n\nPlease note that you are providing legal information, not legal advice. The provided sources do not cover whether you are considered a distributor or if the AI system in question is classified as high-risk.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "AIA-Art24-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "AIA-Art24-1@en",
+            "id": "AIA-Art24-1",
+            "label": "AI Act, Art. 24(1)",
+            "text": "AI Act Article 24(1): Obligations of distributors\nBefore making a high-risk AI system available on the market, distributors shall verify that it bears the required CE marking, that it is accompanied by a copy of the EU declaration of conformity referred to in Article 47 and instructions for use, and that the provider and the importer of that system, as applicable, have complied with their respective obligations as laid down in Article 16, points (b) and (c) and Article 23(3)."
+          },
+          {
+            "key": "AIA-Art25-1@en",
+            "id": "AIA-Art25-1",
+            "label": "AI Act, Art. 25(1)",
+            "text": "AI Act Article 25(1): Responsibilities along the AI value chain\nAny distributor, importer, deployer or other third-party shall be considered to be a provider of a high-risk AI system for the purposes of this Regulation and shall be subject to the obligations of the provider under Article 16, in any of the following circumstances: (a) they put their name or trademark on a high-risk AI system already placed on the market or put into service, without prejudice to contractual arrangements stipulating that the obligations are otherwise allocated; (b) they make a substantial modification to a high-risk AI system that has already been placed on the market or has already been put into service in such a way that it remains a high-risk AI system pursuant to Article 6; (c) they modify the intended purpose of an AI system, including a general-purpose AI system, which has not been classified as high-risk and has already been placed on the market or put into service in such a way that the AI system concerned becomes a high-risk AI system in accordance with Article 6."
+          },
+          {
+            "key": "AIA-Art24-2@en",
+            "id": "AIA-Art24-2",
+            "label": "AI Act, Art. 24(2)",
+            "text": "AI Act Article 24(2): Obligations of distributors\nWhere a distributor considers or has reason to consider, on the basis of the information in its possession, that a high-risk AI system is not in conformity with the requirements set out in Section 2, it shall not make the high-risk AI system available on the market until the system has been brought into conformity with those requirements. Furthermore, where the high-risk AI system presents a risk within the meaning of Article 79(1), the distributor shall inform the provider or the importer of the system, as applicable, to that effect."
+          },
+          {
+            "key": "AIA-Art23-1@en",
+            "id": "AIA-Art23-1",
+            "label": "AI Act, Art. 23(1)",
+            "text": "AI Act Article 23(1): Obligations of importers\nBefore placing a high-risk AI system on the market, importers shall ensure that the system is in conformity with this Regulation by verifying that: (a) the relevant conformity assessment procedure referred to in Article 43 has been carried out by the provider of the high-risk AI system; (b) the provider has drawn up the technical documentation in accordance with Article 11 and Annex IV; (c) the system bears the required CE marking and is accompanied by the EU declaration of conformity referred to in Article 47 and instructions for use; (d) the provider has appointed an authorised representative in accordance with Article 22(1)."
+          },
+          {
+            "key": "AIA-Art24-4@en",
+            "id": "AIA-Art24-4",
+            "label": "AI Act, Art. 24(4)",
+            "text": "AI Act Article 24(4): Obligations of distributors\nA distributor that considers or has reason to consider, on the basis of the information in its possession, a high-risk AI system which it has made available on the market not to be in conformity with the requirements set out in Section 2, shall take the corrective actions necessary to bring that system into conformity with those requirements, to withdraw it or recall it, or shall ensure that the provider, the importer or any relevant operator, as appropriate, takes those corrective actions. Where the high-risk AI system presents a risk within the meaning of Article 79(1), the distributor shall immediately inform the provider or importer of the system and the authorities competent for the high-risk AI system concerned, giving details, in particular, of the non-compliance and of any corrective actions taken."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 1036,
+        "output_tokens": 134
+      },
+      {
+        "id": "h012",
+        "lang": "fr",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Une entreprise peut-elle refuser d'effacer mes données parce que la loi l'oblige à les conserver ?",
+        "gold": [
+          "GDPR-Art17"
+        ],
+        "answer": "Oui, une entreprise peut refuser d'effacer vos données si le traitement est nécessaire pour respecter une obligation légale qui requiert le traitement, prévue par le droit de l'Union ou par le droit de l'État membre auquel le responsable du traitement est soumis [GDPR-Art17-3]. Les sources fournies ne couvrent pas d'éventuelles exceptions supplémentaires ou conditions procédurales liées à ce refus.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art17-3"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art17-1@fr",
+            "id": "GDPR-Art17-1",
+            "label": "RGPD, Art. 17(1)",
+            "text": "RGPD Article 17(1): Droit à l'effacement («droit à l'oubli»)\nLa personne concernée a le droit d'obtenir du responsable du traitement l'effacement, dans les meilleurs délais, de données à caractère personnel la concernant et le responsable du traitement a l'obligation d'effacer ces données à caractère personnel dans les meilleurs délais, lorsque l'un des motifs suivants s'applique: a) les données à caractère personnel ne sont plus nécessaires au regard des finalités pour lesquelles elles ont été collectées ou traitées d'une autre manière; b) la personne concernée retire le consentement sur lequel est fondé le traitement, conformément à l'article 6, paragraphe 1, point a), ou à l'article 9, paragraphe 2, point a), et il n'existe pas d'autre fondement juridique au traitement; c) la personne concernée s'oppose au traitement en vertu de l'article 21, paragraphe 1, et il n'existe pas de motif légitime impérieux pour le traitement, ou la personne concernée s'oppose au traitement en vertu de l'article 21, paragraphe 2; d) les données à caractère personnel ont fait l'objet d'un traitement illicite; e) les données à caractère personnel doivent être effacées pour respecter une obligation légale qui est prévue par le droit de l'Union ou par le droit de l'État membre auquel le responsable du traitement est soumis; f) les données à caractère personnel ont été collectées dans le cadre de l'offre de services de la société de l'information visée à l'article 8, paragraphe 1."
+          },
+          {
+            "key": "GDPR-Art17-2@fr",
+            "id": "GDPR-Art17-2",
+            "label": "RGPD, Art. 17(2)",
+            "text": "RGPD Article 17(2): Droit à l'effacement («droit à l'oubli»)\nLorsqu'il a rendu publiques les données à caractère personnel et qu'il est tenu de les effacer en vertu du paragraphe 1, le responsable du traitement, compte tenu des technologies disponibles et des coûts de mise en œuvre, prend des mesures raisonnables, y compris d'ordre technique, pour informer les responsables du traitement qui traitent ces données à caractère personnel que la personne concernée a demandé l'effacement par ces responsables du traitement de tout lien vers ces données à caractère personnel, ou de toute copie ou reproduction de celles-ci."
+          },
+          {
+            "key": "GDPR-Art14-5@fr",
+            "id": "GDPR-Art14-5",
+            "label": "RGPD, Art. 14(5)",
+            "text": "RGPD Article 14(5): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLes paragraphes 1 à 4 ne s'appliquent pas lorsque et dans la mesure où: a) la personne concernée dispose déjà de ces informations; b) la fourniture de telles informations se révèle impossible ou exigerait des efforts disproportionnés, en particulier pour le traitement à des fins archivistiques dans l'intérêt public, à des fins de recherche scientifique ou historique ou à des fins statistiques sous réserve des conditions et garanties visées à l'article 89, paragraphe 1, ou dans la mesure où l'obligation visée au paragraphe 1 du présent article est susceptible de rendre impossible ou de compromettre gravement la réalisation des objectifs dudit traitement. En pareils cas, le responsable du traitement prend des mesures appropriées pour protéger les droits et libertés ainsi que les intérêts légitimes de la personne concernée, y compris en rendant les informations publiquement disponibles; c) l'obtention ou la communication des informations sont expressément prévues par le droit de l'Union ou le droit de l'État membre auquel le responsable du traitement est soumis et qui prévoit des mesures appropriées visant à protéger les intérêts légitimes de la personne concernée; ou d) les données à caractère personnel doivent rester confidentielles en vertu d'une obligation de secret professionnel réglementée par le droit de l'Union ou le droit des États membre, y compris une obligation légale de secret professionnel."
+          },
+          {
+            "key": "GDPR-Art17-3@fr",
+            "id": "GDPR-Art17-3",
+            "label": "RGPD, Art. 17(3)",
+            "text": "RGPD Article 17(3): Droit à l'effacement («droit à l'oubli»)\nLes paragraphes 1 et 2 ne s'appliquent pas dans la mesure où ce traitement est nécessaire: a) à l'exercice du droit à la liberté d'expression et d'information; b) pour respecter une obligation légale qui requiert le traitement prévue par le droit de l'Union ou par le droit de l'État membre auquel le responsable du traitement est soumis, ou pour exécuter une mission d'intérêt public ou relevant de l'exercice de l'autorité publique dont est investi le responsable du traitement; c) pour des motifs d'intérêt public dans le domaine de la santé publique, conformément à l'article 9, paragraphe 2, points h) et i), ainsi qu'à l'article 9, paragraphe 3; d) à des fins archivistiques dans l'intérêt public, à des fins de recherche scientifique ou historique ou à des fins statistiques conformément à l'article 89, paragraphe 1, dans la mesure où le droit visé au paragraphe 1 est susceptible de rendre impossible ou de compromettre gravement la réalisation des objectifs dudit traitement; ou e) à la constatation, à l'exercice ou à la défense de droits en justice."
+          },
+          {
+            "key": "GDPR-Art47-2@fr",
+            "id": "GDPR-Art47-2",
+            "label": "RGPD, Art. 47(2)",
+            "text": "RGPD Article 47(2): Règles d'entreprise contraignantes\nLes règles d'entreprise contraignantes visées au paragraphe 1 précisent au moins: a) la structure et les coordonnées du groupe d'entreprises ou du groupe d'entreprises engagées dans une activité économique conjointe et de chacune de leurs entités; b) les transferts ou l'ensemble des transferts de données, y compris les catégories de données à caractère personnel, le type de traitement et ses finalités, le type de personnes concernées affectées et le nom du ou des pays tiers en question; c) leur nature juridiquement contraignante, tant interne qu'externe; d) l'application des principes généraux relatifs à la protection des données, notamment la limitation de la finalité, la minimisation des données, la limitation des durées de conservation des données, la qualité des données, la protection des données dès la conception et la protection des données par défaut, la base juridique du traitement, le traitement de catégories particulières de données à caractère personnel, les mesures visant à garantir la sécurité des données, ainsi que les exigences en matière de transferts ultérieurs à des organismes qui ne sont pas liés par les règles d'entreprise contraignantes; e) les droits des personnes concernées à l'égard du traitement et les moyens d'exercer ces droits y compris le droit de ne pas faire l'objet de décisions fondées exclusivement sur un traitement automatisé, y compris le profilage, conformément à l'article 22, le droit d'introduire une réclamation auprès de l'autorité de contrôle compétente et devant les juridictions compétentes des États membres conformément à l'article 79 et d'obtenir réparation et, le cas échéant, une indemnisation pour violation des règles d'entreprise contraignantes; f) l'acceptation, par le responsable du traitement ou le sous-traitant établi sur le territoire d'un État membre, de l'engagement de sa responsabilité pour toute violation des règles d'entreprise contraignantes par toute entité concernée non établie dans l'Union; le responsable du traitement ou le sous-traitant ne peut être exonéré, en tout ou en partie, de cette responsabilité que s'il prouve que le fait générateur du dommage n'est pas imputable à l'entité en cause; g) la manière dont les informations sur les règles d'entreprise contraignantes, notamment en ce qui concerne les éléments mentionnés aux points d), e) et f) du présent paragraphe sont fournies aux personnes concernées, en sus des informations visées aux articles 13 et 14; h) les missions de tout délégué à la protection des données, désigné conformément à l'article 37, ou de toute autre personne ou entité chargée de la surveillance du respect des règles d'entreprise contraignantes au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, ainsi que le suivi de la formation et le traitement des réclamations; i) les procédures de réclamation; j) les mécanismes mis en place au sein du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe pour garantir que le contrôle du respect des règles d'entreprise contraignantes. Ces mécanismes prévoient des audits sur la protection des données et des méthodes assurant que des mesures correctrices seront prises pour protéger les droits de la personne concernée. Les résultats de ce contrôle devraient être communiqués à la personne ou à l'entité visée au point h) et au conseil d'administration de l'entreprise qui exerce le contrôle du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, et devraient être mis à la disposition de l'autorité de contrôle compétente sur demande; k) les mécanismes mis en place pour communiquer et consigner les modifications apportées aux règles et pour communiquer ces modifications à l'autorité de contrôle; l) le mécanisme de coopération avec l'autorité de contrôle mis en place pour assurer le respect des règles par toutes les entités du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, notamment en mettant à la disposition de l'autorité de contrôle les résultats des contrôles des mesures visés au point j); m) les mécanismes permettant de communiquer à l'autorité de contrôle compétente toutes les obligations juridiques auxquelles une entité du groupe d'entreprises, ou du groupe d'entreprises engagées dans une activité économique conjointe, est soumise dans un pays tiers qui sont susceptibles d'avoir un effet négatif important sur les garanties fournies par les règles d'entreprise contraignantes; et n) la formation appropriée en matière de protection des données pour le personnel ayant un accès permanent ou régulier aux données à caractère personnel."
+          },
+          {
+            "key": "GDPR-Art14-1@fr",
+            "id": "GDPR-Art14-1",
+            "label": "RGPD, Art. 14(1)",
+            "text": "RGPD Article 14(1): Informations à fournir lorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée\nLorsque les données à caractère personnel n'ont pas été collectées auprès de la personne concernée, le responsable du traitement fournit à celle-ci toutes les informations suivantes: a) l'identité et les coordonnées du responsable du traitement et, le cas échéant, du représentant du responsable du traitement; b) le cas échéant, les coordonnées du délégué à la protection des données; c) les finalités du traitement auquel sont destinées les données à caractère personnel ainsi que la base juridique du traitement; d) les catégories de données à caractère personnel concernées; e) le cas échéant, les destinataires ou les catégories de destinataires des données à caractère personnel; f) le cas échéant, le fait que le responsable du traitement a l'intention d'effectuer un transfert de données à caractère personnel à un destinataire dans un pays tiers ou une organisation internationale, et l'existence ou l'absence d'une décision d'adéquation rendue par la Commission ou, dans le cas des transferts visés à l'article 46 ou 47, ou à l'article 49, paragraphe 1, deuxième alinéa, la référence aux garanties appropriées ou adaptées et les moyens d'en obtenir une copie ou l'endroit où elles ont été mises à disposition;"
+          },
+          {
+            "key": "GDPR-Art47-1@fr",
+            "id": "GDPR-Art47-1",
+            "label": "RGPD, Art. 47(1)",
+            "text": "RGPD Article 47(1): Règles d'entreprise contraignantes\nL'autorité de contrôle compétente approuve des règles d'entreprise contraignantes conformément au mécanisme de contrôle de la cohérence prévu à l'article 63, à condition que: a) ces règles soient juridiquement contraignantes, et soient mises en application par toutes les entités concernées du groupe d'entreprises ou du groupe d'entreprises engagées dans une activité économique conjointe, y compris leurs employés; b) elles confèrent expressément aux personnes concernées des droits opposables en ce qui concerne le traitement de leurs données à caractère personnel; et c) elles répondent aux exigences prévues au paragraphe 2."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2867,
+        "output_tokens": 89
+      },
+      {
+        "id": "h013",
+        "lang": "en",
+        "type": "obligation",
+        "source": "hard",
+        "question": "Can a gym scan members' fingerprints at the entrance without asking them?",
+        "gold": [
+          "GDPR-Art9"
+        ],
+        "answer": "Based on the provided sources, the processing of biometric data for the purpose of uniquely identifying a natural person is generally prohibited [GDPR-Art9-1]. The sources do not cover whether a gym is specifically permitted to scan members' fingerprints at the entrance without asking them.",
+        "refused": false,
+        "reason": "",
+        "citations": [
+          "GDPR-Art9-1"
+        ],
+        "invented": [],
+        "sources": [
+          {
+            "key": "GDPR-Art4-14@en",
+            "id": "GDPR-Art4-14",
+            "label": "GDPR, Art. 4(14)",
+            "text": "GDPR Article 4(14): Definitions\n‘biometric data’ means personal data resulting from specific technical processing relating to the physical, physiological or behavioural characteristics of a natural person, which allow or confirm the unique identification of that natural person, such as facial images or dactyloscopic data;"
+          },
+          {
+            "key": "GDPR-Art9-4@en",
+            "id": "GDPR-Art9-4",
+            "label": "GDPR, Art. 9(4)",
+            "text": "GDPR Article 9(4): Processing of special categories of personal data\nMember States may maintain or introduce further conditions, including limitations, with regard to the processing of genetic data, biometric data or data concerning health."
+          },
+          {
+            "key": "GDPR-Art9-1@en",
+            "id": "GDPR-Art9-1",
+            "label": "GDPR, Art. 9(1)",
+            "text": "GDPR Article 9(1): Processing of special categories of personal data\nProcessing of personal data revealing racial or ethnic origin, political opinions, religious or philosophical beliefs, or trade union membership, and the processing of genetic data, biometric data for the purpose of uniquely identifying a natural person, data concerning health or data concerning a natural person's sex life or sexual orientation shall be prohibited."
+          },
+          {
+            "key": "AIA-Art5-3@en",
+            "id": "AIA-Art5-3",
+            "label": "AI Act, Art. 5(3)",
+            "text": "AI Act Article 5(3): Prohibited AI practices\nFor the purposes of paragraph 1, first subparagraph, point (h) and paragraph 2, each use for the purposes of law enforcement of a ‘real-time’ remote biometric identification system in publicly accessible spaces shall be subject to a prior authorisation granted by a judicial authority or an independent administrative authority whose decision is binding of the Member State in which the use is to take place, issued upon a reasoned request and in accordance with the detailed rules of national law referred to in paragraph 5. However, in a duly justified situation of urgency, the use of such system may be commenced without an authorisation provided that such authorisation is requested without undue delay, at the latest within 24 hours. If such authorisation is rejected, the use shall be stopped with immediate effect and all the data, as well as the results and outputs of that use shall be immediately discarded and deleted. The competent judicial authority or an independent administrative authority whose decision is binding shall grant the authorisation only where it is satisfied, on the basis of objective evidence or clear indications presented to it, that the use of the ‘real-time’ remote biometric identification system concerned is necessary for, and proportionate to, achieving one of the objectives specified in paragraph 1, first subparagraph, point (h), as identified in the request and, in particular, remains limited to what is strictly necessary concerning the period of time as well as the geographic and personal scope. In deciding on the request, that authority shall take into account the elements referred to in paragraph 2. No decision that produces an adverse legal effect on a person may be taken based solely on the output of the ‘real-time’ remote biometric identification system."
+          },
+          {
+            "key": "AIA-Art5-2@en",
+            "id": "AIA-Art5-2",
+            "label": "AI Act, Art. 5(2)",
+            "text": "AI Act Article 5(2): Prohibited AI practices\nThe use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), shall be deployed for the purposes set out in that point only to confirm the identity of the specifically targeted individual, and it shall take into account the following elements: (a) the nature of the situation giving rise to the possible use, in particular the seriousness, probability and scale of the harm that would be caused if the system were not used; (b) the consequences of the use of the system for the rights and freedoms of all persons concerned, in particular the seriousness, probability and scale of those consequences. In addition, the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement for any of the objectives referred to in paragraph 1, first subparagraph, point (h), of this Article shall comply with necessary and proportionate safeguards and conditions in relation to the use in accordance with the national law authorising the use thereof, in particular as regards the temporal, geographic and personal limitations. The use of the ‘real-time’ remote biometric identification system in publicly accessible spaces shall be authorised only if the law enforcement authority has completed a fundamental rights impact assessment as provided for in Article 27 and has registered the system in the EU database according to Article 49. However, in duly justified cases of urgency, the use of such systems may be commenced without the registration in the EU database, provided that such registration is completed without undue delay."
+          },
+          {
+            "key": "GDPR-Art4-1@en",
+            "id": "GDPR-Art4-1",
+            "label": "GDPR, Art. 4(1)",
+            "text": "GDPR Article 4(1): Definitions\n‘personal data’ means any information relating to an identified or identifiable natural person (‘data subject’); an identifiable natural person is one who can be identified, directly or indirectly, in particular by reference to an identifier such as a name, an identification number, location data, an online identifier or to one or more factors specific to the physical, physiological, genetic, mental, economic, cultural or social identity of that natural person;"
+          },
+          {
+            "key": "AIA-Art5-1@en",
+            "id": "AIA-Art5-1",
+            "label": "AI Act, Art. 5(1)",
+            "text": "AI Act Article 5(1): Prohibited AI practices\nThe following AI practices shall be prohibited: (a) the placing on the market, the putting into service or the use of an AI system that deploys subliminal techniques beyond a person’s consciousness or purposefully manipulative or deceptive techniques, with the objective, or the effect of materially distorting the behaviour of a person or a group of persons by appreciably impairing their ability to make an informed decision, thereby causing them to take a decision that they would not have otherwise taken in a manner that causes or is reasonably likely to cause that person, another person or group of persons significant harm; (b) the placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm; (c) the placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following: (i) detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected; (ii) detrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity; (d) the placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity; (e) the placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage; (f) the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons; (g) the placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on biometric data or categorizing of biometric data in the area of law enforcement; (h) the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, unless and in so far as such use is strictly necessary for one of the following objectives: (i) the targeted search for specific victims of abduction, trafficking in human beings or sexual exploitation of human beings, as well as the search for missing persons; (ii) the prevention of a specific, substantial and imminent threat to the life or physical safety of natural persons or a genuine and present or genuine and foreseeable threat of a terrorist attack; (iii) the localisation or identification of a person suspected of having committed a criminal offence, for the purpose of conducting a criminal investigation or prosecution or executing a criminal penalty for offences referred to in Annex II and punishable in the Member State concerned by a custodial sentence or a detention order for a maximum period of at least four years. Point (h) of the first subparagraph is without prejudice to Article 9 of Regulation (EU) 2016/679 for the processing of biometric data for purposes other than law enforcement."
+          },
+          {
+            "key": "AIA-Art5-5@en",
+            "id": "AIA-Art5-5",
+            "label": "AI Act, Art. 5(5)",
+            "text": "AI Act Article 5(5): Prohibited AI practices\nA Member State may decide to provide for the possibility to fully or partially authorise the use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement within the limits and under the conditions listed in paragraph 1, first subparagraph, point (h), and paragraphs 2 and 3. Member States concerned shall lay down in their national law the necessary detailed rules for the request, issuance and exercise of, as well as supervision and reporting relating to, the authorisations referred to in paragraph 3. Those rules shall also specify in respect of which of the objectives listed in paragraph 1, first subparagraph, point (h), including which of the criminal offences referred to in point (h)(iii) thereof, the competent authorities may be authorised to use those systems for the purposes of law enforcement. Member States shall notify those rules to the Commission at the latest 30 days following the adoption thereof. Member States may introduce, in accordance with Union law, more restrictive laws on the use of remote biometric identification systems."
+          }
+        ],
+        "model": "gemini-3.5-flash-lite",
+        "input_tokens": 2358,
+        "output_tokens": 55
+      }
+    ]
+  }
+}

@@ -21,4 +21,5 @@ htmlcov/
 .cache/
 .qdrant/
 models/
+data/processed/index.npz
 out/

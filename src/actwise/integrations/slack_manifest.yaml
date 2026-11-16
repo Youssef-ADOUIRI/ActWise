@@ -1,0 +1,24 @@
+# The Slack app for /actwise: api.slack.com/apps → Create New App → From a manifest.
+# Socket Mode, so Slack needs no public URL; the `commands` scope is the only one.
+display_information:
+  name: ActWise
+  description: Cited answers on the EU AI Act and the GDPR, and an AI Act risk classifier
+features:
+  bot_user:
+    display_name: ActWise
+    always_online: false
+  slash_commands:
+    - command: /actwise
+      description: Ask the AI Act, or classify an AI system
+      usage_hint: ask <question> | classify <describe your AI system>
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - commands
+settings:
+  interactivity:
+    is_enabled: false
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false

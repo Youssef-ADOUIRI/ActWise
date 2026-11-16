@@ -40,6 +40,11 @@ def storage_key(chunk_id: str, lang: str) -> str:
     return f"{chunk_id}@{lang}"
 
 
+def is_window(chunk_id: str) -> bool:
+    """True for one window of a long paragraph (AIA-Art3-12#2)."""
+    return (parse_id(chunk_id) or {}).get("part") is not None
+
+
 def is_recital(chunk_id: str) -> bool:
     """True for recital ids (AIA-Rec63): recitals explain the law but do not bind."""
     return (parse_id(chunk_id) or {}).get("tag") == "Rec"

@@ -14,7 +14,7 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ConfigDict, Field
 
 from actwise.agent.classifier import ClassificationError, ClassifyOutcome
-from actwise.agent.schemas import DISCLAIMER, Classification
+from actwise.agent.schemas import DISCLAIMER
 from actwise.api.guards import DailyCap
 from actwise.generation.rag import AskResult, Search, sources_of
 from actwise.ingest.files import UnsupportedFile, extract_text
@@ -35,8 +35,8 @@ Classify = Callable[[str, float], ClassifyOutcome]  # (description, deadline)
 class Register(Protocol):
     """Where classifications are logged: the Google Sheets register of step 11."""
 
-    def log(self, description: str, result: Classification) -> None:
-        """Record one classification."""
+    def log(self, description: str, outcome: ClassifyOutcome) -> None:
+        """Record one classification and the model that made it."""
         ...
 
 
@@ -80,13 +80,13 @@ def create_app(
 
     def classified(description: str) -> dict[str, Any]:
         """The classification with the notice; a failing register is logged, not raised."""
-        result = classify(description, start_model_request()).result
+        outcome = classify(description, start_model_request())
         if register is not None:
             try:
-                register.log(description, result)
+                register.log(description, outcome)
             except Exception:  # a register outage must not lose the user's answer
                 log.warning("the register failed", exc_info=True)
-        return result.model_dump() | {"disclaimer": DISCLAIMER}
+        return outcome.result.model_dump() | {"model": outcome.model, "disclaimer": DISCLAIMER}
 
     @app.exception_handler(LLMUnavailable)
     @app.exception_handler(ClassificationError)
