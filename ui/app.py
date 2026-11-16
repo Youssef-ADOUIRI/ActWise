@@ -9,41 +9,24 @@ from __future__ import annotations
 import os
 from typing import Any
 
-import httpx
 import streamlit as st
 from dotenv import load_dotenv
 
 from actwise.ingest.files import READERS
+from actwise.integrations.client import ApiClient, ApiError
 
 load_dotenv()  # .env fills in what the environment doesn't set
-API_URL = os.environ.get("ACTWISE_API_URL") or "http://localhost:8000"
-HEADERS = {"X-API-Key": key} if (key := os.environ.get("ACTWISE_API_KEY")) else {}
-TIMEOUT = 60.0  # seconds: the API stops calling models after 50
-
-
-def detail(response: httpx.Response) -> str:
-    """The API's error message: FastAPI's `detail`, or the raw body."""
-    try:
-        found = response.json()["detail"]
-    except (ValueError, KeyError, TypeError):
-        return response.text
-    if isinstance(found, list):  # input validation errors
-        return "; ".join(str(error.get("msg")) for error in found)
-    return str(found)
+api = ApiClient.from_env(os.environ)
 
 
 def call(path: str, **request: Any) -> dict[str, Any] | None:
     """POST to the API and return its JSON, or show the error and return None."""
     try:
         with st.spinner("Reading the law…"):
-            response = httpx.post(f"{API_URL}{path}", headers=HEADERS, timeout=TIMEOUT, **request)
-    except httpx.HTTPError as exc:
-        st.error(f"The API at {API_URL} did not answer: {exc!r}")
+            return api.post(path, **request)
+    except ApiError as exc:
+        st.error(str(exc))
         return None
-    if response.is_error:
-        st.error(f"Error {response.status_code}: {detail(response)}")
-        return None
-    return response.json()
 
 
 def show_answer(reply: dict[str, Any]) -> None:

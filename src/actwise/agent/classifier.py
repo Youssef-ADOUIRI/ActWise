@@ -76,6 +76,7 @@ class ClassifyOutcome:
     result: Classification
     steps: int  # model calls
     lookups: int  # articles read and searches made
+    model: str = ""  # the model that submitted it, for the register
 
 
 def ai_act_articles(passages: Sequence[Passage]) -> dict[str, list[dict[str, str]]]:
@@ -167,7 +168,7 @@ def classify(
             elif call.name == SUBMIT_TOOL["name"]:
                 verdict = accept(call.arguments, retrieved)
                 if isinstance(verdict, Classification):
-                    return ClassifyOutcome(verdict, step, lookups)
+                    return ClassifyOutcome(verdict, step, lookups, reply.model)
                 content = verdict
             else:
                 content = f"Unknown tool {call.name!r}."

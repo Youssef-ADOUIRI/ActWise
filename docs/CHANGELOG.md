@@ -5,6 +5,27 @@ Add a section for every step you commit.
 
 ---
 
+## 2026-11-16: Step 11, integrations: Slack, MCP, a Sheets register
+
+**Goal:** connect ActWise to Slack, to MCP clients and to a Google Sheets register, each as a thin client of the HTTP API (decision 014).
+**Branch:** `step-11-integrations`
+
+| File | What | Why |
+|---|---|---|
+| `src/actwise/integrations/client.py` | `ApiClient` (URL, `X-API-Key`, readable `ApiError`), used by the UI, the Slack bot and the MCP server | One way to reach the API |
+| `src/actwise/integrations/formatting.py` | `parse_command`, `format_ask`, `format_classification`: each citation under its label, then the notice | Shared by Slack and MCP, no Slack import |
+| `src/actwise/integrations/slack_bot.py`, `slack_manifest.yaml` | `/actwise ask` and `/actwise classify` over Socket Mode; ack first, ephemeral reply | No public URL needed |
+| `src/actwise/integrations/mcp_server.py`, `.vscode/mcp.json` | Tools `ask_ai_act` and `classify_ai_system` (mcp 2.x `MCPServer`, stdio); API errors become tool errors | VS Code as the MCP client |
+| `src/actwise/integrations/sheets.py` | One row per classification: timestamp, HMAC of the description, tier, confidence, citations, model; header written into an empty sheet | The description is never stored |
+| `src/actwise/agent/classifier.py`, `api/main.py`, `api/app.py` | `ClassifyOutcome.model`; the register gets it and `/classify` returns it; the register is wired when `GSHEETS_SA_JSON` is set | Which model made each call |
+| `ui/app.py` | Uses `ApiClient` | |
+| `pyproject.toml`, `Makefile`, CI, `.env.example` | `gspread` in the base deps; extra `integrations` (`slack-bolt`, `mcp`), synced in CI; `make slack`, `make mcp`; `GSHEETS_REGISTER_ID`, `REGISTER_KEY` instead of `REGISTER_NAME` | |
+| `docs/integrations.md`, `docs/decisions/014-integrations.md`, `data/demo/talentsort.docx` | Setup for Slack, VS Code and Google Cloud; the choices; the upload demo file | |
+
+**Checked:** against a stub API (the real `create_app`, fake pipelines), the DOCX upload, both MCP tools over stdio, and the Slack handler with an answer, a validation error, help and an unreachable API. The real API could not load BGE-M3 on this laptop (Windows paging file, disk full), so the live demos wait.
+
+---
+
 ## 2026-11-12: Classifier eval, recall on the costly tiers
 
 **Branch:** `classifier-confusion-recall`

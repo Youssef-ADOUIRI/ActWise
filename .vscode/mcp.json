@@ -1,0 +1,18 @@
+{
+  "servers": {
+    "actwise": {
+      "type": "stdio",
+      "command": "uv",
+      "args": [
+        "run",
+        "--directory",
+        "${workspaceFolder}",
+        "--extra",
+        "integrations",
+        "python",
+        "-m",
+        "actwise.integrations.mcp_server"
+      ]
+    }
+  }
+}

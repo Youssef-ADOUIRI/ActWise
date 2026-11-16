@@ -247,17 +247,20 @@ Tick a box only when the work is **committed**. Commit after every step.
 
 ### Step 11: Integrations
 
-- [ ] `[test]` `test_parse_command`
-- [ ] `[test]` `test_format_classification`
-- [ ] `[test]` `test_slack_handler`
-- [ ] `[test]` `test_mcp_tools_registered`
-- [ ] `[test]` `test_register_row`
-- [ ] `[test]` `test_register_outage_ignored`
-- [ ] `integrations/formatting.py`
-- [ ] Slack app (Socket Mode, `/actwise`) + `integrations/slack_bot.py`
-- [ ] `integrations/mcp_server.py` → MCP Inspector → desktop client
-- [ ] Enable the Sheets and Drive APIs, service account, shared sheet + `integrations/sheets.py`
-- [ ] Upload demo with a DOCX
+- [x] `[test]` `test_parse_command`
+- [x] `[test]` `test_format_classification`
+- [x] `[test]` `test_slack_handler`
+- [x] `[test]` `test_mcp_tools_registered`
+- [x] `[test]` `test_register_row`
+- [x] `[test]` `test_register_outage_ignored`
+- [x] `integrations/client.py` (shared with the UI) and `integrations/formatting.py`
+- [x] `integrations/slack_bot.py` + `slack_manifest.yaml` (Socket Mode, `/actwise`, ephemeral replies)
+- [x] `integrations/mcp_server.py` + `.vscode/mcp.json`: both tools checked over stdio against a stub API
+- [x] `integrations/sheets.py`: keyed HMAC, `spreadsheets` scope only, no Drive API (decision 014)
+- [ ] Slack workspace and app; `/actwise` live (`docs/integrations.md`)
+- [ ] GCP project, Sheets API, service account, shared sheet; a live row
+- [ ] MCP Inspector → VS Code chat, against the real API
+- [ ] Upload demo with `data/demo/talentsort.docx` against the real API
 - [ ] Screen captures: Slack, MCP, Sheets, upload
 
 ### Step 12: Observability

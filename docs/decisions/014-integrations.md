@@ -1,0 +1,22 @@
+# 014: Integrations: thin clients of the API, and a register that never stores a description
+
+- **Options:**
+  - **Slack, MCP, Sheets:** each calls the pipelines in-process, or each is a client of the HTTP API.
+  - **Register row id:** no id, a plain SHA-256 of the description (the guide), or HMAC-SHA-256 with a secret key.
+  - **Register write:** in the request, or in a background task after the response.
+  - **Slack replies:** ephemeral (only the user who typed) or posted in the channel.
+- **Chosen:**
+  - **Thin clients.** The Slack bot, the MCP server and the UI share `integrations/client.py` (URL, `X-API-Key`, readable errors). The register runs inside the API, behind its `Register` protocol.
+  - **HMAC-SHA-256 with `REGISTER_KEY`, first 12 hex characters.** The row holds the timestamp, that id, the tier, the confidence, the citations and the model that made the call. The description itself is never stored.
+  - **Least access for the register:** the service account has no project role, sees only the sheets shared with it, and asks for the `spreadsheets` scope alone. The sheet is opened by id, so the Drive API stays off.
+  - **In the request, with a 5 s timeout.** A failure is logged and the classification is still returned (`test_register_outage_ignored`). The sheet is opened on the first row, not at start-up, so a Sheets outage can't stop the API either.
+  - **Ephemeral Slack replies.**
+- **Why:**
+  - **Thin clients** test with a fake API, keep the guards (key, daily cap, deadline, register) in one place, and work against the local or the deployed API alike.
+  - **A plain hash** of a short description can be checked by whoever reads the sheet: hash a guess and compare. With a key, matching ids still show that the same system was classified twice, but a guess can't be confirmed.
+  - **A background task** would answer faster, but Cloud Run throttles the CPU once the response is sent, so the row could be written late or not at all. One append takes well under a second.
+  - **A pasted system description** may be confidential, so a channel shouldn't see it by default.
+- **Revisit if:**
+  - **The register must be complete** for an audit. Rows lost in an outage are only logged; that would need a queue and retries.
+  - **Socket Mode can't stay on a laptop.** The bot would then move to Slack's HTTP mode, behind the API's public URL.
+  - **The MCP server has to run remotely.** It would switch from stdio to streamable HTTP, with its own authentication.

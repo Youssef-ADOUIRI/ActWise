@@ -1,5 +1,5 @@
 .PHONY: install lint test ingest splits index index-cloud publish-model eval eval-retrieval eval-answers ablations llm-smoke \
-	candidates label-sheet pairs compare eval-classifier serve ui deploy
+	candidates label-sheet pairs compare eval-classifier serve ui slack mcp deploy
 
 SYSTEM ?= baseline
 SPLIT ?= dev
@@ -81,6 +81,14 @@ serve:
 # Uploads stop at 2 MB, the API's limit, before they are sent.
 ui:
 	uv run --extra ui streamlit run ui/app.py --server.maxUploadSize 2
+
+# Step 11: the /actwise Slack command (Socket Mode) and the MCP server (stdio; VS Code
+# starts it from .vscode/mcp.json). Both call the API, so start `make serve` first.
+slack:
+	uv run --extra integrations python -m actwise.integrations.slack_bot
+
+mcp:
+	uv run --extra integrations python -m actwise.integrations.mcp_server
 
 deploy:
 	@echo "TODO step 13: deploy to Cloud Run"

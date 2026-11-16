@@ -38,7 +38,7 @@ class FakeClassifier:
         self.calls.append((description, deadline))
         if self.error:
             raise self.error
-        return ClassifyOutcome(RESULT, steps=2, lookups=1)
+        return ClassifyOutcome(RESULT, steps=2, lookups=1, model="gemini-test")
 
 
 def client(classifier=None, llm=None, **options):
@@ -72,6 +72,7 @@ def test_api_contract():
     assert (hit["id"], hit["label"], hit["score"]) == ("AIA-Art5-1", "AI Act, Art. 5(1)", 0.8)
     assert answer["citations"] == ["AIA-Art5-1"] and answer["model"] == "gemini-test"
     assert tier["tier"] == "prohibited" and tier["citations"] == ["AIA-Art5-1"]
+    assert tier["model"] == "gemini-test"
     assert answer["disclaimer"] == tier["disclaimer"] == DISCLAIMER
     assert over.status_code == 429  # the cap counts only the requests that reach a model
 
@@ -126,11 +127,29 @@ def test_one_deadline_per_request():
     assert all(start + REQUEST_BUDGET <= d <= time.monotonic() + REQUEST_BUDGET for d in deadlines)
 
 
-def test_register_failure_is_ignored():
+def test_register_gets_the_description_result_and_model():
+    """Each classification is logged with the model that made it."""
+
+    class Register:
+        def __init__(self):
+            """No rows yet."""
+            self.rows = []
+
+        def log(self, description, result, model):
+            """Keep the row."""
+            self.rows.append((description, result, model))
+
+    register = Register()
+    client(register=register).post("/classify", json={"description": DESCRIPTION})
+
+    assert register.rows == [(DESCRIPTION, RESULT, "gemini-test")]
+
+
+def test_register_outage_ignored():
     """If the register raises, /classify still returns the classification."""
 
     class BrokenRegister:
-        def log(self, description, result):
+        def log(self, description, result, model):
             """Fail like a Google Sheets outage."""
             raise ConnectionError("Sheets is down")
 

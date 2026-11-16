@@ -1,7 +1,8 @@
 """The API wired to the real pipelines: `make serve`, or uvicorn actwise.api.app:app.
 
-Reads .env: the LLM providers (serving profile: fast failover), ACTWISE_API_KEY and
-MAX_DAILY_REQUESTS. Only the local profile exists so far: the cloud one needs the
+Reads .env: the LLM providers (serving profile: fast failover), ACTWISE_API_KEY,
+MAX_DAILY_REQUESTS, and the Sheets register when GSHEETS_SA_JSON is set (step 11).
+Only the local profile exists so far: the cloud one needs the
 ONNX embedder of step 9 and the Qdrant index of step 13.
 """
 
@@ -18,6 +19,7 @@ from actwise.generation.context import MAX_REFERENCES, ParagraphContext
 from actwise.generation.prompts import load_prompt
 from actwise.generation.rag import RagPipeline
 from actwise.generation.rewrite import REWRITE_PROMPT
+from actwise.integrations.sheets import SheetsRegister
 from actwise.llm.factory import SERVING, build_llm
 from actwise.retrieval.passages import paragraph_passages
 from actwise.retrieval.systems import SERVED, SYSTEMS
@@ -47,6 +49,7 @@ app = create_app(
         llm, retriever.search, articles, description, deadline=deadline
     ),
     search=retriever.search,
+    register=SheetsRegister.from_env(os.environ) if os.environ.get("GSHEETS_SA_JSON") else None,
     api_key=os.environ.get("ACTWISE_API_KEY") or None,
     daily_cap=int(os.environ.get("MAX_DAILY_REQUESTS") or DAILY_CAP),
 )
