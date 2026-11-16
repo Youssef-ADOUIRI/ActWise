@@ -1,24 +1,14 @@
 from actwise.agent.schemas import DISCLAIMER
 from actwise.integrations.client import ApiError
-from actwise.integrations.formatting import HELP
-from actwise.integrations.slack_bot import WAIT, handle
+from actwise.integrations.slack_bot import HELP, WAIT, handle, parse_command
+from tests.unit.toys import CLASSIFICATION, FakeApi
 
-ANSWER = {"answer": "Banned [AIA-Art5-1].", "citations": ["AIA-Art5-1"], "disclaimer": DISCLAIMER}
-
-
-class FakeApi:
-    """Answers every POST with `reply`, or raises `error`; records each request."""
-
-    def __init__(self, reply=None, error=None):
-        """Reply with `reply`, or raise `error`."""
-        self.reply, self.error, self.calls = reply, error, []
-
-    def post(self, path, **request):
-        """The canned reply."""
-        self.calls.append((path, request))
-        if self.error:
-            raise self.error
-        return self.reply
+ANSWER = {
+    "answer": "Banned [AIA-Art5-1].",
+    "citations": ["AIA-Art5-1"],
+    "sources": [{"id": "AIA-Art5-1", "label": "AI Act, Art. 5(1)"}],
+    "disclaimer": DISCLAIMER,
+}
 
 
 def run(text, api):
@@ -31,6 +21,16 @@ def run(text, api):
         api,
     )
     return events
+
+
+def test_parse_command():
+    """`ask ...` and `classify ...` are parsed, any case; anything else asks for help."""
+    assert parse_command("  ask  What is high risk? ") == ("ask", "What is high risk?")
+    assert parse_command("CLASSIFY A CV ranker") == ("classify", "A CV ranker")
+    assert [parse_command(text) for text in ["", "ask", "help me", "summarise x"]] == [
+        ("help", "")
+    ] * 4
+    assert "/actwise ask" in HELP and "/actwise classify" in HELP
 
 
 def test_slack_handler():
@@ -48,20 +48,12 @@ def test_slack_handler():
 
 def test_slack_handler_classifies():
     """`classify` posts the description to /classify."""
-    reply = {
-        "tier": "prohibited",
-        "reasons": ["Social scoring."],
-        "citations": ["AIA-Art5-1"],
-        "confidence": 0.9,
-        "follow_up_questions": [],
-        "disclaimer": DISCLAIMER,
-    }
-    api = FakeApi(reply)
+    api = FakeApi(CLASSIFICATION)
 
-    events = run("classify A city scores its residents.", api)
+    events = run("classify A tool that ranks CVs.", api)
 
-    assert "Prohibited" in events[1][1]["text"]
-    assert api.calls == [("/classify", {"json": {"description": "A city scores its residents."}})]
+    assert "High risk" in events[1][1]["text"]
+    assert api.calls == [("/classify", {"json": {"description": "A tool that ranks CVs."}})]
 
 
 def test_slack_handler_reports_api_errors():

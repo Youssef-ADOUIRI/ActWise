@@ -14,16 +14,21 @@ from dotenv import load_dotenv
 
 from actwise.ingest.files import READERS
 from actwise.integrations.client import ApiClient, ApiError
+from actwise.integrations.formatting import FOLLOW_UPS, cited, tier_label
 
-load_dotenv()  # .env fills in what the environment doesn't set
-api = ApiClient.from_env(os.environ)
+
+@st.cache_resource
+def api() -> ApiClient:
+    """One client for every rerun of the script, so its connections are reused."""
+    load_dotenv()  # .env fills in what the environment doesn't set
+    return ApiClient.from_env(os.environ)
 
 
 def call(path: str, **request: Any) -> dict[str, Any] | None:
     """POST to the API and return its JSON, or show the error and return None."""
     try:
         with st.spinner("Reading the law…"):
-            return api.post(path, **request)
+            return api().post(path, **request)
     except ApiError as exc:
         st.error(str(exc))
         return None
@@ -41,12 +46,12 @@ def show_answer(reply: dict[str, Any]) -> None:
 
 def show_classification(result: dict[str, Any]) -> None:
     """The tier and confidence, the reasons, the citations and any follow-up questions."""
-    st.subheader(result["tier"].replace("_", " ").capitalize())
+    st.subheader(tier_label(result["tier"]))
     st.caption(f"Confidence {result['confidence']:.0%}. {result['disclaimer']}")
     st.markdown("\n".join(f"- {reason}" for reason in result["reasons"]))
-    st.markdown("**Cited:** " + ", ".join(f"`{c}`" for c in result["citations"]))
+    st.markdown(f"**Cited:** {cited(result['citations'])}")
     if result["follow_up_questions"]:
-        st.markdown("**To decide, the classifier needs to know:**")
+        st.markdown(f"**{FOLLOW_UPS}**")
         st.markdown("\n".join(f"- {q}" for q in result["follow_up_questions"]))
 
 

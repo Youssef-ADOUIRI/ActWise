@@ -16,18 +16,22 @@ from typing import Any
 from dotenv import load_dotenv
 
 from actwise.integrations.client import ApiClient, ApiError
-from actwise.integrations.formatting import (
-    HELP,
-    format_ask,
-    format_classification,
-    parse_command,
-)
+from actwise.integrations.formatting import format_ask, format_classification
 
 WAIT = "Reading the law…"
+HELP = "Usage: `/actwise ask <question>` or `/actwise classify <describe your AI system>`"
 ROUTES: dict[str, tuple[str, str, Callable[[dict[str, Any]], str]]] = {
     "ask": ("/ask", "question", format_ask),  # action: (path, field, formatter)
     "classify": ("/classify", "description", format_classification),
 }
+
+
+def parse_command(text: str) -> tuple[str, str]:
+    """'ask What is high risk?' -> ('ask', 'What is high risk?'); anything else -> ('help', '')."""
+    parts = text.strip().split(maxsplit=1)
+    if len(parts) < 2 or parts[0].lower() not in ROUTES:
+        return "help", ""
+    return parts[0].lower(), parts[1]
 
 
 def handle(

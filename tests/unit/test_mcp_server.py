@@ -2,23 +2,13 @@ import asyncio
 
 import pytest
 
-from actwise.agent.schemas import DISCLAIMER
 from actwise.integrations.client import ApiError
-from tests.unit.test_slack_bot import FakeApi
+from tests.unit.toys import CLASSIFICATION, FakeApi
 
 pytest.importorskip("mcp")  # the integrations extra
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 
 from actwise.integrations.mcp_server import build_server  # noqa: E402
-
-CLASSIFICATION = {
-    "tier": "high_risk",
-    "reasons": ["It ranks job applicants."],
-    "citations": ["AIA-AnnexIII-4"],
-    "confidence": 0.8,
-    "follow_up_questions": [],
-    "disclaimer": DISCLAIMER,
-}
 
 
 def test_mcp_tools_registered():

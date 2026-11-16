@@ -49,7 +49,7 @@ app = create_app(
         llm, retriever.search, articles, description, deadline=deadline
     ),
     search=retriever.search,
-    register=SheetsRegister.from_env(os.environ) if os.environ.get("GSHEETS_SA_JSON") else None,
+    register=SheetsRegister.from_env(os.environ),
     api_key=os.environ.get("ACTWISE_API_KEY") or None,
     daily_cap=int(os.environ.get("MAX_DAILY_REQUESTS") or DAILY_CAP),
 )

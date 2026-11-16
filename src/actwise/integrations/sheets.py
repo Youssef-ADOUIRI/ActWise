@@ -16,7 +16,7 @@ from datetime import UTC, datetime
 from functools import cached_property
 from typing import Any
 
-from actwise.agent.schemas import Classification
+from actwise.agent.classifier import ClassifyOutcome
 
 HEADER = ["timestamp", "description_hmac", "tier", "confidence", "citations", "model"]
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]  # the sheets shared with it; no Drive
@@ -24,21 +24,18 @@ TIMEOUT = 5.0  # seconds: a slow Sheets call must not use up the request's model
 
 
 def register_row(
-    description: str,
-    result: Classification,
-    model: str,
-    key: bytes,
-    now: datetime | None = None,
+    description: str, outcome: ClassifyOutcome, key: bytes, now: datetime | None = None
 ) -> list[str]:
     """Timestamp, the description's keyed hash (12 hex), tier, confidence, citations, model."""
     digest = hmac.new(key, description.encode("utf-8"), hashlib.sha256).hexdigest()[:12]
+    result = outcome.result
     return [
         (now or datetime.now(UTC)).isoformat(timespec="seconds"),
         digest,
         result.tier,
         f"{result.confidence:.2f}",
         ", ".join(result.citations),
-        model,
+        outcome.model,
     ]
 
 
@@ -57,14 +54,19 @@ class SheetsRegister:
             sheet.append_row(HEADER, value_input_option="RAW")
         return sheet
 
-    def log(self, description: str, result: Classification, model: str) -> None:
+    def log(self, description: str, outcome: ClassifyOutcome) -> None:
         """Append the row, stored as typed (RAW): a cell starting with '=' stays text."""
-        row = register_row(description, result, model, self.key)
+        row = register_row(description, outcome, self.key)
         self.sheet.append_row(row, value_input_option="RAW")
 
     @classmethod
-    def from_env(cls, env: Mapping[str, str]) -> SheetsRegister:
-        """GSHEETS_SA_JSON (the service account key), GSHEETS_REGISTER_ID, REGISTER_KEY."""
+    def from_env(cls, env: Mapping[str, str]) -> SheetsRegister | None:
+        """GSHEETS_SA_JSON (the service account key), GSHEETS_REGISTER_ID, REGISTER_KEY.
+
+        None without GSHEETS_SA_JSON: the register is off.
+        """
+        if not env.get("GSHEETS_SA_JSON"):
+            return None
         import gspread
 
         client = gspread.service_account_from_dict(

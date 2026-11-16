@@ -29,18 +29,12 @@ def detail(response: httpx.Response) -> str:
 class ApiClient:
     """POST to the API at `url`, with `key` in X-API-Key when the API needs one."""
 
-    def __init__(
-        self,
-        url: str = DEFAULT_URL,
-        key: str | None = None,
-        timeout: float = TIMEOUT,
-        transport: httpx.BaseTransport | None = None,
-    ):
+    def __init__(self, url: str, key: str | None, transport: httpx.BaseTransport | None = None):
         """`transport` replaces the network in tests."""
         self.url = url
         headers = {"X-API-Key": key} if key else {}
         self.http = httpx.Client(
-            base_url=url, headers=headers, timeout=timeout, transport=transport
+            base_url=url, headers=headers, timeout=TIMEOUT, transport=transport
         )
 
     @classmethod

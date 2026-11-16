@@ -1,7 +1,8 @@
-"""Toys shared by the tests: passages, a bag-of-words embedder and a scripted LLM."""
+"""Toys shared by the tests: passages, a bag-of-words embedder, a scripted LLM, a fake API."""
 
 import numpy as np
 
+from actwise.agent.schemas import DISCLAIMER, Classification
 from actwise.retrieval.embedders import l2_normalize
 from actwise.retrieval.passages import Passage
 
@@ -57,3 +58,26 @@ PASSAGES = [
     Passage("GDPR-Art83-5", "en", "Administrative fine up to 4 %"),
     Passage("AIA-Art5-1", "fr", "Interdiction : ban des pratiques"),
 ]
+
+# What /classify returns: the classification, the model and the notice
+CLASSIFICATION = Classification(
+    tier="high_risk",
+    reasons=["It ranks job applicants."],
+    citations=["AIA-Art6-2", "AIA-AnnexIII-4"],
+    confidence=0.8,
+).model_dump() | {"model": "gemini-test", "disclaimer": DISCLAIMER}
+
+
+class FakeApi:
+    """The ActWise API for its clients: answers every POST with `reply`, or raises `error`."""
+
+    def __init__(self, reply=None, error=None):
+        """Reply with `reply`, or raise `error`; records each request."""
+        self.reply, self.error, self.calls = reply, error, []
+
+    def post(self, path, **request):
+        """The canned reply."""
+        self.calls.append((path, request))
+        if self.error:
+            raise self.error
+        return self.reply

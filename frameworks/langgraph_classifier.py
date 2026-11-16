@@ -75,6 +75,7 @@ class State(TypedDict, total=False):
     retrieved: set[str]  # every paragraph id read so far: what may be cited
     decisions: list[RuleDecision]  # one per rule checked; the last may still be refused
     steps: int  # model calls
+    model: str  # the model of the last reply
     result: Classification
 
 
@@ -122,15 +123,19 @@ def decide(state: State, runtime: Runtime[Deps]) -> State:
             {"role": "assistant", "content": reply.text},
             {"role": "user", "content": NUDGE},
         ]
-        return {"steps": steps + 1, "messages": state["messages"] + told}
+        return {"steps": steps + 1, "model": reply.model, "messages": state["messages"] + told}
     calls = [asdict(call) for call in reply.tool_calls]
     asked: Message = {"role": "assistant", "content": reply.text, "tool_calls": calls}
     messages = state["messages"] + [asked]
     verdict = check(reply.tool_calls[0].arguments, state["retrieved"])
     if isinstance(verdict, str):
-        return {"steps": steps + 1, "messages": messages + tool_replies(asked, verdict)}
+        return {
+            "steps": steps + 1,
+            "model": reply.model,
+            "messages": messages + tool_replies(asked, verdict),
+        }
     decisions = state.get("decisions", []) + [verdict]
-    return {"steps": steps + 1, "messages": messages, "decisions": decisions}
+    return {"steps": steps + 1, "model": reply.model, "messages": messages, "decisions": decisions}
 
 
 def after_decide(state: State) -> str:
@@ -196,4 +201,4 @@ def classify(
         config={"recursion_limit": 4 * max_steps},
     )
     lookups = sum(len(articles) for _, articles in RULES[: state["rule"] + 1])  # articles read
-    return ClassifyOutcome(state["result"], state["steps"], lookups)
+    return ClassifyOutcome(state["result"], state["steps"], lookups, state["model"])

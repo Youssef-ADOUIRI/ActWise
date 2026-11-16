@@ -135,9 +135,9 @@ def test_register_gets_the_description_result_and_model():
             """No rows yet."""
             self.rows = []
 
-        def log(self, description, result, model):
+        def log(self, description, outcome):
             """Keep the row."""
-            self.rows.append((description, result, model))
+            self.rows.append((description, outcome.result, outcome.model))
 
     register = Register()
     client(register=register).post("/classify", json={"description": DESCRIPTION})
@@ -149,7 +149,7 @@ def test_register_outage_ignored():
     """If the register raises, /classify still returns the classification."""
 
     class BrokenRegister:
-        def log(self, description, result, model):
+        def log(self, description, outcome):
             """Fail like a Google Sheets outage."""
             raise ConnectionError("Sheets is down")
 

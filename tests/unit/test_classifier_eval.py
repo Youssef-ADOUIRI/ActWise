@@ -113,7 +113,7 @@ def test_classify_scenarios_runs_the_classifier_it_is_given():
         result = Classification(
             tier="high_risk", reasons=["r"], citations=["AIA-Art6-2"], confidence=0.5
         )
-        return ClassifyOutcome(result, steps=1, lookups=3)
+        return ClassifyOutcome(result, steps=1, lookups=3, model="m")
 
     scenario = Scenario("s02", "dev", "en", False, "high_risk", "AIA-Art6", "", "CVs.", "yes")
     llm = ScriptedLLM(LLMResponse("", [], 100, 20, "m"))

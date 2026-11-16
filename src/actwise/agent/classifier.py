@@ -76,7 +76,7 @@ class ClassifyOutcome:
     result: Classification
     steps: int  # model calls
     lookups: int  # articles read and searches made
-    model: str = ""  # the model that submitted it, for the register
+    model: str  # the model that submitted it, for the register
 
 
 def ai_act_articles(passages: Sequence[Passage]) -> dict[str, list[dict[str, str]]]:

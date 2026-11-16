@@ -17,8 +17,8 @@ Add a section for every step you commit.
 | `src/actwise/integrations/slack_bot.py`, `slack_manifest.yaml` | `/actwise ask` and `/actwise classify` over Socket Mode; ack first, ephemeral reply | No public URL needed |
 | `src/actwise/integrations/mcp_server.py`, `.vscode/mcp.json` | Tools `ask_ai_act` and `classify_ai_system` (mcp 2.x `MCPServer`, stdio); API errors become tool errors | VS Code as the MCP client |
 | `src/actwise/integrations/sheets.py` | One row per classification: timestamp, HMAC of the description, tier, confidence, citations, model; header written into an empty sheet | The description is never stored |
-| `src/actwise/agent/classifier.py`, `api/main.py`, `api/app.py` | `ClassifyOutcome.model`; the register gets it and `/classify` returns it; the register is wired when `GSHEETS_SA_JSON` is set | Which model made each call |
-| `ui/app.py` | Uses `ApiClient` | |
+| `src/actwise/agent/classifier.py`, `frameworks/langgraph_classifier.py`, `api/main.py`, `api/app.py` | `ClassifyOutcome.model`, required, from both classifiers; `Register.log(description, outcome)`; `/classify` returns the model; the register is on when `GSHEETS_SA_JSON` is set | Which model made each call |
+| `ui/app.py` | One cached `ApiClient` per process, and the shared `tier_label` and `cited`: citations now show their article labels | Same presentation in every client |
 | `pyproject.toml`, `Makefile`, CI, `.env.example` | `gspread` in the base deps; extra `integrations` (`slack-bolt`, `mcp`), synced in CI; `make slack`, `make mcp`; `GSHEETS_REGISTER_ID`, `REGISTER_KEY` instead of `REGISTER_NAME` | |
 | `docs/integrations.md`, `docs/decisions/014-integrations.md`, `data/demo/talentsort.docx` | Setup for Slack, VS Code and Google Cloud; the choices; the upload demo file | |
 
